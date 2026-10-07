@@ -2,157 +2,258 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>OmeTV 4</title>
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
 
-<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-database-compat.js"></script>
+<title>My AI</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+box-sizing:border-box;
+}
 
 body{
 margin:0;
 font-family:Arial,sans-serif;
-background:linear-gradient(135deg,#111827,#4f46e5);
-color:white;
-min-height:100vh;
+background:#f7f7f8;
+color:#222;
+height:100vh;
+overflow:hidden;
+}
+
+.app{
+height:100vh;
 display:flex;
-justify-content:center;
+flex-direction:column;
+}
+
+/* HEADER */
+
+.header{
+height:60px;
+background:#fff;
+border-bottom:1px solid #ddd;
+display:flex;
 align-items:center;
-}
-
-.box{
-width:94%;
-max-width:520px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(15px);
-border-radius:25px;
-padding:22px;
-text-align:center;
-box-shadow:0 10px 40px #0006;
-}
-
-h1{font-size:36px;margin:5px}
-
-button,select{
-width:100%;
-padding:15px;
-margin:7px 0;
-border:0;
-border-radius:14px;
-font-size:17px;
+justify-content:space-between;
+padding:0 15px;
 font-weight:bold;
 }
 
-button{cursor:pointer}
+.logo{
+font-size:21px;
+}
 
-.google{background:white;color:#222}
-.start{background:#22c55e;color:white}
-.next{background:#3b82f6;color:white}
-.stop{background:#ef4444;color:white}
-.report{background:#f59e0b;color:white}
+.newchat{
+background:#111;
+color:white;
+border:0;
+border-radius:10px;
+padding:9px 12px;
+}
 
-video{
-width:100%;
-height:280px;
-object-fit:cover;
-background:#000;
+/* CHAT */
+
+.chat{
+flex:1;
+overflow-y:auto;
+padding:20px 15px 120px;
+}
+
+.welcome{
+text-align:center;
+margin-top:25vh;
+}
+
+.welcome h1{
+font-size:30px;
+}
+
+.welcome p{
+color:#777;
+}
+
+/* MESSAGE */
+
+.message{
+max-width:850px;
+margin:0 auto 18px;
+display:flex;
+gap:10px;
+}
+
+.avatar{
+width:34px;
+height:34px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#111;
+color:#fff;
+flex-shrink:0;
+}
+
+.user .avatar{
+background:#2563eb;
+}
+
+.text{
+line-height:1.55;
+padding-top:5px;
+white-space:pre-wrap;
+}
+
+/* INPUT */
+
+.inputArea{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:linear-gradient(
+transparent,
+#f7f7f8 30%
+);
+padding:25px 15px 15px;
+}
+
+.inputBox{
+max-width:850px;
+margin:auto;
+background:white;
+border:1px solid #ccc;
 border-radius:18px;
-margin:10px 0;
+display:flex;
+align-items:end;
+padding:8px;
+box-shadow:0 2px 10px #0001;
 }
 
-.hidden{display:none}
+textarea{
+flex:1;
+border:0;
+outline:0;
+resize:none;
+font-size:16px;
+padding:10px;
+max-height:120px;
+font-family:inherit;
+}
 
-.status{
-padding:12px;
-background:#0004;
+.send{
+width:42px;
+height:42px;
+border:0;
 border-radius:12px;
-margin:10px 0;
+background:#111;
+color:white;
+font-size:19px;
 }
 
-.small{
-font-size:13px;
-opacity:.8;
+.send:disabled{
+opacity:.4;
 }
+
+.note{
+text-align:center;
+font-size:11px;
+color:#888;
+margin-top:7px;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.chat{
+padding-left:12px;
+padding-right:12px;
+}
+
+.message{
+font-size:15px;
+}
+
+.logo{
+font-size:19px;
+}
+
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="app">
 
-<div id="loginPage">
+<!-- HEADER -->
 
-<h1>OmeTV 4</h1>
-<p>Random Video Chat 🌎</p>
+<div class="header">
 
-<button class="google" onclick="googleLogin()">
-🔵 Continue with Google
-</button>
-
-<div id="loginStatus" class="status">
-Please login
+<div class="logo">
+🤖 My AI
 </div>
 
-</div>
-
-
-<div id="homePage" class="hidden">
-
-<h1>OmeTV 4</h1>
-
-<p id="userInfo"></p>
-
-<select id="country">
-<option value="all">🌎 All Countries</option>
-<option value="Nepal">🇳🇵 Nepal</option>
-<option value="India">🇮🇳 India</option>
-<option value="USA">🇺🇸 USA</option>
-<option value="UK">🇬🇧 UK</option>
-<option value="Japan">🇯🇵 Japan</option>
-<option value="Korea">🇰🇷 Korea</option>
-</select>
-
-<button class="start" onclick="startChat()">
-🎥 START
-</button>
-
-<button class="stop" onclick="logout()">
-🚪 Logout
+<button
+class="newchat"
+onclick="newChat()">
+＋ New Chat
 </button>
 
 </div>
 
 
-<div id="chatPage" class="hidden">
+<!-- CHAT -->
 
-<h2>Video Chat 🎥</h2>
+<div
+id="chat"
+class="chat">
 
-<video id="remoteVideo" autoplay playsinline></video>
+<div
+id="welcome"
+class="welcome">
 
-<video id="localVideo" autoplay playsinline muted></video>
+<h1>
+👋 Hello!
+</h1>
 
-<div id="status" class="status">
-Starting...
-</div>
-
-<button class="next" onclick="nextPerson()">
-➡️ NEXT
-</button>
-
-<button class="stop" onclick="stopChat()">
-⛔ STOP
-</button>
-
-<button class="report" onclick="reportUser()">
-🚨 REPORT
-</button>
-
-<p class="small">
-Your camera preview is shown below the other person.
+<p>
+Ask me anything.
 </p>
+
+</div>
+
+</div>
+
+
+<!-- INPUT -->
+
+<div class="inputArea">
+
+<div class="inputBox">
+
+<textarea
+id="input"
+rows="1"
+placeholder="Message My AI..."
+onkeydown="handleKey(event)"
+></textarea>
+
+<button
+id="send"
+class="send"
+onclick="sendMessage()">
+➤
+</button>
+
+</div>
+
+<div class="note">
+My AI can make mistakes. Check important information.
+</div>
 
 </div>
 
@@ -161,510 +262,200 @@ Your camera preview is shown below the other person.
 
 <script>
 
-const firebaseConfig = {
-apiKey:"AIzaSyDX18nNNVbSd3jwdODlh_-XhuFrn2lQEAQ",
-authDomain:"ome-tv-4-5fd7b.firebaseapp.com",
-projectId:"ome-tv-4-5fd7b",
-storageBucket:"ome-tv-4-5fd7b.firebasestorage.app",
-messagingSenderId:"827380900936",
-appId:"1:827380900936:web:62a7f50dd008c94149a47d",
-measurementId:"G-Q82KTMQ43C"
-};
+const input=
+document.getElementById("input");
 
-firebase.initializeApp(firebaseConfig);
+const chat=
+document.getElementById("chat");
 
-const auth=firebase.auth();
-const db=firebase.database();
+const send=
+document.getElementById("send");
 
-let currentUser=null;
-let localStream=null;
-let peer=null;
-let currentMatch=null;
-let searching=false;
 
+/* =====================
+SEND MESSAGE
+===================== */
 
-async function googleLogin(){
+function sendMessage(){
 
-document.getElementById("loginStatus").innerText=
-"Opening Google Login...";
+const text=
+input.value.trim();
 
-try{
+if(!text)return;
 
-const provider=new firebase.auth.GoogleAuthProvider();
+document
+.getElementById("welcome")
+?.remove();
 
-await auth.signInWithPopup(provider);
 
-}catch(error){
-
-console.error(error);
-
-document.getElementById("loginStatus").innerText=
-"Login failed: "+error.message;
-
-}
-
-}
-
-
-auth.onAuthStateChanged(user=>{
-
-if(user){
-
-currentUser=user;
-
-document.getElementById("loginPage")
-.classList.add("hidden");
-
-document.getElementById("homePage")
-.classList.remove("hidden");
-
-document.getElementById("userInfo").innerText=
-"👤 "+(user.displayName||user.email);
-
-}else{
-
-currentUser=null;
-
-document.getElementById("loginPage")
-.classList.remove("hidden");
-
-document.getElementById("homePage")
-.classList.add("hidden");
-
-document.getElementById("chatPage")
-.classList.add("hidden");
-
-}
-
-});
-
-
-async function startChat(){
-
-if(!currentUser)return;
-
-document.getElementById("homePage")
-.classList.add("hidden");
-
-document.getElementById("chatPage")
-.classList.remove("hidden");
-
-document.getElementById("status").innerText=
-"Requesting camera and microphone...";
-
-try{
-
-localStream=
-await navigator.mediaDevices.getUserMedia({
-video:true,
-audio:true
-});
-
-document.getElementById("localVideo").srcObject=
-localStream;
-
-document.getElementById("status").innerText=
-"🔎 Searching for another person...";
-
-searching=true;
-
-await findPerson();
-
-}catch(error){
-
-console.error(error);
-
-document.getElementById("status").innerText=
-"Camera/Microphone permission denied.";
-
-}
-
-}
-
-
-async function findPerson(){
-
-if(!searching)return;
-
-const myCountry=
-document.getElementById("country").value;
-
-const waitingRef=db.ref("waiting");
-
-const snapshot=
-await waitingRef.once("value");
-
-let found=null;
-
-snapshot.forEach(child=>{
-
-if(child.key!==currentUser.uid){
-
-const data=child.val();
-
-if(
-myCountry==="all" ||
-data.country==="all" ||
-data.country===myCountry
-){
-
-found={
-uid:child.key,
-country:data.country
-};
-
-}
-
-}
-
-});
-
-
-if(found){
-
-const ids=[
-currentUser.uid,
-found.uid
-].sort();
-
-const matchId=ids[0]+"_"+ids[1];
-
-currentMatch=matchId;
-
-await db.ref("matches/"+matchId).update({
-
-user1:ids[0],
-user2:ids[1],
-createdAt:firebase.database.ServerValue.TIMESTAMP
-
-});
-
-await db.ref("waiting/"+found.uid).remove();
-
-await db.ref("waiting/"+currentUser.uid).remove();
-
-if(currentUser.uid===ids[0]){
-
-await createOffer(matchId);
-
-}else{
-
-await waitForOffer(matchId);
-
-}
-
-}else{
-
-await db.ref("waiting/"+currentUser.uid).set({
-
-country:myCountry,
-
-name:currentUser.displayName||"User",
-
-timestamp:firebase.database.ServerValue.TIMESTAMP
-
-});
-
-db.ref("waiting/"+currentUser.uid)
-.onDisconnect()
-.remove();
-
-document.getElementById("status").innerText=
-"🟢 Waiting for another online user...";
-
-}
-
-}
-
-
-function createPeer(matchId){
-
-peer=new RTCPeerConnection({
-
-iceServers:[
-{
-urls:"stun:stun.l.google.com:19302"
-},
-{
-urls:"stun:stun1.l.google.com:19302"
-}
-]
-
-});
-
-
-localStream.getTracks().forEach(track=>{
-
-peer.addTrack(track,localStream);
-
-});
-
-
-peer.ontrack=event=>{
-
-document.getElementById("remoteVideo").srcObject=
-event.streams[0];
-
-document.getElementById("status").innerText=
-"🟢 Connected!";
-
-};
-
-
-peer.onicecandidate=event=>{
-
-if(event.candidate){
-
-const path=
-"matches/"+matchId+"/candidates/"+
-(currentUser.uid);
-
-db.ref(path).push(event.candidate.toJSON());
-
-}
-
-};
-
-}
-
-
-async function createOffer(matchId){
-
-createPeer(matchId);
-
-const offer=
-await peer.createOffer();
-
-await peer.setLocalDescription(offer);
-
-await db.ref("matches/"+matchId+"/offer")
-.set({
-
-type:offer.type,
-sdp:offer.sdp
-
-});
-
-
-db.ref("matches/"+matchId+"/answer")
-.on("value",async snap=>{
-
-const answer=snap.val();
-
-if(answer && !peer.currentRemoteDescription){
-
-await peer.setRemoteDescription(
-new RTCSessionDescription(answer)
+addMessage(
+text,
+"user"
 );
 
-}
+input.value="";
 
-});
-
-listenCandidates(matchId);
-
-document.getElementById("status").innerText=
-"📞 Calling another user...";
-
-}
+send.disabled=true;
 
 
-function waitForOffer(matchId){
+/*
+DEMO AI RESPONSE
 
-db.ref("matches/"+matchId+"/offer")
-.on("value",async snap=>{
+यो ठाउँमा पछि वास्तविक
+AI API जोडिनेछ।
+*/
 
-const offer=snap.val();
-
-if(!offer)return;
-
-if(!peer){
-
-createPeer(matchId);
-
-await peer.setRemoteDescription(
-new RTCSessionDescription(offer)
-);
+setTimeout(()=>{
 
 const answer=
-await peer.createAnswer();
+getDemoAnswer(text);
 
-await peer.setLocalDescription(answer);
-
-await db.ref("matches/"+matchId+"/answer")
-.set({
-
-type:answer.type,
-sdp:answer.sdp
-
-});
-
-listenCandidates(matchId);
-
-document.getElementById("status").innerText=
-"📞 Connecting...";
-
-}
-
-});
-
-}
-
-
-function listenCandidates(matchId){
-
-const myPath=
-"matches/"+matchId+"/candidates/";
-
-const otherUid=
-currentMatch.split("_")
-.find(id=>id!==currentUser.uid);
-
-if(!otherUid)return;
-
-const ref=
-db.ref(myPath+otherUid);
-
-ref.on("child_added",async snap=>{
-
-try{
-
-if(peer){
-
-await peer.addIceCandidate(
-new RTCIceCandidate(snap.val())
+addMessage(
+answer,
+"ai"
 );
 
-}
+send.disabled=false;
 
-}catch(error){
-
-console.log(error);
-
-}
-
-});
+},700);
 
 }
 
 
-async function nextPerson(){
+/* =====================
+ADD MESSAGE
+===================== */
 
-document.getElementById("status").innerText=
-"➡️ Finding next person...";
+function addMessage(
+text,
+type
+){
 
-await cleanupMatch();
+const message=
+document.createElement("div");
 
-try{
+message.className=
+"message "+type;
 
-localStream=
-await navigator.mediaDevices.getUserMedia({
-video:true,
-audio:true
-});
+const avatar=
+document.createElement("div");
 
-document.getElementById("localVideo").srcObject=
-localStream;
+avatar.className=
+"avatar";
 
-searching=true;
+avatar.innerText=
+type==="user"
+?"U"
+:"AI";
 
-await findPerson();
+const content=
+document.createElement("div");
 
-}catch(error){
+content.className=
+"text";
 
-document.getElementById("status").innerText=
-"Camera permission required.";
+content.innerText=
+text;
+
+message.appendChild(avatar);
+
+message.appendChild(content);
+
+chat.appendChild(message);
+
+chat.scrollTop=
+chat.scrollHeight;
+
+}
+
+
+/* =====================
+DEMO AI
+===================== */
+
+function getDemoAnswer(text){
+
+const t=
+text.toLowerCase();
+
+if(
+t.includes("hello") ||
+t.includes("hi") ||
+t.includes("namaste")
+){
+
+return "Namaste! 👋 Ma My AI ho. Tapai lai ke help chahinchha?";
+
+}
+
+if(
+t.includes("code")
+){
+
+return "Sure! 💻 Ma tapai lai HTML, CSS, JavaScript ra app development ko code ma help garna sakchhu.";
+
+}
+
+if(
+t.includes("who are you")
+){
+
+return "Ma tapai ko AI assistant ho. 🤖";
+
+}
+
+return "Demo mode ma yo response dekhाइएको छ. वास्तविक AI जोड्न backend/API आवश्यक हुन्छ। तपाईंको प्रश्न: "+text;
+
+}
+
+
+/* =====================
+ENTER KEY
+===================== */
+
+function handleKey(event){
+
+if(
+event.key==="Enter" &&
+!event.shiftKey
+){
+
+event.preventDefault();
+
+sendMessage();
 
 }
 
 }
 
 
-async function stopChat(){
+/* =====================
+NEW CHAT
+===================== */
 
-await cleanupMatch();
+function newChat(){
 
-document.getElementById("chatPage")
-.classList.add("hidden");
+chat.innerHTML=`
 
-document.getElementById("homePage")
-.classList.remove("hidden");
+<div
+id="welcome"
+class="welcome">
 
-}
+<h1>
+👋 Hello!
+</h1>
 
+<p>
+Ask me anything.
+</p>
 
-async function cleanupMatch(){
+</div>
 
-searching=false;
+`;
 
-if(peer){
+input.value="";
 
-peer.close();
-
-peer=null;
-
-}
-
-if(currentMatch){
-
-await db.ref(
-"matches/"+currentMatch
-).remove();
-
-currentMatch=null;
-
-}
-
-if(currentUser){
-
-await db.ref(
-"waiting/"+currentUser.uid
-).remove();
-
-}
-
-if(localStream){
-
-localStream.getTracks()
-.forEach(track=>track.stop());
-
-localStream=null;
-
-}
-
-document.getElementById("localVideo")
-.srcObject=null;
-
-document.getElementById("remoteVideo")
-.srcObject=null;
-
-}
-
-
-async function reportUser(){
-
-if(!currentUser)return;
-
-await db.ref("reports").push({
-
-reporter:currentUser.uid,
-
-match:currentMatch||"unknown",
-
-time:firebase.database.ServerValue.TIMESTAMP
-
-});
-
-alert("🚨 Report submitted.");
-
-}
-
-
-async function logout(){
-
-await stopChat();
-
-await auth.signOut();
+input.focus();
 
 }
 
