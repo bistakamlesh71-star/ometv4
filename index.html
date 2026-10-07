@@ -2,186 +2,343 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>My AI</title>
+<title>Question AI</title>
 
 <style>
-
 *{
-box-sizing:border-box;
+  box-sizing:border-box;
 }
 
 body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f7f7f8;
-color:#222;
-height:100vh;
-overflow:hidden;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f7fb;
+  color:#172033;
 }
 
 .app{
-height:100vh;
-display:flex;
-flex-direction:column;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
 /* HEADER */
 
 .header{
-height:60px;
-background:#fff;
-border-bottom:1px solid #ddd;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:0 15px;
-font-weight:bold;
+  position:sticky;
+  top:0;
+  z-index:20;
+  height:64px;
+  background:#ffffff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
 }
 
 .logo{
-font-size:21px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:20px;
+  font-weight:800;
 }
 
-.newchat{
-background:#111;
-color:white;
-border:0;
-border-radius:10px;
-padding:9px 12px;
+.logoIcon{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
 }
 
-/* CHAT */
+.newBtn{
+  border:0;
+  background:#111827;
+  color:white;
+  padding:10px 14px;
+  border-radius:11px;
+  font-weight:700;
+  cursor:pointer;
+}
 
-.chat{
-flex:1;
-overflow-y:auto;
-padding:20px 15px 120px;
+/* MAIN */
+
+.main{
+  width:100%;
+  max-width:900px;
+  margin:auto;
+  padding:20px 15px 150px;
 }
 
 .welcome{
-text-align:center;
-margin-top:25vh;
+  text-align:center;
+  padding:55px 10px 25px;
 }
 
 .welcome h1{
-font-size:30px;
+  font-size:34px;
+  margin:0 0 10px;
 }
 
 .welcome p{
-color:#777;
+  color:#6b7280;
+  margin:0;
 }
 
-/* MESSAGE */
+.subjects{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:25px 0;
+}
+
+.subject{
+  border:1px solid #e5e7eb;
+  background:#fff;
+  padding:15px 8px;
+  border-radius:15px;
+  cursor:pointer;
+  font-weight:700;
+  transition:.2s;
+}
+
+.subject:hover{
+  transform:translateY(-2px);
+  box-shadow:0 5px 20px #0001;
+}
+
+.subject span{
+  display:block;
+  font-size:25px;
+  margin-bottom:5px;
+}
+
+/* MESSAGES */
 
 .message{
-max-width:850px;
-margin:0 auto 18px;
-display:flex;
-gap:10px;
+  display:flex;
+  gap:12px;
+  margin:22px 0;
+  align-items:flex-start;
 }
 
 .avatar{
-width:34px;
-height:34px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#111;
-color:#fff;
-flex-shrink:0;
+  width:38px;
+  height:38px;
+  min-width:38px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-weight:bold;
 }
 
-.user .avatar{
-background:#2563eb;
+.userAvatar{
+  background:#2563eb;
 }
 
-.text{
-line-height:1.55;
-padding-top:5px;
-white-space:pre-wrap;
+.aiAvatar{
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+}
+
+.messageBody{
+  flex:1;
+  min-width:0;
+}
+
+.messageName{
+  font-size:13px;
+  color:#6b7280;
+  margin-bottom:5px;
+  font-weight:700;
+}
+
+.messageText{
+  white-space:pre-wrap;
+  line-height:1.65;
+  font-size:16px;
+  overflow-wrap:anywhere;
+}
+
+.copyBtn{
+  margin-top:10px;
+  border:1px solid #ddd;
+  background:white;
+  border-radius:8px;
+  padding:7px 10px;
+  cursor:pointer;
+}
+
+/* TYPING */
+
+.typing{
+  display:flex;
+  gap:5px;
+  padding:10px 0;
+}
+
+.dot{
+  width:7px;
+  height:7px;
+  background:#777;
+  border-radius:50%;
+  animation:bounce 1s infinite;
+}
+
+.dot:nth-child(2){
+  animation-delay:.15s;
+}
+
+.dot:nth-child(3){
+  animation-delay:.3s;
+}
+
+@keyframes bounce{
+  0%,60%,100%{
+    transform:translateY(0);
+  }
+  30%{
+    transform:translateY(-6px);
+  }
 }
 
 /* INPUT */
 
 .inputArea{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:linear-gradient(
-transparent,
-#f7f7f8 30%
-);
-padding:25px 15px 15px;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:30;
+  padding:15px;
+  background:linear-gradient(
+    transparent,
+    #f5f7fb 25%
+  );
 }
 
 .inputBox{
-max-width:850px;
-margin:auto;
-background:white;
-border:1px solid #ccc;
-border-radius:18px;
-display:flex;
-align-items:end;
-padding:8px;
-box-shadow:0 2px 10px #0001;
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  border:1px solid #d9dce3;
+  border-radius:18px;
+  display:flex;
+  align-items:flex-end;
+  padding:8px;
+  box-shadow:0 8px 30px #0002;
 }
 
 textarea{
-flex:1;
-border:0;
-outline:0;
-resize:none;
-font-size:16px;
-padding:10px;
-max-height:120px;
-font-family:inherit;
+  flex:1;
+  resize:none;
+  border:0;
+  outline:0;
+  font-size:16px;
+  padding:11px;
+  max-height:140px;
+  font-family:inherit;
 }
 
-.send{
-width:42px;
-height:42px;
-border:0;
-border-radius:12px;
-background:#111;
-color:white;
-font-size:19px;
+.sendBtn{
+  width:44px;
+  height:44px;
+  border:0;
+  border-radius:13px;
+  background:#111827;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
 }
 
-.send:disabled{
-opacity:.4;
+.sendBtn:disabled{
+  opacity:.4;
+  cursor:not-allowed;
 }
 
-.note{
-text-align:center;
-font-size:11px;
-color:#888;
-margin-top:7px;
+.searchToggle{
+  border:0;
+  background:#eef2ff;
+  color:#4338ca;
+  border-radius:10px;
+  padding:8px 10px;
+  margin:0 5px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.status{
+  max-width:900px;
+  margin:5px auto 0;
+  text-align:center;
+  color:#6b7280;
+  font-size:11px;
+}
+
+/* ERROR */
+
+.error{
+  background:#fee2e2;
+  color:#991b1b;
+  border:1px solid #fecaca;
+  padding:12px;
+  border-radius:12px;
+  margin:15px 0;
+  line-height:1.5;
 }
 
 /* MOBILE */
 
 @media(max-width:600px){
 
-.chat{
-padding-left:12px;
-padding-right:12px;
-}
+  .header{
+    height:58px;
+  }
 
-.message{
-font-size:15px;
-}
+  .logo{
+    font-size:18px;
+  }
 
-.logo{
-font-size:19px;
-}
+  .logoIcon{
+    width:34px;
+    height:34px;
+  }
+
+  .newBtn{
+    padding:8px 10px;
+    font-size:12px;
+  }
+
+  .main{
+    padding:10px 12px 145px;
+  }
+
+  .welcome{
+    padding-top:35px;
+  }
+
+  .welcome h1{
+    font-size:28px;
+  }
+
+  .subjects{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .messageText{
+    font-size:15px;
+  }
 
 }
-
 </style>
 </head>
 
@@ -191,42 +348,91 @@ font-size:19px;
 
 <!-- HEADER -->
 
-<div class="header">
+<header class="header">
 
 <div class="logo">
-🤖 My AI
+  <div class="logoIcon">🤖</div>
+  Question AI
 </div>
 
 <button
-class="newchat"
+class="newBtn"
 onclick="newChat()">
 ＋ New Chat
 </button>
 
-</div>
+</header>
 
 
-<!-- CHAT -->
+<!-- MAIN -->
 
-<div
-id="chat"
-class="chat">
+<main
+id="main"
+class="main">
 
 <div
 id="welcome"
 class="welcome">
 
 <h1>
-👋 Hello!
+Ask Anything 🤖
 </h1>
 
 <p>
-Ask me anything.
+Hindi • English • Math • Physics • Chemistry • Biology
 </p>
 
+<div class="subjects">
+
+<button
+class="subject"
+onclick="setSubject('Mathematics')">
+<span>➗</span>
+Math
+</button>
+
+<button
+class="subject"
+onclick="setSubject('Physics')">
+<span>⚡</span>
+Physics
+</button>
+
+<button
+class="subject"
+onclick="setSubject('Chemistry')">
+<span>🧪</span>
+Chemistry
+</button>
+
+<button
+class="subject"
+onclick="setSubject('Biology')">
+<span>🧬</span>
+Biology
+</button>
+
+<button
+class="subject"
+onclick="setSubject('English')">
+<span>🇬🇧</span>
+English
+</button>
+
+<button
+class="subject"
+onclick="setSubject('Hindi')">
+<span>🇮🇳</span>
+Hindi
+</button>
+
 </div>
 
 </div>
+
+<div id="chat"></div>
+
+</main>
 
 
 <!-- INPUT -->
@@ -236,23 +442,33 @@ Ask me anything.
 <div class="inputBox">
 
 <textarea
-id="input"
+id="question"
 rows="1"
-placeholder="Message My AI..."
-onkeydown="handleKey(event)"
-></textarea>
+placeholder="Ask your question..."
+oninput="resizeInput()"
+onkeydown="handleKey(event)">
+</textarea>
 
 <button
-id="send"
-class="send"
-onclick="sendMessage()">
+class="searchToggle"
+id="searchBtn"
+onclick="toggleSearch()">
+🔎 Search OFF
+</button>
+
+<button
+id="sendBtn"
+class="sendBtn"
+onclick="askAI()">
 ➤
 </button>
 
 </div>
 
-<div class="note">
-My AI can make mistakes. Check important information.
+<div
+id="status"
+class="status">
+Gemini AI
 </div>
 
 </div>
@@ -262,200 +478,649 @@ My AI can make mistakes. Check important information.
 
 <script>
 
-const input=
-document.getElementById("input");
+/*
+==================================================
+GEMINI SETTINGS
+==================================================
 
-const chat=
-document.getElementById("chat");
+1. Google AI Studio बाट API key बनाउनुहोस्.
+2. तल YOUR_GEMINI_API_KEY मा राख्नुहोस्.
 
-const send=
-document.getElementById("send");
+WARNING:
+यो demo/testing का लागि हो.
+Public website मा API key expose नगर्नुहोस्.
+Production मा backend प्रयोग गर्नुहोस्.
+==================================================
+*/
 
-
-/* =====================
-SEND MESSAGE
-===================== */
-
-function sendMessage(){
-
-const text=
-input.value.trim();
-
-if(!text)return;
-
-document
-.getElementById("welcome")
-?.remove();
-
-
-addMessage(
-text,
-"user"
-);
-
-input.value="";
-
-send.disabled=true;
+const API_KEY =
+"YOUR_GEMINI_API_KEY";
 
 
 /*
-DEMO AI RESPONSE
-
-यो ठाउँमा पछि वास्तविक
-AI API जोडिनेछ।
+Current stable model used here.
+Google's model availability can change.
 */
 
-setTimeout(()=>{
+const MODEL =
+"gemini-2.5-flash";
 
-const answer=
-getDemoAnswer(text);
 
-addMessage(
-answer,
-"ai"
-);
+let selectedSubject =
+"General";
 
-send.disabled=false;
+let useSearch =
+false;
 
-},700);
+let busy =
+false;
+
+
+/* =========================
+SUBJECT
+========================= */
+
+function setSubject(subject){
+
+  selectedSubject =
+  subject;
+
+  const input =
+  document.getElementById("question");
+
+  input.placeholder =
+  subject+
+  " question लेख्नुहोस्...";
+
+  input.focus();
 
 }
 
 
-/* =====================
+/* =========================
+SEARCH TOGGLE
+========================= */
+
+function toggleSearch(){
+
+  useSearch =
+  !useSearch;
+
+  const btn =
+  document.getElementById("searchBtn");
+
+  if(useSearch){
+
+    btn.innerText =
+    "🔎 Search ON";
+
+    btn.style.background =
+    "#dcfce7";
+
+    btn.style.color =
+    "#166534";
+
+  }else{
+
+    btn.innerText =
+    "🔎 Search OFF";
+
+    btn.style.background =
+    "#eef2ff";
+
+    btn.style.color =
+    "#4338ca";
+
+  }
+
+}
+
+
+/* =========================
+ASK AI
+========================= */
+
+async function askAI(){
+
+  if(busy)
+  return;
+
+  const input =
+  document.getElementById("question");
+
+  const question =
+  input.value.trim();
+
+  if(!question)
+  return;
+
+
+  if(
+    !API_KEY ||
+    API_KEY ===
+    "YOUR_GEMINI_API_KEY"
+  ){
+
+    addError(
+      "Gemini API key राखिएको छैन। पहिले API key राख्नुहोस्।"
+    );
+
+    return;
+  }
+
+
+  busy=true;
+
+  document
+  .getElementById("sendBtn")
+  .disabled=true;
+
+
+  document
+  .getElementById("welcome")
+  ?.remove();
+
+
+  addMessage(
+    question,
+    "user"
+  );
+
+  input.value="";
+
+  resizeInput();
+
+
+  const loadingId =
+  showTyping();
+
+
+  try{
+
+    const answer =
+    await callGemini(
+      question
+    );
+
+    removeTyping(
+      loadingId
+    );
+
+    addMessage(
+      answer,
+      "ai"
+    );
+
+  }catch(error){
+
+    removeTyping(
+      loadingId
+    );
+
+    addError(
+      error.message
+    );
+
+  }
+
+
+  busy=false;
+
+  document
+  .getElementById("sendBtn")
+  .disabled=false;
+
+}
+
+
+/* =========================
+GEMINI API
+========================= */
+
+async function callGemini(question){
+
+  const url =
+  "https://generativelanguage.googleapis.com/v1beta/models/"
+  +MODEL+
+  ":generateContent?key="
+  +encodeURIComponent(API_KEY);
+
+
+  const systemInstruction = `
+You are Question AI, a helpful educational assistant.
+
+You help students solve:
+- Mathematics
+- Physics
+- Chemistry
+- Biology
+- English
+- Hindi
+- General academic questions
+
+Current subject:
+${selectedSubject}
+
+Rules:
+1. Answer in the same language as the user's question when possible.
+2. For mathematics and science, show clear step-by-step working.
+3. Explain formulas before using them.
+4. For chemistry, write chemical equations clearly.
+5. For biology, explain concepts simply and accurately.
+6. For Hindi and English, correct grammar and explain the answer.
+7. If the question is ambiguous, ask a short clarification.
+8. Do not invent facts.
+9. Keep the explanation student-friendly.
+10. Give the final answer clearly at the end.
+`;
+
+
+  const body = {
+
+    system_instruction:{
+      parts:[
+        {
+          text:
+          systemInstruction
+        }
+      ]
+    },
+
+    contents:[
+      {
+        role:"user",
+        parts:[
+          {
+            text:
+            question
+          }
+        ]
+      }
+    ],
+
+    generationConfig:{
+      temperature:0.3,
+      maxOutputTokens:4096
+    }
+
+  };
+
+
+  /*
+  Search grounding:
+  Gemini 2.5 Flash supports Google Search grounding.
+  */
+
+  if(useSearch){
+
+    body.tools=[
+      {
+        google_search:{}
+      }
+    ];
+
+  }
+
+
+  const response =
+  await fetch(
+    url,
+    {
+      method:"POST",
+
+      headers:{
+        "Content-Type":
+        "application/json"
+      },
+
+      body:
+      JSON.stringify(body)
+    }
+  );
+
+
+  const data =
+  await response.json();
+
+
+  if(!response.ok){
+
+    let msg =
+    "Gemini API error.";
+
+    if(data.error?.message){
+
+      msg =
+      data.error.message;
+
+    }
+
+    throw new Error(msg);
+
+  }
+
+
+  const parts =
+  data.candidates?.[0]?.content?.parts
+  ||[];
+
+
+  const text =
+  parts
+  .map(part=>part.text||"")
+  .join("");
+
+
+  if(!text){
+
+    throw new Error(
+      "AI ले कुनै answer दिएन। फेरि try गर्नुहोस्।"
+    );
+
+  }
+
+
+  return text;
+
+}
+
+
+/* =========================
 ADD MESSAGE
-===================== */
+========================= */
 
 function addMessage(
-text,
-type
+  text,
+  type
 ){
 
-const message=
-document.createElement("div");
+  const chat =
+  document.getElementById("chat");
 
-message.className=
-"message "+type;
 
-const avatar=
-document.createElement("div");
+  const message =
+  document.createElement("div");
 
-avatar.className=
-"avatar";
+  message.className =
+  "message";
 
-avatar.innerText=
-type==="user"
-?"U"
-:"AI";
 
-const content=
-document.createElement("div");
+  const avatar =
+  document.createElement("div");
 
-content.className=
-"text";
+  avatar.className =
+  "avatar "+
+  (
+    type==="user"
+    ?"userAvatar"
+    :"aiAvatar"
+  );
 
-content.innerText=
-text;
+  avatar.innerText =
+  type==="user"
+  ?"U"
+  :"AI";
 
-message.appendChild(avatar);
 
-message.appendChild(content);
+  const body =
+  document.createElement("div");
 
-chat.appendChild(message);
+  body.className =
+  "messageBody";
 
-chat.scrollTop=
-chat.scrollHeight;
+
+  const name =
+  document.createElement("div");
+
+  name.className =
+  "messageName";
+
+  name.innerText =
+  type==="user"
+  ?"You"
+  :"Question AI";
+
+
+  const textBox =
+  document.createElement("div");
+
+  textBox.className =
+  "messageText";
+
+  textBox.innerText =
+  text;
+
+
+  body.appendChild(name);
+
+  body.appendChild(textBox);
+
+
+  if(type==="ai"){
+
+    const copy =
+    document.createElement("button");
+
+    copy.className =
+    "copyBtn";
+
+    copy.innerText =
+    "📋 Copy";
+
+    copy.onclick =
+    function(){
+
+      navigator.clipboard
+      .writeText(text);
+
+      copy.innerText =
+      "✓ Copied";
+
+      setTimeout(
+        ()=>{
+          copy.innerText =
+          "📋 Copy";
+        },
+        1500
+      );
+
+    };
+
+    body.appendChild(copy);
+
+  }
+
+
+  message.appendChild(
+    avatar
+  );
+
+  message.appendChild(
+    body
+  );
+
+
+  chat.appendChild(
+    message
+  );
+
+
+  message.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
 
 }
 
 
-/* =====================
-DEMO AI
-===================== */
+/* =========================
+ERROR
+========================= */
 
-function getDemoAnswer(text){
+function addError(text){
 
-const t=
-text.toLowerCase();
+  const chat =
+  document.getElementById("chat");
 
-if(
-t.includes("hello") ||
-t.includes("hi") ||
-t.includes("namaste")
-){
+  const div =
+  document.createElement("div");
 
-return "Namaste! 👋 Ma My AI ho. Tapai lai ke help chahinchha?";
+  div.className =
+  "error";
 
-}
+  div.innerText =
+  "⚠️ "+text;
 
-if(
-t.includes("code")
-){
+  chat.appendChild(div);
 
-return "Sure! 💻 Ma tapai lai HTML, CSS, JavaScript ra app development ko code ma help garna sakchhu.";
-
-}
-
-if(
-t.includes("who are you")
-){
-
-return "Ma tapai ko AI assistant ho. 🤖";
-
-}
-
-return "Demo mode ma yo response dekhाइएको छ. वास्तविक AI जोड्न backend/API आवश्यक हुन्छ। तपाईंको प्रश्न: "+text;
+  div.scrollIntoView({
+    behavior:"smooth"
+  });
 
 }
 
 
-/* =====================
-ENTER KEY
-===================== */
+/* =========================
+TYPING
+========================= */
 
-function handleKey(event){
+function showTyping(){
 
-if(
-event.key==="Enter" &&
-!event.shiftKey
-){
+  const id =
+  "typing_"+Date.now();
 
-event.preventDefault();
+  const chat =
+  document.getElementById("chat");
 
-sendMessage();
+
+  const message =
+  document.createElement("div");
+
+  message.className =
+  "message";
+
+  message.id =
+  id;
+
+
+  message.innerHTML = `
+
+    <div class="avatar aiAvatar">
+      AI
+    </div>
+
+    <div class="messageBody">
+
+      <div class="messageName">
+        Question AI
+      </div>
+
+      <div class="typing">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+
+    </div>
+
+  `;
+
+
+  chat.appendChild(
+    message
+  );
+
+
+  message.scrollIntoView({
+    behavior:"smooth"
+  });
+
+
+  return id;
 
 }
 
+
+function removeTyping(id){
+
+  document
+  .getElementById(id)
+  ?.remove();
+
 }
 
 
-/* =====================
+/* =========================
 NEW CHAT
-===================== */
+========================= */
 
 function newChat(){
 
-chat.innerHTML=`
+  document
+  .getElementById("chat")
+  .innerHTML="";
 
-<div
-id="welcome"
-class="welcome">
 
-<h1>
-👋 Hello!
-</h1>
+  selectedSubject =
+  "General";
 
-<p>
-Ask me anything.
-</p>
 
-</div>
+  const input =
+  document.getElementById("question");
 
-`;
+  input.value="";
 
-input.value="";
+  input.placeholder =
+  "Ask your question...";
 
-input.focus();
+
+  document
+  .getElementById("main")
+  .scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =========================
+TEXTAREA
+========================= */
+
+function resizeInput(){
+
+  const input =
+  document.getElementById("question");
+
+  input.style.height =
+  "auto";
+
+  input.style.height =
+  Math.min(
+    input.scrollHeight,
+    140
+  )+"px";
+
+}
+
+
+/* =========================
+ENTER
+========================= */
+
+function handleKey(event){
+
+  if(
+    event.key==="Enter" &&
+    !event.shiftKey
+  ){
+
+    event.preventDefault();
+
+    askAI();
+
+  }
 
 }
 
