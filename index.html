@@ -3,14 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>AI Question Solver</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
-  font-family:Arial,sans-serif;
+  font-family:Arial,Helvetica,sans-serif;
   background:#f5f7fb;
   color:#111827;
 }
@@ -18,29 +21,29 @@ body{
 header{
   background:linear-gradient(135deg,#4f46e5,#7c3aed);
   color:white;
-  padding:18px;
+  padding:16px;
   position:sticky;
   top:0;
-  z-index:10;
+  z-index:20;
 }
 
 .header{
   max-width:900px;
   margin:auto;
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
 }
 
 .logo{
-  font-size:21px;
+  font-size:20px;
   font-weight:bold;
 }
 
-.new{
+.newBtn{
+  border:0;
   background:white;
   color:#4f46e5;
-  border:0;
   padding:9px 13px;
   border-radius:10px;
   font-weight:bold;
@@ -49,22 +52,73 @@ header{
 main{
   max-width:900px;
   margin:auto;
-  padding:25px 15px 150px;
+  padding:15px 15px 160px;
 }
+
+/* API BOX */
+
+.apiBox{
+  background:white;
+  border:1px solid #e5e7eb;
+  padding:15px;
+  border-radius:16px;
+  margin-bottom:18px;
+  box-shadow:0 3px 15px #0001;
+}
+
+.apiTitle{
+  font-weight:bold;
+  margin-bottom:9px;
+}
+
+.apiInput{
+  width:100%;
+  padding:12px;
+  border:1px solid #d1d5db;
+  border-radius:10px;
+  outline:none;
+  font-size:15px;
+}
+
+.apiInput:focus{
+  border-color:#4f46e5;
+}
+
+.saveKey{
+  width:100%;
+  margin-top:9px;
+  padding:12px;
+  border:0;
+  border-radius:10px;
+  background:#4f46e5;
+  color:white;
+  font-weight:bold;
+}
+
+.keyStatus{
+  display:block;
+  margin-top:8px;
+  font-size:12px;
+  color:#6b7280;
+}
+
+/* HERO */
 
 .hero{
   text-align:center;
-  padding:25px 5px;
+  padding:30px 5px 20px;
 }
 
 .hero h1{
   font-size:32px;
-  margin:5px;
+  margin:5px 0 10px;
 }
 
 .hero p{
   color:#6b7280;
 }
+
+/* SUBJECTS */
 
 .subjects{
   display:grid;
@@ -74,8 +128,8 @@ main{
 }
 
 .subject{
-  background:white;
   border:1px solid #e5e7eb;
+  background:white;
   border-radius:15px;
   padding:15px 5px;
   font-weight:bold;
@@ -86,11 +140,13 @@ main{
   box-shadow:0 5px 20px #0002;
 }
 
-.icon{
+.subject span{
   display:block;
   font-size:25px;
   margin-bottom:5px;
 }
+
+/* CHAT */
 
 .message{
   display:flex;
@@ -110,16 +166,17 @@ main{
   font-weight:bold;
 }
 
-.user{
+.userAvatar{
   background:#2563eb;
 }
 
-.ai{
+.aiAvatar{
   background:#7c3aed;
 }
 
 .content{
   flex:1;
+  min-width:0;
 }
 
 .name{
@@ -129,28 +186,74 @@ main{
   margin-bottom:5px;
 }
 
-.text{
+.answer{
   white-space:pre-wrap;
   line-height:1.65;
   overflow-wrap:anywhere;
 }
 
-.copy{
-  margin-top:8px;
+.copyBtn{
+  margin-top:9px;
   padding:7px 10px;
   background:white;
   border:1px solid #ddd;
   border-radius:8px;
 }
 
+/* LOADING */
+
+.loading{
+  display:flex;
+  gap:5px;
+  padding:10px 0;
+}
+
+.dot{
+  width:7px;
+  height:7px;
+  background:#777;
+  border-radius:50%;
+  animation:bounce 1s infinite;
+}
+
+.dot:nth-child(2){
+  animation-delay:.15s;
+}
+
+.dot:nth-child(3){
+  animation-delay:.3s;
+}
+
+@keyframes bounce{
+  0%,60%,100%{
+    transform:translateY(0);
+  }
+  30%{
+    transform:translateY(-6px);
+  }
+}
+
+/* ERROR */
+
+.error{
+  background:#fee2e2;
+  color:#991b1b;
+  padding:12px;
+  border-radius:10px;
+  margin:12px 0;
+  line-height:1.5;
+}
+
+/* INPUT */
+
 .inputArea{
   position:fixed;
-  bottom:0;
   left:0;
   right:0;
+  bottom:0;
+  z-index:30;
   background:#f5f7fb;
   padding:10px;
-  z-index:20;
 }
 
 .inputBox{
@@ -168,36 +271,36 @@ main{
 
 textarea{
   flex:1;
+  resize:none;
   border:0;
   outline:0;
-  resize:none;
   font-size:16px;
   padding:10px;
-  font-family:Arial;
   max-height:130px;
+  font-family:Arial;
 }
 
-button{
-  cursor:pointer;
+.photoBtn{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:11px;
+  background:#eef2ff;
+  font-size:20px;
 }
 
-.send{
-  width:45px;
-  height:45px;
+.sendBtn{
+  width:44px;
+  height:44px;
   border:0;
   border-radius:12px;
   background:#4f46e5;
   color:white;
-  font-size:20px;
+  font-size:19px;
 }
 
-.photo{
-  width:42px;
-  height:42px;
-  border:0;
-  border-radius:12px;
-  background:#eef2ff;
-  font-size:20px;
+.sendBtn:disabled{
+  opacity:.5;
 }
 
 #imageInput{
@@ -205,49 +308,28 @@ button{
 }
 
 .preview{
+  display:none;
   max-width:100px;
   max-height:100px;
   border-radius:10px;
-  margin:5px;
-  display:none;
+  margin:5px auto;
 }
 
 .status{
   text-align:center;
   font-size:11px;
   color:#777;
-  margin-top:5px;
+  margin-top:4px;
 }
 
-.loading{
-  display:flex;
-  gap:5px;
-}
-
-.dot{
-  width:7px;
-  height:7px;
-  background:#777;
-  border-radius:50%;
-  animation:b 1s infinite;
-}
-
-.dot:nth-child(2){animation-delay:.15s}
-.dot:nth-child(3){animation-delay:.3s}
-
-@keyframes b{
-  50%{transform:translateY(-6px)}
-}
-
-.error{
-  background:#fee2e2;
-  color:#991b1b;
-  padding:12px;
-  border-radius:10px;
-  margin:10px 0;
-}
+/* MOBILE */
 
 @media(max-width:600px){
+
+  .logo{
+    font-size:18px;
+  }
+
   .subjects{
     grid-template-columns:repeat(2,1fr);
   }
@@ -255,61 +337,166 @@ button{
   .hero h1{
     font-size:27px;
   }
+
+  main{
+    padding-left:10px;
+    padding-right:10px;
+  }
+
 }
 </style>
 </head>
 
+
 <body>
 
 <header>
+
   <div class="header">
-    <div class="logo">🤖 AI Question Solver</div>
-    <button class="new" onclick="newChat()">＋ New</button>
+
+    <div class="logo">
+      🤖 AI Question Solver
+    </div>
+
+    <button
+      class="newBtn"
+      onclick="newChat()">
+      ＋ New
+    </button>
+
   </div>
+
 </header>
+
 
 <main>
 
-<div id="hero" class="hero">
-  <h1>Ask Anything 🤖</h1>
-  <p>Math • Physics • Chemistry • Biology • English • Hindi • Nepali</p>
+
+<!-- API KEY BOX -->
+
+<div class="apiBox">
+
+  <div class="apiTitle">
+    🔑 Gemini API Key
+  </div>
+
+  <input
+    id="apiKeyInput"
+    class="apiInput"
+    type="password"
+    placeholder="Paste your Gemini API key here"
+  >
+
+  <button
+    class="saveKey"
+    onclick="saveApiKey()">
+    Save API Key
+  </button>
+
+  <small
+    id="keyStatus"
+    class="keyStatus">
+    API key यहाँ paste गर्नुहोस्।
+  </small>
+
+</div>
+
+
+<!-- HERO -->
+
+<div
+  id="hero"
+  class="hero">
+
+  <h1>
+    Ask Anything 🤖
+  </h1>
+
+  <p>
+    Math • Physics • Chemistry • Biology • English • Hindi • Nepali
+  </p>
+
 
   <div class="subjects">
 
-    <button class="subject" onclick="choose('Mathematics')">
-      <span class="icon">➗</span>Math
+    <button
+      class="subject"
+      onclick="chooseSubject('Mathematics')">
+
+      <span>➗</span>
+      Math
+
     </button>
 
-    <button class="subject" onclick="choose('Physics')">
-      <span class="icon">⚡</span>Physics
+
+    <button
+      class="subject"
+      onclick="chooseSubject('Physics')">
+
+      <span>⚡</span>
+      Physics
+
     </button>
 
-    <button class="subject" onclick="choose('Chemistry')">
-      <span class="icon">🧪</span>Chemistry
+
+    <button
+      class="subject"
+      onclick="chooseSubject('Chemistry')">
+
+      <span>🧪</span>
+      Chemistry
+
     </button>
 
-    <button class="subject" onclick="choose('Biology')">
-      <span class="icon">🧬</span>Biology
+
+    <button
+      class="subject"
+      onclick="chooseSubject('Biology')">
+
+      <span>🧬</span>
+      Biology
+
     </button>
 
-    <button class="subject" onclick="choose('English')">
-      <span class="icon">🇬🇧</span>English
+
+    <button
+      class="subject"
+      onclick="chooseSubject('English')">
+
+      <span>🇬🇧</span>
+      English
+
     </button>
 
-    <button class="subject" onclick="choose('Hindi')">
-      <span class="icon">🇮🇳</span>Hindi
+
+    <button
+      class="subject"
+      onclick="chooseSubject('Hindi')">
+
+      <span>🇮🇳</span>
+      Hindi
+
     </button>
 
   </div>
+
 </div>
+
+
+<!-- CHAT -->
 
 <div id="chat"></div>
 
+
 </main>
+
+
+<!-- INPUT -->
 
 <div class="inputArea">
 
   <div class="inputBox">
+
 
     <input
       id="imageInput"
@@ -318,31 +505,41 @@ button{
       onchange="selectImage(event)"
     >
 
+
     <button
-      class="photo"
+      class="photoBtn"
       onclick="document.getElementById('imageInput').click()">
       📷
     </button>
+
 
     <textarea
       id="question"
       rows="1"
       placeholder="Write your question..."
-      onkeydown="enterSend(event)"
+      onkeydown="handleEnter(event)"
     ></textarea>
 
+
     <button
-      class="send"
-      id="send"
-      onclick="solve()">
+      id="sendBtn"
+      class="sendBtn"
+      onclick="solveQuestion()">
       ➤
     </button>
 
   </div>
 
-  <img id="preview" class="preview">
 
-  <div class="status" id="status">
+  <img
+    id="preview"
+    class="preview"
+  >
+
+
+  <div
+    id="status"
+    class="status">
     Gemini AI • Ready
   </div>
 
@@ -351,39 +548,112 @@ button{
 
 <script>
 
+
 /* ==================================================
-   🔑 PUT YOUR GEMINI API KEY HERE
+   API KEY
    ================================================== */
 
-const API_KEY = AQ.Ab8RN6LiyoOBNR6iCk8F1wWtxRDnvg717UXKxyVErpcBNm2ukg
+let API_KEY =
+  localStorage.getItem("gemini_api_key") || "";
 
 
 /* Gemini model */
 
-const MODEL = "gemini-2.5-flash";
+const MODEL =
+  "gemini-2.5-flash";
 
 
-let subject = "General";
+let subject =
+  "General";
 
-let selectedImage = null;
 
-let selectedMime = null;
+let selectedImage =
+  null;
 
-let busy = false;
+
+let selectedMime =
+  null;
+
+
+let busy =
+  false;
+
+
+/* ==================================================
+   CHECK SAVED KEY
+   ================================================== */
+
+if(API_KEY){
+
+  document.getElementById("keyStatus")
+    .textContent =
+    "✅ API key saved on this device.";
+
+}
+
+
+/* ==================================================
+   SAVE API KEY
+   ================================================== */
+
+function saveApiKey(){
+
+  const input =
+    document.getElementById("apiKeyInput");
+
+  const key =
+    input.value.trim();
+
+
+  if(!key){
+
+    alert(
+      "पहिले Gemini API key paste गर्नुहोस्।"
+    );
+
+    return;
+
+  }
+
+
+  API_KEY =
+    key;
+
+
+  localStorage.setItem(
+    "gemini_api_key",
+    key
+  );
+
+
+  input.value = "";
+
+
+  document.getElementById("keyStatus")
+    .textContent =
+    "✅ API key saved successfully.";
+
+}
 
 
 /* ==================================================
    SUBJECT
    ================================================== */
 
-function choose(name){
+function chooseSubject(name){
 
-  subject = name;
+  subject =
+    name;
 
-  document.getElementById("question").placeholder =
-    name + " question लेख्नुहोस्...";
 
-  document.getElementById("question").focus();
+  document.getElementById("question")
+    .placeholder =
+    name +
+    " question लेख्नुहोस्...";
+
+
+  document.getElementById("question")
+    .focus();
 
 }
 
@@ -397,71 +667,15 @@ function selectImage(event){
   const file =
     event.target.files[0];
 
-  if(!file) return;
+
+  if(!file)
+    return;
+
 
   if(file.size > 8 * 1024 * 1024){
 
-    alert("Image 8MB भन्दा सानो राख्नुहोस्।");
-
-    return;
-
-  }
-
-  selectedMime = file.type;
-
-  const reader = new FileReader();
-
-  reader.onload = function(){
-
-    const result = reader.result;
-
-    selectedImage =
-      result.split(",")[1];
-
-    const preview =
-      document.getElementById("preview");
-
-    preview.src = result;
-
-    preview.style.display = "block";
-
-  };
-
-  reader.readAsDataURL(file);
-
-}
-
-
-/* ==================================================
-   SOLVE
-   ================================================== */
-
-async function solve(){
-
-  if(busy) return;
-
-  const input =
-    document.getElementById("question");
-
-  const question =
-    input.value.trim();
-
-  if(!question && !selectedImage){
-
-    alert("Question लेख्नुहोस् वा photo upload गर्नुहोस्।");
-
-    return;
-
-  }
-
-
-  if(
-    API_KEY === "YOUR_GEMINI_API_KEY" ||
-    !API_KEY
-  ){
-
-    showError(
-      "Gemini API key राखिएको छैन। Code मा API key राख्नुहोस्।"
+    alert(
+      "Image 8MB भन्दा सानो राख्नुहोस्।"
     );
 
     return;
@@ -469,27 +683,114 @@ async function solve(){
   }
 
 
-  busy = true;
-
-  document.getElementById("send").disabled = true;
-
-  document.getElementById("hero")?.remove();
+  selectedMime =
+    file.type;
 
 
-  const finalQuestion =
+  const reader =
+    new FileReader();
+
+
+  reader.onload =
+    function(){
+
+      const result =
+        reader.result;
+
+
+      selectedImage =
+        result.split(",")[1];
+
+
+      const preview =
+        document.getElementById("preview");
+
+
+      preview.src =
+        result;
+
+
+      preview.style.display =
+        "block";
+
+    };
+
+
+  reader.readAsDataURL(file);
+
+}
+
+
+/* ==================================================
+   SOLVE QUESTION
+   ================================================== */
+
+async function solveQuestion(){
+
+  if(busy)
+    return;
+
+
+  const input =
+    document.getElementById("question");
+
+
+  const question =
+    input.value.trim();
+
+
+  if(!question && !selectedImage){
+
+    alert(
+      "Question लेख्नुहोस् वा 📷 photo upload गर्नुहोस्।"
+    );
+
+    return;
+
+  }
+
+
+  if(!API_KEY){
+
+    showError(
+      "पहिले माथिको 🔑 Gemini API Key box मा API key paste गरेर Save API Key थिच्नुहोस्।"
+    );
+
+    return;
+
+  }
+
+
+  busy =
+    true;
+
+
+  document.getElementById("sendBtn")
+    .disabled =
+    true;
+
+
+  document.getElementById("hero")
+    ?.remove();
+
+
+  const userQuestion =
     question ||
     "यो photo मा भएको question solve गर्नुहोस्।";
 
 
   addMessage(
-    finalQuestion,
+    userQuestion,
     "user"
   );
 
 
-  input.value = "";
+  input.value =
+    "";
 
-  input.style.height = "auto";
+
+  input.style.height =
+    "auto";
 
 
   const loading =
@@ -500,20 +801,24 @@ async function solve(){
 
     const answer =
       await askGemini(
-        finalQuestion
+        userQuestion
       );
 
+
     loading.remove();
+
 
     addMessage(
       answer,
       "ai"
     );
 
+
   }
   catch(error){
 
     loading.remove();
+
 
     showError(
       error.message
@@ -522,15 +827,19 @@ async function solve(){
   }
 
 
-  busy = false;
+  busy =
+    false;
 
-  document.getElementById("send").disabled = false;
+
+  document.getElementById("sendBtn")
+    .disabled =
+    false;
 
 }
 
 
 /* ==================================================
-   GEMINI
+   GEMINI API
    ================================================== */
 
 async function askGemini(question){
@@ -543,38 +852,41 @@ async function askGemini(question){
 
 
   const instruction = `
+
 You are an expert AI Question Solver and personal tutor.
 
 Subject:
 ${subject}
 
-User question:
+Question:
 ${question}
 
 Solve the question accurately.
 
-Important rules:
+Rules:
 
-1. Answer in the same language as the user whenever possible.
-2. If user uses Nepali, answer in Nepali.
-3. If user uses Hindi, answer in Hindi.
-4. If user uses English, answer in English.
-5. For Mathematics, show step-by-step calculations.
-6. For Physics, show formula, values, calculation and final answer.
-7. For Chemistry, explain reactions and equations clearly.
-8. For Biology, explain concepts simply.
-9. For English/Hindi grammar, explain the correction.
-10. If an image is provided, read the question from the image.
-11. Do not make up an answer.
-12. Keep the answer easy for students to understand.
-13. Put the final answer clearly at the end.
+1. Answer in the same language as the user.
+2. If the user uses Nepali, answer in Nepali.
+3. If the user uses Hindi, answer in Hindi.
+4. If the user uses English, answer in English.
+5. Mathematics: show step-by-step calculation.
+6. Physics: show formula, values, calculation and final answer.
+7. Chemistry: explain reactions and equations clearly.
+8. Biology: explain concepts simply.
+9. English/Hindi: explain grammar and corrections.
+10. If an image is provided, read the question from it.
+11. Do not invent facts.
+12. Make explanations easy for students.
+13. Clearly show the final answer.
+
 `;
 
 
   const parts = [
 
     {
-      text: instruction
+      text:
+      instruction
     }
 
   ];
@@ -585,8 +897,11 @@ Important rules:
     parts.push({
 
       inlineData:{
-        mimeType:selectedMime,
-        data:selectedImage
+        mimeType:
+          selectedMime,
+
+        data:
+          selectedImage
       }
 
     });
@@ -599,13 +914,20 @@ Important rules:
     contents:[
       {
         role:"user",
-        parts:parts
+
+        parts:
+          parts
       }
     ],
 
     generationConfig:{
-      temperature:0.2,
-      maxOutputTokens:4096
+
+      temperature:
+        0.2,
+
+      maxOutputTokens:
+        4096
+
     }
 
   };
@@ -619,11 +941,12 @@ Important rules:
 
         headers:{
           "Content-Type":
-          "application/json"
+            "application/json"
         },
 
         body:
-        JSON.stringify(body)
+          JSON.stringify(body)
+
       }
     );
 
@@ -645,7 +968,9 @@ Important rules:
   const answer =
     data.candidates?.[0]
       ?.content?.parts
-      ?.map(x => x.text || "")
+      ?.map(
+        x => x.text || ""
+      )
       .join("");
 
 
@@ -667,32 +992,45 @@ Important rules:
    MESSAGE
    ================================================== */
 
-function addMessage(text,type){
+function addMessage(
+  text,
+  type
+){
 
   const chat =
     document.getElementById("chat");
 
 
-  const box =
+  const message =
     document.createElement("div");
 
-  box.className =
+
+  message.className =
     "message";
 
 
   const avatar =
     document.createElement("div");
 
+
   avatar.className =
     "avatar " +
-    (type === "user" ? "user" : "ai");
+    (
+      type === "user"
+      ? "userAvatar"
+      : "aiAvatar"
+    );
+
 
   avatar.textContent =
-    type === "user" ? "U" : "AI";
+    type === "user"
+    ? "U"
+    : "AI";
 
 
   const content =
     document.createElement("div");
+
 
   content.className =
     "content";
@@ -701,8 +1039,10 @@ function addMessage(text,type){
   const name =
     document.createElement("div");
 
+
   name.className =
     "name";
+
 
   name.textContent =
     type === "user"
@@ -710,31 +1050,43 @@ function addMessage(text,type){
     : "AI Question Solver";
 
 
-  const textBox =
+  const answer =
     document.createElement("div");
 
-  textBox.className =
-    "text";
 
-  textBox.textContent =
+  answer.className =
+    "answer";
+
+
+  answer.textContent =
     text;
 
 
-  content.appendChild(name);
+  content.appendChild(
+    name
+  );
 
-  content.appendChild(textBox);
+
+  content.appendChild(
+    answer
+  );
 
 
   if(type === "ai"){
 
     const copy =
-      document.createElement("button");
+      document.createElement(
+        "button"
+      );
+
 
     copy.className =
-      "copy";
+      "copyBtn";
+
 
     copy.textContent =
-      "📋 Copy Answer";
+      "📋 Copy";
+
 
     copy.onclick =
       async function(){
@@ -742,32 +1094,47 @@ function addMessage(text,type){
         await navigator.clipboard
           .writeText(text);
 
+
         copy.textContent =
           "✓ Copied";
 
+
         setTimeout(
-          () => {
+          function(){
+
             copy.textContent =
-              "📋 Copy Answer";
+              "📋 Copy";
+
           },
           1500
         );
 
       };
 
-    content.appendChild(copy);
+
+    content.appendChild(
+      copy
+    );
 
   }
 
 
-  box.appendChild(avatar);
-
-  box.appendChild(content);
-
-  chat.appendChild(box);
+  message.appendChild(
+    avatar
+  );
 
 
-  box.scrollIntoView({
+  message.appendChild(
+    content
+  );
+
+
+  chat.appendChild(
+    message
+  );
+
+
+  message.scrollIntoView({
     behavior:"smooth",
     block:"start"
   });
@@ -785,16 +1152,17 @@ function showLoading(){
     document.getElementById("chat");
 
 
-  const box =
+  const message =
     document.createElement("div");
 
-  box.className =
+
+  message.className =
     "message";
 
 
-  box.innerHTML = `
+  message.innerHTML = `
 
-    <div class="avatar ai">
+    <div class="avatar aiAvatar">
       AI
     </div>
 
@@ -817,15 +1185,17 @@ function showLoading(){
   `;
 
 
-  chat.appendChild(box);
+  chat.appendChild(
+    message
+  );
 
 
-  box.scrollIntoView({
+  message.scrollIntoView({
     behavior:"smooth"
   });
 
 
-  return box;
+  return message;
 
 }
 
@@ -843,14 +1213,18 @@ function showError(message){
   const error =
     document.createElement("div");
 
+
   error.className =
     "error";
+
 
   error.textContent =
     "⚠️ " + message;
 
 
-  chat.appendChild(error);
+  chat.appendChild(
+    error
+  );
 
 
   error.scrollIntoView({
@@ -869,14 +1243,26 @@ function newChat(){
   document.getElementById("chat")
     .innerHTML = "";
 
-  subject = "General";
 
-  selectedImage = null;
+  subject =
+    "General";
 
-  selectedMime = null;
+
+  selectedImage =
+    null;
+
+
+  selectedMime =
+    null;
+
+
+  document.getElementById("question")
+    .value = "";
+
 
   document.getElementById("preview")
     .style.display = "none";
+
 
   document.getElementById("imageInput")
     .value = "";
@@ -885,10 +1271,10 @@ function newChat(){
 
 
 /* ==================================================
-   ENTER
+   ENTER TO SEND
    ================================================== */
 
-function enterSend(event){
+function handleEnter(event){
 
   if(
     event.key === "Enter" &&
@@ -897,7 +1283,7 @@ function enterSend(event){
 
     event.preventDefault();
 
-    solve();
+    solveQuestion();
 
   }
 
