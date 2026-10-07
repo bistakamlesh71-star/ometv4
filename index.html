@@ -3,120 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080b18">
 <title>Pixora AI Studio</title>
 <style>
-:root{--bg:#070914;--card:#101528;--card2:#151b31;--line:#27304a;--text:#f8fafc;--muted:#9aa6c2;--purple:#7c3aed;--purple2:#a855f7;--gold:#f59e0b;--green:#16a34a;--red:#ef4444}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 20% 0,#21104b 0,#070914 38%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
-button,input{font:inherit}.app{max-width:980px;margin:auto;padding:16px 14px 70px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:5;padding:8px 0;background:#070914dd;backdrop-filter:blur(12px)}
-.logo{font-size:22px;font-weight:900}.logo span{color:#a78bfa}.topActions{display:flex;gap:8px}.iconBtn,.proBtn{border:1px solid var(--line);border-radius:14px;background:#12182b;color:#fff;padding:10px 12px}.proBtn{background:linear-gradient(135deg,#f59e0b,#ea580c);border:0;font-weight:900}
-.hero{margin-top:14px;padding:24px;border:1px solid #302451;border-radius:24px;background:linear-gradient(135deg,#1b1233,#101528 55%,#0e1426);box-shadow:0 20px 60px #0005}.hero h1{margin:0 0 8px;font-size:clamp(30px,7vw,52px)}.hero h1 span{color:#c084fc}.hero p{color:var(--muted);margin:0 0 18px;line-height:1.55}
-.user{display:none;align-items:center;gap:10px;margin-top:14px;padding:10px 12px;background:#0e1426;border:1px solid var(--line);border-radius:17px}.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#252d45}.userInfo{flex:1;min-width:0}.userInfo b,.userInfo small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.userInfo small{color:var(--muted);margin-top:2px}.logout{background:#252d45;color:#fff;border:0;border-radius:10px;padding:9px 11px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}.card{background:linear-gradient(180deg,#11182c,#0e1425);border:1px solid var(--line);border-radius:20px;padding:17px}.card .emoji{font-size:28px}.tag{font-size:10px;font-weight:900;color:#c4b5fd;letter-spacing:.12em}.tag.pro{color:#fbbf24}.card h3{margin:8px 0 5px}.card p{color:var(--muted);font-size:13px;line-height:1.45;min-height:38px}.btn{border:0;border-radius:12px;padding:12px 14px;width:100%;font-weight:850;color:#fff;background:linear-gradient(135deg,var(--purple),#6d28d9);cursor:pointer}.btn:active{transform:scale(.98)}.secondary{background:#242d45}.green{background:linear-gradient(135deg,#16a34a,#15803d)}.danger{background:#7f1d1d}.wide{margin-top:14px}
-.section{margin-top:18px}.section h2{margin:0 0 10px;font-size:20px}.notice{padding:12px;border-radius:14px;background:#0f172a;border:1px solid var(--line);color:var(--muted);font-size:13px}
-.editor{display:none;margin-top:18px;background:#0e1426;border:1px solid var(--line);border-radius:22px;padding:16px}.editorHead{display:flex;justify-content:space-between;gap:8px;align-items:center}.editor h2{margin:0}.file{margin:12px 0;padding:12px;border:1px dashed #47516e;border-radius:14px;width:100%;color:#cbd5e1;background:#11182b}.previewWrap{background:#05070d;border-radius:16px;overflow:hidden;text-align:center}.previewWrap img{max-width:100%;max-height:460px;display:block;margin:auto}.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.control{background:#121a2f;padding:10px;border-radius:13px}.control label{display:flex;justify-content:space-between;color:#cbd5e1;font-size:12px;margin-bottom:6px}.control input{width:100%}.row{display:flex;gap:9px;margin-top:12px}.row>*{flex:1}
-.modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:14px;z-index:20}.modal.show{display:flex}.box{width:min(460px,100%);max-height:92vh;overflow:auto;background:#101629;border:1px solid #35405e;border-radius:24px;padding:20px;box-shadow:0 30px 90px #000b}.close{float:right;width:34px;height:34px;border:0;border-radius:50%;background:#27314b;color:#fff}.box h2{margin-top:4px}.google{background:#fff;color:#111}.divider{height:1px;background:var(--line);margin:16px 0}.error{display:none;margin-top:10px;background:#451a22;border:1px solid #7f1d1d;color:#fecaca;padding:10px;border-radius:12px;font-size:12px;white-space:pre-wrap}.small{font-size:12px;color:var(--muted);line-height:1.5}.price{text-align:center;font-size:38px;font-weight:950;color:#fbbf24}.qr{display:block;width:min(280px,90%);margin:14px auto;background:#fff;padding:7px;border-radius:14px}.status{display:none;margin-top:10px;padding:11px;border-radius:12px;background:#0b2e1a;color:#bbf7d0;border:1px solid #166534;font-size:13px}
-.locked{filter:saturate(.7)}footer{margin-top:25px;text-align:center;color:#65708b;font-size:12px}
-@media(max-width:650px){.grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr}.hero{padding:20px}.top{position:relative}}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#0b1020;color:#fff}
+button{border:0;border-radius:14px;padding:14px 18px;font-weight:700;cursor:pointer}
+.app{max-width:900px;margin:auto;padding:20px}
+.card{background:#151c32;border:1px solid #293451;border-radius:22px;padding:20px;margin:16px 0}
+h1{margin:0 0 8px;font-size:30px}
+.muted{color:#aeb8d0}
+.google{width:100%;background:#fff;color:#222;font-size:16px}
+.google span{margin-right:8px}
+.hidden{display:none!important}
+.profile{display:flex;align-items:center;gap:12px}
+.avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;background:#303a58}
+.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+input[type=file]{width:100%;padding:14px;background:#202943;border-radius:12px}
+.preview{width:100%;max-height:520px;object-fit:contain;border-radius:16px;background:#050812;margin-top:14px}
+.range{width:100%}
+.pro{background:linear-gradient(135deg,#8b5cf6,#ec4899);width:100%;color:white}
+.status{padding:12px;border-radius:12px;background:#202943;margin-top:12px}
 </style>
 </head>
 <body>
-<div id="loginModal" class="modal show">
-  <div class="box">
-    <h2>Welcome to Pixora AI Studio 👋</h2>
-    <p class="small">Sign in with your Google account to continue.</p>
-    <button class="btn google" id="googleBtn">🔵 &nbsp; Continue with Google</button>
-    <div id="loginError" class="error"></div>
-    <div class="divider"></div>
-    <p class="small">For GitHub Pages, your <b>username.github.io</b> domain must be added in Firebase Authentication → Settings → Authorized domains.</p>
-  </div>
-</div>
+<div class="app">
+  <div class="card">
+    <h1>✨ Pixora AI Studio</h1>
+    <p class="muted">AI-style photo tools and Pro editing.</p>
 
-<main id="main" class="app" style="display:none">
-  <header class="top">
-    <div class="logo">Pixora <span>AI Studio</span></div>
-    <div class="topActions">
-      <button class="proBtn" id="proBtn">👑 Pro Rs.500</button>
+    <div id="loggedOut">
+      <button class="google" id="googleBtn"><span>G</span> Continue with Google</button>
+      <div id="loginStatus" class="status hidden"></div>
     </div>
-  </header>
 
-  <div class="user" id="userBar">
-    <img class="avatar" id="avatar" alt="">
-    <div class="userInfo"><b id="userName">Google User</b><small id="userEmail"></small></div>
-    <button class="logout" id="logoutBtn">Logout</button>
+    <div id="loggedIn" class="hidden">
+      <div class="profile">
+        <img id="avatar" class="avatar" alt="">
+        <div>
+          <b id="userName">User</b>
+          <div id="userEmail" class="muted"></div>
+        </div>
+      </div>
+      <br>
+      <button id="logoutBtn">Sign out</button>
+    </div>
   </div>
 
-  <section class="hero">
-    <h1>Create with <span>AI</span>.</h1>
-    <p>Photo tools, premium AI features and a simple Pro payment flow — all in one mobile-friendly app.</p>
-    <button class="btn" id="editorBtn">🖼️ Open Photo Editor</button>
-  </section>
+  <div id="mainApp" class="hidden">
+    <div class="card">
+      <h2>📸 Photo Editor</h2>
+      <input id="fileInput" type="file" accept="image/*">
+      <canvas id="canvas" class="preview hidden"></canvas>
 
-  <section class="grid">
-    <article class="card"><div class="emoji">✨</div><span class="tag pro">PRO TOOL</span><h3>AI Enhance</h3><p>Premium image enhancement interface.</p><button class="btn" data-premium="AI Enhance">Use Tool</button></article>
-    <article class="card"><div class="emoji">🎨</div><span class="tag pro">PRO TOOL</span><h3>Background Studio</h3><p>Premium background editing interface.</p><button class="btn" data-premium="Background Studio">Use Tool</button></article>
-    <article class="card"><div class="emoji">🪄</div><span class="tag pro">PRO TOOL</span><h3>AI Retouch</h3><p>Premium retouching interface.</p><button class="btn" data-premium="AI Retouch">Use Tool</button></article>
-    <article class="card"><div class="emoji">🎬</div><span class="tag pro">PRO TOOL</span><h3>Video AI</h3><p>Premium video tools interface.</p><button class="btn" data-premium="Video AI">Use Tool</button></article>
-  </section>
+      <div id="controls" class="hidden">
+        <p>Brightness</p>
+        <input class="range" id="brightness" type="range" min="50" max="150" value="100">
+        <p>Contrast</p>
+        <input class="range" id="contrast" type="range" min="50" max="150" value="100">
+        <p>Saturation</p>
+        <input class="range" id="saturation" type="range" min="0" max="200" value="100">
+        <p>Blur</p>
+        <input class="range" id="blur" type="range" min="0" max="10" value="0">
 
-  <section class="editor" id="editor">
-    <div class="editorHead"><h2>Photo Editor</h2><button class="iconBtn" id="closeEditor">✕</button></div>
-    <input class="file" id="fileInput" type="file" accept="image/*">
-    <div class="previewWrap"><img id="preview" alt="Preview"></div>
-    <div class="controls">
-      <div class="control"><label>Brightness <span id="bv">100%</span></label><input id="brightness" type="range" min="50" max="150" value="100"></div>
-      <div class="control"><label>Contrast <span id="cv">100%</span></label><input id="contrast" type="range" min="50" max="150" value="100"></div>
-      <div class="control"><label>Saturation <span id="sv">100%</span></label><input id="saturation" type="range" min="0" max="200" value="100"></div>
-      <div class="control"><label>Blur <span id="blurv">0px</span></label><input id="blur" type="range" min="0" max="10" value="0"></div>
+        <div class="actions">
+          <button id="resetBtn">Reset</button>
+          <button id="downloadBtn">Download</button>
+        </div>
+      </div>
     </div>
-    <div class="row"><button class="btn secondary" id="resetBtn">Reset</button><button class="btn green" id="downloadBtn">Download</button></div>
-    <canvas id="canvas" style="display:none"></canvas>
-  </section>
 
-  <section class="section">
-    <h2>Pro Membership</h2>
-    <div class="notice">Unlock all premium tools for <b style="color:#fbbf24">Rs. 500</b>.</div>
-    <button class="btn wide" id="buyBtn">👑 View Pro & eSewa Payment</button>
-  </section>
-
-  <footer>Pixora AI Studio • Google Sign-In • GitHub Pages</footer>
-</main>
-
-<div id="proModal" class="modal">
-  <div class="box">
-    <button class="close" id="closePro">✕</button>
-    <h2>👑 Pixora Pro</h2>
-    <div class="price">Rs. 500</div>
-    <p class="small" style="text-align:center">Pay to eSewa account <b>Nari Bista</b><br>Number: <b>9761996391</b></p>
-    <img class="qr" id="qr" alt="eSewa QR">
-    <button class="btn green" id="esewaBtn">📲 Open eSewa</button>
-    <div class="row">
-      <button class="btn secondary" id="waBtn">💬 WhatsApp</button>
-      <button class="btn secondary" id="callBtn">📞 Call</button>
+    <div class="card">
+      <h2>💎 Pixora Pro</h2>
+      <p class="muted">Unlock premium editing tools.</p>
+      <button class="pro" id="proBtn">Unlock Pro — Rs. 500</button>
+      <div id="proStatus" class="status"></div>
     </div>
-    <div class="divider"></div>
-    <button class="btn" id="paidBtn">I HAVE PAID — UNLOCK PRO</button>
-    <div id="unlockStatus" class="status">Pro is unlocked on this device.</div>
-    <p class="small">Static QR payment cannot securely verify payment automatically. For automatic verification, connect a server-side eSewa merchant API/Intent flow.</p>
   </div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import {
-  getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
-  onAuthStateChanged, signOut
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
-/* Firebase Web config from your Pixora AI Studio project */
 const firebaseConfig = {
-  apiKey: "AIzaSyAwsW-lxVR83b_hVOAwCxjQJaRWKZlnj8",
+  apiKey: "AIzaSyAWsW-xLvR83b_hVOaWcCxjQJaRwKZlnj8",
   authDomain: "pixora-ai-studio-66e53.firebaseapp.com",
   projectId: "pixora-ai-studio-66e53",
   storageBucket: "pixora-ai-studio-66e53.firebasestorage.app",
   messagingSenderId: "540389702976",
-  appId: "1:540389702976:web:ba404edb8989a1bb94ea5",
-  measurementId: "G-HV9Q4T18"
+  appId: "1:540389702976:web:ba404edb08989a1bb94ea5",
+  measurementId: "G-HV9Q4G7418"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -125,42 +107,130 @@ const provider = new GoogleAuthProvider();
 provider.setCustomParameters({prompt:"select_account"});
 
 const $ = id => document.getElementById(id);
-const loginModal=$("loginModal"), main=$("main"), loginError=$("loginError");
+const loggedOut = $("loggedOut");
+const loggedIn = $("loggedIn");
+const mainApp = $("mainApp");
+const loginStatus = $("loginStatus");
 
-function showLoginError(e){
-  loginError.style.display="block";
-  loginError.textContent=(e?.code ? e.code+"\\n" : "")+(e?.message || String(e));
+function showLoginError(message){
+  loginStatus.textContent = message;
+  loginStatus.classList.remove("hidden");
 }
 
 $("googleBtn").addEventListener("click", async ()=>{
-  loginError.style.display="none";
-  try{ await signInWithRedirect(auth,provider); }
-  catch(e){ showLoginError(e); }
-});
+  loginStatus.classList.add("hidden");
+  const btn = $("googleBtn");
+  btn.disabled = true;
+  btn.textContent = "Opening Google…";
 
-getRedirectResult(auth).catch(showLoginError);
-
-onAuthStateChanged(auth, user=>{
-  if(!user){
-    main.style.display="none";
-    loginModal.classList.add("show");
-    return;
+  try{
+    await signInWithPopup(auth, provider);
+  }catch(error){
+    console.error(error);
+    let msg = "Google sign-in failed.";
+    if(error.code === "auth/popup-blocked") msg = "Popup blocked. Allow popups for this site and try again.";
+    else if(error.code === "auth/popup-closed-by-user") msg = "Google window was closed. Please try again.";
+    else if(error.code === "auth/unauthorized-domain") msg = "This domain is not authorized in Firebase Authentication.";
+    else if(error.code === "auth/operation-not-allowed") msg = "Google Sign-in is not enabled in Firebase.";
+    else if(error.code === "auth/invalid-api-key") msg = "Firebase API key is invalid.";
+    else msg = error.message || msg;
+    showLoginError(msg);
+  }finally{
+    btn.disabled = false;
+    btn.innerHTML = "<span>G</span> Continue with Google";
   }
-  loginModal.classList.remove("show");
-  main.style.display="block";
-  $("userBar").style.display="flex";
-  $("userName").textContent=user.displayName || "Google User";
-  $("userEmail").textContent=user.email || "";
-  $("avatar").src=user.photoURL || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' rx='40' fill='%23334155'/%3E%3C/svg%3E";
 });
 
 $("logoutBtn").addEventListener("click",()=>signOut(auth));
 
-const proModal=$("proModal");
-function openPro(){proModal.classList.add("show")}
-function closePro(){proModal.classList.remove("show")}
-$("proBtn").addEventListener("click",openPro);
-$("buyBtn").addEventListener("click",openPro);
-$("closePro").addEventListener("click",closePro);
+onAuthStateChanged(auth,user=>{
+  if(user){
+    loggedOut.classList.add("hidden");
+    loggedIn.classList.remove("hidden");
+    mainApp.classList.remove("hidden");
+    $("userName").textContent = user.displayName || "Google User";
+    $("userEmail").textContent = user.email || "";
+    $("avatar").src = user.photoURL || "";
+  }else{
+    loggedOut.classList.remove("hidden");
+    loggedIn.classList.add("hidden");
+    mainApp.classList.add("hidden");
+  }
+});
 
-const qrData = "data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAB6oAAAvqCAYAAAAZEp+XAAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAACAASURBVHic7N09iGVnHcfx5+7MJru+hICEpBJZVERREEGwyBJxO7tY2FikERGsRRAULBTSWgoSazdoYWVW0CAWvqGgrC+FiJCgggSF3Ulm7j0Wm5dNZvJynrv7f3733M8Hwgg2D+eZ859zn++emdU0TVMDAAAAAAAAgCLnRi8AAAAAAAAAgP0iVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABKCdUAAAAAAAAAlBKqAQAAAAAAACglVAMAAAAAAABQSqgGAAAAAAAAoJRQDQAAAAAAAEApoRoAAAAAAACAUkI1AAAAAAAAAKWEagAAAAAAAABK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qAYAAAAAAACglFANAAAAAAAAQCmhGgAAAAAAAIBSQjUAAAAAAAAApYRqAAAAAAAAAEoJ1QAAAAAAAACUEqoBAAAAAAAAKCVUAwAAAAAAAFBKqAYAAAAAAACglFANAAAAAAAAQCmhGgAAAAAAAIBSQjUAAAAAAAAApYRqAAAAAAAAAEoJ1QAAAAAAAACUEqoBAAAAAAAAKCVUAwAAAAAAAFBKqAYAAAAAAACglFANAAAAAAAAQCmhGgAAAAAAAIBSQjUAAAAAAAAApYRqAAAAAAAAAEoJ1QAAAAAAAACUEqoBAAAAAAAAKCVUAwAAAAAAAFBKqAYAAAAAAACglFANAAAAAAAAQCmhGgAAAAAAAIBSQjUAAAAAAAAApYRqAAAAAAAAAEoJ1QAAAAAAAACUEqoBAAAAAAAAKCVUAwAAAAAAAFBKqAYAAAAAAACglFANAAAAAAAAQCmhGgAAAAAAAIBSQjUAAAAAAAAApYRqAAAAAAAAAEoJ1QAAAAAAAACUEqoBAAAAAAAAKCVUAwAAAAAAAFBKqAYAAAAAAACglFANAAAAAAAAQCmhGgAAAAAAAIBSQjUAAAAAAAAApYRqAAAAAAAAAEoJ1QAAAAAAAACUEqoBAAAAAAAAKCVUAwAAAAAAAFBKqAYAAAAAAACglFANAAAAAAAAQCmhGgAAAAAAAIBSQjUAAAAAAAAApYRqAAAAAAAAAEoJ1QAAAAAAAACUEqoBAAAAAAAAKCVUAwAAAAAAAFBKqAYAAAAAAACglFANAAAAAAAAQCmhGgAAAAAAAIBSQjUAAAAAAAAApYRqAAAAAAAAAEoJ1QAAAAAAAACUEqoBAAAAAAAAKCVUAwAAAAAAAFBKqAYAAAAAAACglFANAAAAAAAAQCmhGgAAAAAAAIBSQjUAAAAAAAAApYRqAAAAAAAAAEoJ1QAAAAAAAACUEqoBAAAAAAAAKCVUAwAAAAAAAFBKqAYAAAAAAACglFANAAAAAAAAQCmhGgAAAAAAAIBSQjUAAAAAAAAApYRqAAAAAAAAAEoJ1QAAAAAAAACUEqoBAAAAAAAAKCVUAwAAAAAAAFBKqAYAAAAAAACglFANAAAAAAAAQCmhGgAAAAAAAIBSQjUAAAAAAAAApYRqAAAAAAAAAEoJ1QAAAAAAAACUEqoBAAAAAAAAKCVUAwAAAAAAAFBKqAYAAAAAAACg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
+/* Photo editor */
+let originalImage = null;
+const canvas = $("canvas");
+const ctx = canvas.getContext("2d");
+
+function render(){
+  if(!originalImage)return;
+  canvas.width = originalImage.naturalWidth;
+  canvas.height = originalImage.naturalHeight;
+  ctx.filter =
+    `brightness(${$("brightness").value}%) `+
+    `contrast(${$("contrast").value}%) `+
+    `saturate(${$("saturation").value}%) `+
+    `blur(${$("blur").value}px)`;
+  ctx.drawImage(originalImage,0,0);
+}
+
+$("fileInput").addEventListener("change",e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  const url=URL.createObjectURL(file);
+  const img=new Image();
+  img.onload=()=>{
+    originalImage=img;
+    canvas.classList.remove("hidden");
+    $("controls").classList.remove("hidden");
+    render();
+    URL.revokeObjectURL(url);
+  };
+  img.src=url;
+});
+
+["brightness","contrast","saturation","blur"].forEach(id=>{
+  $(id).addEventListener("input",render);
+});
+
+$("resetBtn").addEventListener("click",()=>{
+  $("brightness").value=100;
+  $("contrast").value=100;
+  $("saturation").value=100;
+  $("blur").value=0;
+  render();
+});
+
+$("downloadBtn").addEventListener("click",()=>{
+  if(!originalImage)return;
+  render();
+  const a=document.createElement("a");
+  a.download="pixora-edited.png";
+  a.href=canvas.toDataURL("image/png");
+  a.click();
+});
+
+/* Demo/manual Pro unlock */
+function updatePro(){
+  $("proStatus").textContent =
+    localStorage.getItem("pixoraPro")==="true"
+    ? "✅ Pro unlocked on this device."
+    : "🔒 Pro is locked. Price: Rs. 500";
+}
+$("proBtn").addEventListener("click",()=>{
+  const ok=confirm(
+    "Pixora Pro — Rs. 500\\n\\n" +
+    "This demo uses manual payment confirmation. " +
+    "After you complete your eSewa payment, press OK to unlock Pro on this device."
+  );
+  if(ok){
+    localStorage.setItem("pixoraPro","true");
+    updatePro();
+    alert("Pro unlocked for this device.");
+  }
+});
+updatePro();
+</script>
+</body>
+</html>
