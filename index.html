@@ -3,856 +3,668 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Ome TV 4</title>
+<title>OmeTV 4</title>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-database-compat.js"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box}
 
-html,body{
- width:100%;
- height:100%;
- font-family:Arial,sans-serif;
- background:#000;
- overflow:hidden;
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#111827,#4f46e5);
+color:white;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
-/* ================= SPLASH ================= */
-
-#splash{
- position:fixed;
- inset:0;
- background:#fff;
- display:flex;
- flex-direction:column;
- justify-content:center;
- align-items:center;
- z-index:99999;
- transition:opacity .7s;
+.box{
+width:94%;
+max-width:520px;
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(15px);
+border-radius:25px;
+padding:22px;
+text-align:center;
+box-shadow:0 10px 40px #0006;
 }
 
-.ome-logo{
- position:relative;
- width:250px;
- height:180px;
+h1{font-size:36px;margin:5px}
+
+button,select{
+width:100%;
+padding:15px;
+margin:7px 0;
+border:0;
+border-radius:14px;
+font-size:17px;
+font-weight:bold;
 }
 
-.tv{
- position:absolute;
- left:5px;
- top:25px;
- width:240px;
- height:145px;
- border:15px solid #ed6338;
- border-radius:30px;
- background:white;
- display:flex;
- align-items:center;
- justify-content:center;
+button{cursor:pointer}
+
+.google{background:white;color:#222}
+.start{background:#22c55e;color:white}
+.next{background:#3b82f6;color:white}
+.stop{background:#ef4444;color:white}
+.report{background:#f59e0b;color:white}
+
+video{
+width:100%;
+height:280px;
+object-fit:cover;
+background:#000;
+border-radius:18px;
+margin:10px 0;
 }
 
-.ome{
- color:#ed6338;
- font-size:56px;
- line-height:1;
-}
+.hidden{display:none}
 
-.tvword{
- position:absolute;
- top:75px;
- left:74px;
- color:#39a86b;
- font-size:40px;
- font-weight:bold;
-}
-
-.dot1,.dot2{
- position:absolute;
- right:12px;
- width:13px;
- height:13px;
- background:#ed6338;
- border-radius:50%;
-}
-
-.dot1{top:62px}
-.dot2{top:94px}
-
-.ant1,.ant2{
- position:absolute;
- width:10px;
- height:55px;
- background:#ed6338;
- border-radius:10px;
- top:-8px;
-}
-
-.ant1{
- left:95px;
- transform:rotate(-42deg);
-}
-
-.ant2{
- left:145px;
- transform:rotate(42deg);
-}
-
-.splash-loading{
- margin-top:25px;
- display:flex;
- align-items:center;
- gap:10px;
- font-size:21px;
- color:#333;
-}
-
-.green{
- width:16px;
- height:16px;
- border-radius:50%;
- background:#64ff00;
- box-shadow:0 0 9px #64ff00;
-}
-
-/* ================= LOGIN ================= */
-
-.screen{
- position:fixed;
- inset:0;
- background:linear-gradient(135deg,#111827,#020617);
- color:white;
- display:none;
- align-items:center;
- justify-content:center;
- padding:20px;
-}
-
-.card{
- width:100%;
- max-width:390px;
- background:rgba(255,255,255,.08);
- backdrop-filter:blur(15px);
- border:1px solid rgba(255,255,255,.12);
- border-radius:22px;
- padding:25px;
- text-align:center;
- box-shadow:0 15px 50px rgba(0,0,0,.5);
-}
-
-.card-logo{
- width:115px;
- height:115px;
- border-radius:25px;
- object-fit:cover;
- margin-bottom:15px;
-}
-
-.card h1{
- font-size:27px;
- margin-bottom:8px;
-}
-
-.card p{
- color:#cbd5e1;
- font-size:14px;
- line-height:1.5;
- margin-bottom:22px;
-}
-
-.google-btn{
- width:100%;
- height:52px;
- border:0;
- border-radius:12px;
- background:white;
- color:#222;
- font-size:16px;
- font-weight:bold;
- display:flex;
- align-items:center;
- justify-content:center;
- gap:12px;
-}
-
-.google-icon{
- width:22px;
- height:22px;
+.status{
+padding:12px;
+background:#0004;
+border-radius:12px;
+margin:10px 0;
 }
 
 .small{
- margin-top:15px;
- font-size:12px;
- color:#94a3b8;
-}
-
-/* ================= PROFILE ================= */
-
-#profileScreen{
- display:none;
-}
-
-.form{
- width:100%;
- max-width:390px;
- background:#fff;
- color:#111;
- padding:25px;
- border-radius:20px;
- text-align:center;
-}
-
-.form h2{
- margin-bottom:8px;
-}
-
-.form p{
- color:#666;
- margin-bottom:18px;
-}
-
-.form input,
-.form select{
- width:100%;
- padding:14px;
- border:1px solid #ddd;
- border-radius:10px;
- margin-bottom:12px;
- font-size:15px;
-}
-
-.continue-btn{
- width:100%;
- padding:14px;
- border:0;
- border-radius:11px;
- background:#4f46e5;
- color:white;
- font-size:16px;
- font-weight:bold;
-}
-
-/* ================= MAIN ================= */
-
-#mainScreen{
- display:none;
- position:fixed;
- inset:0;
- background:#111;
- color:white;
-}
-
-#camera{
- position:absolute;
- inset:0;
- width:100%;
- height:100%;
- object-fit:cover;
- background:#222;
-}
-
-.dark{
- position:absolute;
- inset:0;
- background:linear-gradient(
-   to bottom,
-   rgba(0,0,0,.5),
-   transparent 40%,
-   rgba(0,0,0,.7)
- );
-}
-
-.main-logo{
- position:absolute;
- top:28px;
- left:50%;
- transform:translateX(-50%);
- z-index:5;
-}
-
-.main-logo img{
- width:120px;
- height:120px;
- object-fit:contain;
-}
-
-.connect{
- position:absolute;
- top:220px;
- left:50%;
- transform:translateX(-50%);
- display:flex;
- gap:10px;
- align-items:center;
- z-index:5;
- font-size:22px;
- white-space:nowrap;
-}
-
-.connect i{
- width:15px;
- height:15px;
- background:#61ff00;
- border-radius:50%;
-}
-
-.options{
- position:absolute;
- left:15px;
- right:15px;
- bottom:105px;
- display:flex;
- gap:10px;
- z-index:10;
-}
-
-.option{
- flex:1;
- height:62px;
- border:1px solid rgba(255,255,255,.2);
- border-radius:12px;
- background:rgba(0,0,0,.45);
- color:white;
- font-weight:bold;
- font-size:15px;
-}
-
-.safety{
- position:absolute;
- left:15px;
- right:15px;
- bottom:58px;
- font-size:13px;
- line-height:1.4;
- z-index:10;
- text-shadow:0 2px 5px #000;
-}
-
-.safety b{
- color:#ffd000;
-}
-
-.bottom{
- position:absolute;
- bottom:0;
- left:0;
- right:0;
- height:50px;
- display:flex;
- align-items:center;
- justify-content:space-around;
- background:rgba(0,0,0,.55);
- z-index:10;
-}
-
-.bottom button{
- border:0;
- background:none;
- color:white;
- font-size:24px;
-}
-
-/* MOBILE */
-
-@media(max-width:500px){
- .ome-logo{transform:scale(.85)}
- .connect{top:235px}
+font-size:13px;
+opacity:.8;
 }
 </style>
 </head>
 
 <body>
 
+<div class="box">
 
-<!-- ================= SPLASH ================= -->
+<div id="loginPage">
 
-<div id="splash">
+<h1>OmeTV 4</h1>
+<p>Random Video Chat 🌎</p>
 
- <div class="ome-logo">
+<button class="google" onclick="googleLogin()">
+🔵 Continue with Google
+</button>
 
-  <div class="ant1"></div>
-  <div class="ant2"></div>
-
-  <div class="tv">
-
-   <div class="ome">Ome</div>
-   <div class="tvword">TV</div>
-
-   <div class="dot1"></div>
-   <div class="dot2"></div>
-
-  </div>
-
- </div>
-
- <div class="splash-loading">
-  <span class="green"></span>
-  <span>Connecting...</span>
- </div>
+<div id="loginStatus" class="status">
+Please login
+</div>
 
 </div>
 
 
-<!-- ================= GOOGLE LOGIN ================= -->
+<div id="homePage" class="hidden">
 
-<div id="loginScreen" class="screen">
+<h1>OmeTV 4</h1>
 
- <div class="card">
+<p id="userInfo"></p>
 
-  <!-- आफ्नो logo -->
-  <img
-   src="nepali-chat.png"
-   class="card-logo"
-   onerror="this.style.display='none'"
-  >
+<select id="country">
+<option value="all">🌎 All Countries</option>
+<option value="Nepal">🇳🇵 Nepal</option>
+<option value="India">🇮🇳 India</option>
+<option value="USA">🇺🇸 USA</option>
+<option value="UK">🇬🇧 UK</option>
+<option value="Japan">🇯🇵 Japan</option>
+<option value="Korea">🇰🇷 Korea</option>
+</select>
 
-  <h1>Welcome to Ome TV 4</h1>
+<button class="start" onclick="startChat()">
+🎥 START
+</button>
 
-  <p>
-   Meet new people and make new friends.
-   Continue with Google to get started.
-  </p>
-
-  <button
-   class="google-btn"
-   onclick="googleLogin()">
-
-   <span class="google-icon">
-    G
-   </span>
-
-   Continue with Google
-
-  </button>
-
-  <div class="small">
-   By continuing, you agree to our rules.
-  </div>
-
- </div>
+<button class="stop" onclick="logout()">
+🚪 Logout
+</button>
 
 </div>
 
 
-<!-- ================= PROFILE ================= -->
+<div id="chatPage" class="hidden">
 
-<div id="profileScreen" class="screen">
+<h2>Video Chat 🎥</h2>
 
- <div class="form">
+<video id="remoteVideo" autoplay playsinline></video>
 
-  <h2>Complete Your Profile</h2>
+<video id="localVideo" autoplay playsinline muted></video>
 
-  <p>
-   Enter your details to continue.
-  </p>
+<div id="status" class="status">
+Starting...
+</div>
 
-  <input
-   id="name"
-   type="text"
-   placeholder="Your name"
-  >
+<button class="next" onclick="nextPerson()">
+➡️ NEXT
+</button>
 
-  <select id="gender">
+<button class="stop" onclick="stopChat()">
+⛔ STOP
+</button>
 
-   <option value="">
-    Select gender
-   </option>
+<button class="report" onclick="reportUser()">
+🚨 REPORT
+</button>
 
-   <option value="male">
-    👨 Male
-   </option>
-
-   <option value="female">
-    👩 Female
-   </option>
-
-   <option value="other">
-    👤 Other
-   </option>
-
-  </select>
-
-  <button
-   class="continue-btn"
-   onclick="completeProfile()">
-
-   Continue
-
-  </button>
-
- </div>
+<p class="small">
+Your camera preview is shown below the other person.
+</p>
 
 </div>
 
-
-<!-- ================= MAIN ================= -->
-
-<div id="mainScreen">
-
- <video
-  id="camera"
-  autoplay
-  muted
-  playsinline>
- </video>
-
- <div class="dark"></div>
-
- <div class="main-logo">
-
-  <img
-   src="nepali-chat.png"
-   onerror="this.style.display='none'"
-  >
-
- </div>
-
- <div class="connect">
-
-  <i></i>
-
-  <span id="connectText">
-   Connecting...
-  </span>
-
- </div>
-
- <div class="options">
-
-  <button
-   class="option"
-   onclick="changeGender()">
-
-   I AM 👤
-
-  </button>
-
-  <button
-   class="option"
-   onclick="changeCountry()">
-
-   🇳🇵 NEPAL
-
-  </button>
-
- </div>
-
- <div class="safety">
-
-  <b>⚠ Safety Reminder</b><br>
-
-  By using this video chat, you agree to our rules.
-  Try to keep your face visible in camera frame.
-
- </div>
-
- <div class="bottom">
-
-  <button onclick="nextPerson()">🔄</button>
-  <button>😂</button>
-  <button>❤️</button>
-  <button>👍</button>
-  <button>😊</button>
-  <button>💬</button>
-
- </div>
-
 </div>
-
-
-<!-- FIREBASE -->
-
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 
 
 <script>
 
-/* ================= FIREBASE ================= */
-
 const firebaseConfig = {
-
- apiKey:
- "AIzaSyDX18nNNVbSd3jwdODlh_-XhuFrn2lQEAQ",
-
- authDomain:
- "ome-tv-4-5fd7b.firebaseapp.com",
-
- projectId:
- "ome-tv-4-5fd7b",
-
- storageBucket:
- "ome-tv-4-5fd7b.firebasestorage.app",
-
- messagingSenderId:
- "827380900936",
-
- appId:
- "1:827380900936:web:62a7f50dd008c94149a47d",
-
- measurementId:
- "G-Q82KTMQ43C"
-
+apiKey:"AIzaSyDX18nNNVbSd3jwdODlh_-XhuFrn2lQEAQ",
+authDomain:"ome-tv-4-5fd7b.firebaseapp.com",
+projectId:"ome-tv-4-5fd7b",
+storageBucket:"ome-tv-4-5fd7b.firebasestorage.app",
+messagingSenderId:"827380900936",
+appId:"1:827380900936:web:62a7f50dd008c94149a47d",
+measurementId:"G-Q82KTMQ43C"
 };
 
 firebase.initializeApp(firebaseConfig);
 
-const auth =
- firebase.auth();
+const auth=firebase.auth();
+const db=firebase.database();
+
+let currentUser=null;
+let localStream=null;
+let peer=null;
+let currentMatch=null;
+let searching=false;
 
 
-/* ================= SPLASH ================= */
+async function googleLogin(){
 
-setTimeout(function(){
+document.getElementById("loginStatus").innerText=
+"Opening Google Login...";
 
- document.getElementById(
-  "splash"
- ).style.opacity="0";
+try{
 
- setTimeout(function(){
+const provider=new firebase.auth.GoogleAuthProvider();
 
-  document.getElementById(
-   "splash"
-  ).style.display="none";
+await auth.signInWithPopup(provider);
 
-  checkLogin();
+}catch(error){
 
- },700);
+console.error(error);
 
-},2500);
+document.getElementById("loginStatus").innerText=
+"Login failed: "+error.message;
 
-
-/* ================= LOGIN CHECK ================= */
-
-function checkLogin(){
-
- auth.onAuthStateChanged(function(user){
-
-  if(user){
-
-   const savedName =
-    localStorage.getItem("userName");
-
-   if(savedName){
-
-    showMain();
-
-   }else{
-
-    showProfile();
-
-   }
-
-  }else{
-
-   document.getElementById(
-    "loginScreen"
-   ).style.display="flex";
-
-  }
-
- });
+}
 
 }
 
 
-/* ================= GOOGLE LOGIN ================= */
+auth.onAuthStateChanged(user=>{
 
-function googleLogin(){
+if(user){
 
- const provider =
-  new firebase.auth.GoogleAuthProvider();
+currentUser=user;
 
- auth.signInWithPopup(provider)
+document.getElementById("loginPage")
+.classList.add("hidden");
 
- .then(function(result){
+document.getElementById("homePage")
+.classList.remove("hidden");
 
-  showProfile();
+document.getElementById("userInfo").innerText=
+"👤 "+(user.displayName||user.email);
 
- })
+}else{
 
- .catch(function(error){
+currentUser=null;
 
-  console.error(error);
+document.getElementById("loginPage")
+.classList.remove("hidden");
 
-  alert(
-   "Google login failed:\n\n" +
-   error.message
-  );
+document.getElementById("homePage")
+.classList.add("hidden");
 
- });
+document.getElementById("chatPage")
+.classList.add("hidden");
+
+}
+
+});
+
+
+async function startChat(){
+
+if(!currentUser)return;
+
+document.getElementById("homePage")
+.classList.add("hidden");
+
+document.getElementById("chatPage")
+.classList.remove("hidden");
+
+document.getElementById("status").innerText=
+"Requesting camera and microphone...";
+
+try{
+
+localStream=
+await navigator.mediaDevices.getUserMedia({
+video:true,
+audio:true
+});
+
+document.getElementById("localVideo").srcObject=
+localStream;
+
+document.getElementById("status").innerText=
+"🔎 Searching for another person...";
+
+searching=true;
+
+await findPerson();
+
+}catch(error){
+
+console.error(error);
+
+document.getElementById("status").innerText=
+"Camera/Microphone permission denied.";
+
+}
 
 }
 
 
-/* ================= PROFILE ================= */
+async function findPerson(){
 
-function showProfile(){
+if(!searching)return;
 
- document.getElementById(
-  "loginScreen"
- ).style.display="none";
+const myCountry=
+document.getElementById("country").value;
 
- document.getElementById(
-  "profileScreen"
- ).style.display="flex";
+const waitingRef=db.ref("waiting");
+
+const snapshot=
+await waitingRef.once("value");
+
+let found=null;
+
+snapshot.forEach(child=>{
+
+if(child.key!==currentUser.uid){
+
+const data=child.val();
+
+if(
+myCountry==="all" ||
+data.country==="all" ||
+data.country===myCountry
+){
+
+found={
+uid:child.key,
+country:data.country
+};
+
+}
+
+}
+
+});
+
+
+if(found){
+
+const ids=[
+currentUser.uid,
+found.uid
+].sort();
+
+const matchId=ids[0]+"_"+ids[1];
+
+currentMatch=matchId;
+
+await db.ref("matches/"+matchId).update({
+
+user1:ids[0],
+user2:ids[1],
+createdAt:firebase.database.ServerValue.TIMESTAMP
+
+});
+
+await db.ref("waiting/"+found.uid).remove();
+
+await db.ref("waiting/"+currentUser.uid).remove();
+
+if(currentUser.uid===ids[0]){
+
+await createOffer(matchId);
+
+}else{
+
+await waitForOffer(matchId);
+
+}
+
+}else{
+
+await db.ref("waiting/"+currentUser.uid).set({
+
+country:myCountry,
+
+name:currentUser.displayName||"User",
+
+timestamp:firebase.database.ServerValue.TIMESTAMP
+
+});
+
+db.ref("waiting/"+currentUser.uid)
+.onDisconnect()
+.remove();
+
+document.getElementById("status").innerText=
+"🟢 Waiting for another online user...";
+
+}
 
 }
 
 
-function completeProfile(){
+function createPeer(matchId){
 
- const name =
-  document.getElementById(
-   "name"
-  ).value.trim();
+peer=new RTCPeerConnection({
 
- const gender =
-  document.getElementById(
-   "gender"
-  ).value;
+iceServers:[
+{
+urls:"stun:stun.l.google.com:19302"
+},
+{
+urls:"stun:stun1.l.google.com:19302"
+}
+]
 
- if(!name){
+});
 
-  alert("Please enter your name.");
 
-  return;
+localStream.getTracks().forEach(track=>{
 
- }
+peer.addTrack(track,localStream);
 
- if(!gender){
+});
 
-  alert("Please select your gender.");
 
-  return;
+peer.ontrack=event=>{
 
- }
+document.getElementById("remoteVideo").srcObject=
+event.streams[0];
 
- localStorage.setItem(
-  "userName",
-  name
- );
+document.getElementById("status").innerText=
+"🟢 Connected!";
 
- localStorage.setItem(
-  "gender",
-  gender
- );
+};
 
- showMain();
+
+peer.onicecandidate=event=>{
+
+if(event.candidate){
+
+const path=
+"matches/"+matchId+"/candidates/"+
+(currentUser.uid);
+
+db.ref(path).push(event.candidate.toJSON());
+
+}
+
+};
 
 }
 
 
-/* ================= MAIN ================= */
+async function createOffer(matchId){
 
-async function showMain(){
+createPeer(matchId);
 
- document.getElementById(
-  "loginScreen"
- ).style.display="none";
+const offer=
+await peer.createOffer();
 
- document.getElementById(
-  "profileScreen"
- ).style.display="none";
+await peer.setLocalDescription(offer);
 
- document.getElementById(
-  "mainScreen"
- ).style.display="block";
+await db.ref("matches/"+matchId+"/offer")
+.set({
 
- startCamera();
+type:offer.type,
+sdp:offer.sdp
+
+});
+
+
+db.ref("matches/"+matchId+"/answer")
+.on("value",async snap=>{
+
+const answer=snap.val();
+
+if(answer && !peer.currentRemoteDescription){
+
+await peer.setRemoteDescription(
+new RTCSessionDescription(answer)
+);
+
+}
+
+});
+
+listenCandidates(matchId);
+
+document.getElementById("status").innerText=
+"📞 Calling another user...";
 
 }
 
 
-/* ================= CAMERA ================= */
+function waitForOffer(matchId){
 
-async function startCamera(){
+db.ref("matches/"+matchId+"/offer")
+.on("value",async snap=>{
 
- try{
+const offer=snap.val();
 
-  const stream =
-   await navigator.mediaDevices
-   .getUserMedia({
+if(!offer)return;
 
-    video:{
-     facingMode:"user"
-    },
+if(!peer){
 
-    audio:true
+createPeer(matchId);
 
-   });
+await peer.setRemoteDescription(
+new RTCSessionDescription(offer)
+);
 
-  document.getElementById(
-   "camera"
-  ).srcObject=stream;
+const answer=
+await peer.createAnswer();
 
-  document.getElementById(
-   "connectText"
-  ).textContent=
-   "Waiting for partner...";
+await peer.setLocalDescription(answer);
 
- }
- catch(error){
+await db.ref("matches/"+matchId+"/answer")
+.set({
 
-  console.error(error);
+type:answer.type,
+sdp:answer.sdp
 
-  document.getElementById(
-   "connectText"
-  ).textContent=
-   "Camera permission needed";
+});
 
- }
+listenCandidates(matchId);
+
+document.getElementById("status").innerText=
+"📞 Connecting...";
+
+}
+
+});
 
 }
 
 
-/* ================= NEXT ================= */
+function listenCandidates(matchId){
 
-function nextPerson(){
+const myPath=
+"matches/"+matchId+"/candidates/";
 
- document.getElementById(
-  "connectText"
- ).textContent=
-  "Finding someone...";
+const otherUid=
+currentMatch.split("_")
+.find(id=>id!==currentUser.uid);
 
- setTimeout(function(){
+if(!otherUid)return;
 
-  document.getElementById(
-   "connectText"
-  ).textContent=
-   "Waiting for partner...";
+const ref=
+db.ref(myPath+otherUid);
 
- },1500);
+ref.on("child_added",async snap=>{
+
+try{
+
+if(peer){
+
+await peer.addIceCandidate(
+new RTCIceCandidate(snap.val())
+);
+
+}
+
+}catch(error){
+
+console.log(error);
+
+}
+
+});
 
 }
 
 
-/* ================= BUTTONS ================= */
+async function nextPerson(){
 
-function changeGender(){
+document.getElementById("status").innerText=
+"➡️ Finding next person...";
 
- alert(
-  "Your profile gender: " +
-  (localStorage.getItem("gender") || "Not selected")
- );
+await cleanupMatch();
+
+try{
+
+localStream=
+await navigator.mediaDevices.getUserMedia({
+video:true,
+audio:true
+});
+
+document.getElementById("localVideo").srcObject=
+localStream;
+
+searching=true;
+
+await findPerson();
+
+}catch(error){
+
+document.getElementById("status").innerText=
+"Camera permission required.";
 
 }
 
-function changeCountry(){
+}
 
- const country =
-  prompt(
-   "Enter country:",
-   "Nepal"
-  );
 
- if(country){
+async function stopChat(){
 
-  document.querySelector(
-   ".option:nth-child(2)"
-  ).textContent=
-   "🌍 " + country;
+await cleanupMatch();
 
- }
+document.getElementById("chatPage")
+.classList.add("hidden");
+
+document.getElementById("homePage")
+.classList.remove("hidden");
+
+}
+
+
+async function cleanupMatch(){
+
+searching=false;
+
+if(peer){
+
+peer.close();
+
+peer=null;
+
+}
+
+if(currentMatch){
+
+await db.ref(
+"matches/"+currentMatch
+).remove();
+
+currentMatch=null;
+
+}
+
+if(currentUser){
+
+await db.ref(
+"waiting/"+currentUser.uid
+).remove();
+
+}
+
+if(localStream){
+
+localStream.getTracks()
+.forEach(track=>track.stop());
+
+localStream=null;
+
+}
+
+document.getElementById("localVideo")
+.srcObject=null;
+
+document.getElementById("remoteVideo")
+.srcObject=null;
+
+}
+
+
+async function reportUser(){
+
+if(!currentUser)return;
+
+await db.ref("reports").push({
+
+reporter:currentUser.uid,
+
+match:currentMatch||"unknown",
+
+time:firebase.database.ServerValue.TIMESTAMP
+
+});
+
+alert("🚨 Report submitted.");
+
+}
+
+
+async function logout(){
+
+await stopChat();
+
+await auth.signOut();
 
 }
 
