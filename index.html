@@ -2,174 +2,204 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>OmeTV 4</title>
 
 <script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-database-compat.js"></script>
 
 <style>
 *{box-sizing:border-box}
+
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:linear-gradient(135deg,#111827,#4f46e5);
-  color:white;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+margin:0;
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#111827,#4f46e5);
+color:white;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
 }
-.container{
-  width:94%;
-  max-width:500px;
-  background:rgba(255,255,255,.12);
-  backdrop-filter:blur(15px);
-  border-radius:25px;
-  padding:25px;
-  text-align:center;
-  box-shadow:0 10px 40px rgba(0,0,0,.3);
+
+.box{
+width:94%;
+max-width:520px;
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(15px);
+border-radius:25px;
+padding:22px;
+text-align:center;
+box-shadow:0 10px 40px #0006;
 }
-h1{margin-top:5px;font-size:36px}
-p{opacity:.85}
-button{
-  width:100%;
-  padding:15px;
-  margin:8px 0;
-  border:0;
-  border-radius:14px;
-  font-size:17px;
-  font-weight:bold;
-  cursor:pointer;
+
+h1{font-size:36px;margin:5px}
+
+button,select{
+width:100%;
+padding:15px;
+margin:7px 0;
+border:0;
+border-radius:14px;
+font-size:17px;
+font-weight:bold;
 }
+
+button{cursor:pointer}
+
 .google{background:white;color:#222}
 .start{background:#22c55e;color:white}
 .next{background:#3b82f6;color:white}
 .stop{background:#ef4444;color:white}
 .report{background:#f59e0b;color:white}
+
 video{
-  width:100%;
-  max-height:55vh;
-  background:#000;
-  border-radius:18px;
-  margin:15px 0;
+width:100%;
+height:280px;
+object-fit:cover;
+background:#000;
+border-radius:18px;
+margin:10px 0;
 }
+
 .hidden{display:none}
+
 .status{
-  margin:12px 0;
-  padding:10px;
-  border-radius:10px;
-  background:rgba(0,0,0,.2);
+padding:12px;
+background:#0004;
+border-radius:12px;
+margin:10px 0;
 }
-.user{
-  font-size:14px;
-  opacity:.8;
-  margin-bottom:10px;
-}
-select{
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  border:0;
-  margin:8px 0;
-  font-size:16px;
+
+.small{
+font-size:13px;
+opacity:.8;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="box">
 
-  <!-- LOGIN -->
-  <div id="loginPage">
-    <h1>OmeTV 4</h1>
-    <p>Random Video Chat</p>
+<!-- LOGIN -->
+<div id="loginPage">
 
-    <button class="google" onclick="googleLogin()">
-      🔵 Continue with Google
-    </button>
+<h1>OmeTV 4</h1>
 
-    <div class="status" id="loginStatus">
-      Please login to continue
-    </div>
-  </div>
+<p>Random Video Chat 🌎</p>
 
-  <!-- HOME -->
-  <div id="homePage" class="hidden">
-    <h1>OmeTV 4</h1>
+<button class="google" onclick="googleLogin()">
+🔵 Continue with Google
+</button>
 
-    <div class="user" id="userInfo"></div>
-
-    <p>Meet new people around the world 🌎</p>
-
-    <select id="country">
-      <option value="all">🌎 All Countries</option>
-      <option value="Nepal">🇳🇵 Nepal</option>
-      <option value="India">🇮🇳 India</option>
-      <option value="USA">🇺🇸 USA</option>
-      <option value="UK">🇬🇧 United Kingdom</option>
-      <option value="Japan">🇯🇵 Japan</option>
-      <option value="Korea">🇰🇷 Korea</option>
-    </select>
-
-    <button class="start" onclick="startChat()">
-      🎥 START
-    </button>
-
-    <button class="stop" onclick="logout()">
-      🚪 Logout
-    </button>
-  </div>
-
-  <!-- CHAT -->
-  <div id="chatPage" class="hidden">
-
-    <h2>Video Chat 🎥</h2>
-
-    <div class="user" id="chatUser"></div>
-
-    <video id="video" autoplay playsinline muted></video>
-
-    <div class="status" id="status">
-      Press START to begin
-    </div>
-
-    <button class="next" onclick="nextPerson()">
-      ➡️ NEXT
-    </button>
-
-    <button class="stop" onclick="stopCamera()">
-      ⛔ STOP
-    </button>
-
-    <button class="report" onclick="reportUser()">
-      🚨 REPORT
-    </button>
-
-  </div>
+<div id="loginStatus" class="status">
+Please login
+</div>
 
 </div>
+
+
+<!-- HOME -->
+<div id="homePage" class="hidden">
+
+<h1>OmeTV 4</h1>
+
+<p id="userInfo"></p>
+
+<select id="country">
+<option value="all">🌎 All Countries</option>
+<option value="Nepal">🇳🇵 Nepal</option>
+<option value="India">🇮🇳 India</option>
+<option value="USA">🇺🇸 USA</option>
+<option value="UK">🇬🇧 UK</option>
+<option value="Japan">🇯🇵 Japan</option>
+<option value="Korea">🇰🇷 Korea</option>
+</select>
+
+<button class="start" onclick="startChat()">
+🎥 START
+</button>
+
+<button class="stop" onclick="logout()">
+🚪 Logout
+</button>
+
+</div>
+
+
+<!-- CHAT -->
+<div id="chatPage" class="hidden">
+
+<h2>Video Chat 🎥</h2>
+
+<video id="remoteVideo" autoplay playsinline></video>
+
+<video id="localVideo" autoplay playsinline muted></video>
+
+<div id="status" class="status">
+Starting...
+</div>
+
+<button class="next" onclick="nextPerson()">
+➡️ NEXT
+</button>
+
+<button class="stop" onclick="stopChat()">
+⛔ STOP
+</button>
+
+<button class="report" onclick="reportUser()">
+🚨 REPORT
+</button>
+
+<p class="small">
+Your camera preview is shown below the other person.
+</p>
+
+</div>
+
+</div>
+
 
 <script>
 
 // ===============================
-// FIREBASE CONFIG
+// FIREBASE
 // ===============================
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDX18nNNVbSd3jwdODlh_-XhuFrn2lQEAQ",
-  authDomain: "ome-tv-4-5fd7b.firebaseapp.com",
-  projectId: "ome-tv-4-5fd7b",
-  storageBucket: "ome-tv-4-5fd7b.firebasestorage.app",
-  messagingSenderId: "827380900936",
-  appId: "1:827380900936:web:62a7f50dd008c94149a47d",
-  measurementId: "G-Q82KTMQ43C"
+apiKey:"AIzaSyDX18nNNVbSd3jwdODlh_-XhuFrn2lQEAQ",
+authDomain:"ome-tv-4-5fd7b.firebaseapp.com",
+projectId:"ome-tv-4-5fd7b",
+storageBucket:"ome-tv-4-5fd7b.firebasestorage.app",
+messagingSenderId:"827380900936",
+appId:"1:827380900936:web:62a7f50dd008c94149a47d",
+measurementId:"G-Q82KTMQ43C"
 };
 
 firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
+const auth=firebase.auth();
+const db=firebase.database();
+
+
+// ===============================
+// VARIABLES
+// ===============================
+
+let currentUser=null;
+let localStream=null;
+let peer=null;
+let currentMatch=null;
+let matchListener=null;
+let offerListener=null;
+let answerListener=null;
+let candidateListener1=null;
+let candidateListener2=null;
+let searching=false;
 
 
 // ===============================
@@ -178,58 +208,60 @@ const auth = firebase.auth();
 
 async function googleLogin(){
 
-  const status = document.getElementById("loginStatus");
+document.getElementById("loginStatus").innerText=
+"Opening Google Login...";
 
-  status.innerText = "Opening Google Login...";
+try{
 
-  try{
+const provider=new firebase.auth.GoogleAuthProvider();
 
-    const provider = new firebase.auth.GoogleAuthProvider();
+await auth.signInWithPopup(provider);
 
-    await auth.signInWithPopup(provider);
+}catch(error){
 
-  }catch(error){
+console.error(error);
 
-    console.error(error);
+document.getElementById("loginStatus").innerText=
+"Login failed: "+error.message;
 
-    status.innerText =
-      "Login failed: " + error.message;
-
-  }
+}
 
 }
 
 
 // ===============================
-// LOGIN STATE
+// AUTH
 // ===============================
 
-auth.onAuthStateChanged(function(user){
+auth.onAuthStateChanged(user=>{
 
-  if(user){
+if(user){
 
-    document.getElementById("loginPage")
-      .classList.add("hidden");
+currentUser=user;
 
-    document.getElementById("homePage")
-      .classList.remove("hidden");
+document.getElementById("loginPage")
+.classList.add("hidden");
 
-    document.getElementById("userInfo").innerText =
-      "Logged in as: " +
-      (user.displayName || user.email);
+document.getElementById("homePage")
+.classList.remove("hidden");
 
-  }else{
+document.getElementById("userInfo").innerText=
+"👤 "+(user.displayName||user.email);
 
-    document.getElementById("loginPage")
-      .classList.remove("hidden");
+}else{
 
-    document.getElementById("homePage")
-      .classList.add("hidden");
+currentUser=null;
 
-    document.getElementById("chatPage")
-      .classList.add("hidden");
+document.getElementById("loginPage")
+.classList.remove("hidden");
 
-  }
+document.getElementById("homePage")
+.classList.add("hidden");
+
+document.getElementById("chatPage")
+.classList.add("hidden");
+
+}
 
 });
 
@@ -240,47 +272,331 @@ auth.onAuthStateChanged(function(user){
 
 async function startChat(){
 
-  document.getElementById("homePage")
-    .classList.add("hidden");
+if(!currentUser)return;
 
-  document.getElementById("chatPage")
-    .classList.remove("hidden");
+document.getElementById("homePage")
+.classList.add("hidden");
 
-  document.getElementById("chatUser").innerText =
-    "Country: " +
-    document.getElementById("country").value;
+document.getElementById("chatPage")
+.classList.remove("hidden");
 
-  document.getElementById("status").innerText =
-    "Requesting camera permission...";
+document.getElementById("status").innerText=
+"Requesting camera and microphone...";
 
-  try{
+try{
 
-    const stream =
-      await navigator.mediaDevices.getUserMedia({
-        video:true,
-        audio:true
-      });
+localStream=
+await navigator.mediaDevices.getUserMedia({
+video:true,
+audio:true
+});
 
-    document.getElementById("video").srcObject = stream;
+document.getElementById("localVideo").srcObject=
+localStream;
 
-    document.getElementById("status").innerText =
-      "Camera ready. Searching for someone...";
+document.getElementById("status").innerText=
+"🔎 Searching for another person...";
 
-    setTimeout(function(){
+searching=true;
 
-      document.getElementById("status").innerText =
-        "Waiting for another online user...";
+await findPerson();
 
-    },1500);
+}catch(error){
 
-  }catch(error){
+console.error(error);
 
-    console.error(error);
+document.getElementById("status").innerText=
+"Camera/Microphone permission denied.";
 
-    document.getElementById("status").innerText =
-      "Camera permission denied. Please allow Camera & Microphone.";
+}
 
-  }
+}
+
+
+// ===============================
+// FIND PERSON
+// ===============================
+
+async function findPerson(){
+
+if(!searching)return;
+
+const myCountry=
+document.getElementById("country").value;
+
+const waitingRef=db.ref("waiting");
+
+const snapshot=
+await waitingRef.once("value");
+
+let found=null;
+
+snapshot.forEach(child=>{
+
+if(child.key!==currentUser.uid){
+
+const data=child.val();
+
+if(
+myCountry==="all" ||
+data.country==="all" ||
+data.country===myCountry
+){
+
+found={
+uid:child.key,
+country:data.country
+};
+
+}
+
+}
+
+});
+
+
+if(found){
+
+const ids=[
+currentUser.uid,
+found.uid
+].sort();
+
+const matchId=ids[0]+"_"+ids[1];
+
+currentMatch=matchId;
+
+await db.ref("matches/"+matchId).update({
+
+user1:ids[0],
+user2:ids[1],
+createdAt:firebase.database.ServerValue.TIMESTAMP
+
+});
+
+await db.ref("waiting/"+found.uid).remove();
+
+await db.ref("waiting/"+currentUser.uid).remove();
+
+if(currentUser.uid===ids[0]){
+
+await createOffer(matchId);
+
+}else{
+
+await waitForOffer(matchId);
+
+}
+
+}else{
+
+await db.ref("waiting/"+currentUser.uid).set({
+
+country:myCountry,
+
+name:currentUser.displayName||"User",
+
+timestamp:firebase.database.ServerValue.TIMESTAMP
+
+});
+
+db.ref("waiting/"+currentUser.uid)
+.onDisconnect()
+.remove();
+
+document.getElementById("status").innerText=
+"🟢 Waiting for another online user...";
+
+}
+
+}
+
+
+// ===============================
+// WEBRTC
+// ===============================
+
+function createPeer(matchId){
+
+peer=new RTCPeerConnection({
+
+iceServers:[
+{
+urls:"stun:stun.l.google.com:19302"
+},
+{
+urls:"stun:stun1.l.google.com:19302"
+}
+]
+
+});
+
+
+localStream.getTracks().forEach(track=>{
+
+peer.addTrack(track,localStream);
+
+});
+
+
+peer.ontrack=event=>{
+
+document.getElementById("remoteVideo").srcObject=
+event.streams[0];
+
+document.getElementById("status").innerText=
+"🟢 Connected!";
+
+};
+
+
+peer.onicecandidate=event=>{
+
+if(event.candidate){
+
+const path=
+"matches/"+matchId+"/candidates/"+
+(currentUser.uid);
+
+db.ref(path).push(event.candidate.toJSON());
+
+}
+
+};
+
+}
+
+
+// ===============================
+// CREATE OFFER
+// ===============================
+
+async function createOffer(matchId){
+
+createPeer(matchId);
+
+const offer=
+await peer.createOffer();
+
+await peer.setLocalDescription(offer);
+
+await db.ref("matches/"+matchId+"/offer")
+.set({
+
+type:offer.type,
+sdp:offer.sdp
+
+});
+
+
+answerListener=
+db.ref("matches/"+matchId+"/answer")
+.on("value",async snap=>{
+
+const answer=snap.val();
+
+if(answer && !peer.currentRemoteDescription){
+
+await peer.setRemoteDescription(
+new RTCSessionDescription(answer)
+);
+
+}
+
+});
+
+listenCandidates(matchId);
+
+document.getElementById("status").innerText=
+"📞 Calling another user...";
+
+}
+
+
+// ===============================
+// WAIT FOR OFFER
+// ===============================
+
+function waitForOffer(matchId){
+
+offerListener=
+db.ref("matches/"+matchId+"/offer")
+.on("value",async snap=>{
+
+const offer=snap.val();
+
+if(!offer)return;
+
+if(!peer){
+
+createPeer(matchId);
+
+await peer.setRemoteDescription(
+new RTCSessionDescription(offer)
+);
+
+const answer=
+await peer.createAnswer();
+
+await peer.setLocalDescription(answer);
+
+await db.ref("matches/"+matchId+"/answer")
+.set({
+
+type:answer.type,
+sdp:answer.sdp
+
+});
+
+listenCandidates(matchId);
+
+document.getElementById("status").innerText=
+"📞 Connecting...";
+
+}
+
+});
+
+}
+
+
+// ===============================
+// ICE CANDIDATES
+// ===============================
+
+function listenCandidates(matchId){
+
+const myPath=
+"matches/"+matchId+"/candidates/";
+
+const otherUid=
+currentMatch.split("_")
+.find(id=>id!==currentUser.uid);
+
+if(!otherUid)return;
+
+const ref=
+db.ref(myPath+otherUid);
+
+ref.on("child_added",async snap=>{
+
+try{
+
+if(peer){
+
+await peer.addIceCandidate(
+new RTCIceCandidate(snap.val())
+);
+
+}
+
+}catch(error){
+
+console.log(error);
+
+}
+
+});
 
 }
 
@@ -289,54 +605,130 @@ async function startChat(){
 // NEXT
 // ===============================
 
-function nextPerson(){
+async function nextPerson(){
 
-  stopTracks();
+document.getElementById("status").innerText=
+"➡️ Finding next person...";
 
-  document.getElementById("status").innerText =
-    "Searching for next person...";
+await cleanupMatch();
 
-  setTimeout(function(){
+if(localStream){
 
-    document.getElementById("status").innerText =
-      "Waiting for another online user...";
+localStream.getTracks().forEach(track=>{
+track.stop();
+});
 
-  },1000);
+}
+
+document.getElementById("remoteVideo").srcObject=null;
+
+try{
+
+localStream=
+await navigator.mediaDevices.getUserMedia({
+video:true,
+audio:true
+});
+
+document.getElementById("localVideo").srcObject=
+localStream;
+
+searching=true;
+
+await findPerson();
+
+}catch(error){
+
+document.getElementById("status").innerText=
+"Camera permission required.";
+
+}
 
 }
 
 
 // ===============================
-// STOP CAMERA
+// STOP
 // ===============================
 
-function stopCamera(){
+async function stopChat(){
 
-  stopTracks();
+searching=false;
 
-  document.getElementById("chatPage")
-    .classList.add("hidden");
+await cleanupMatch();
 
-  document.getElementById("homePage")
-    .classList.remove("hidden");
+if(localStream){
+
+localStream.getTracks().forEach(track=>{
+track.stop();
+});
+
+localStream=null;
+
+}
+
+document.getElementById("localVideo").srcObject=null;
+document.getElementById("remoteVideo").srcObject=null;
+
+document.getElementById("chatPage")
+.classList.add("hidden");
+
+document.getElementById("homePage")
+.classList.remove("hidden");
 
 }
 
 
-function stopTracks(){
+// ===============================
+// CLEANUP
+// ===============================
 
-  const video =
-    document.getElementById("video");
+async function cleanupMatch(){
 
-  if(video.srcObject){
+searching=false;
 
-    video.srcObject
-      .getTracks()
-      .forEach(track => track.stop());
+if(peer){
 
-    video.srcObject = null;
+peer.close();
 
-  }
+peer=null;
+
+}
+
+if(matchListener){
+
+db.ref(matchListener).off();
+matchListener=null;
+
+}
+
+if(offerListener){
+
+db.ref("matches/"+currentMatch+"/offer").off();
+offerListener=null;
+
+}
+
+if(answerListener){
+
+db.ref("matches/"+currentMatch+"/answer").off();
+answerListener=null;
+
+}
+
+if(currentMatch){
+
+await db.ref("matches/"+currentMatch).remove();
+
+currentMatch=null;
+
+}
+
+if(currentUser){
+
+await db.ref("waiting/"+currentUser.uid).remove();
+
+}
 
 }
 
@@ -345,11 +737,21 @@ function stopTracks(){
 // REPORT
 // ===============================
 
-function reportUser(){
+async function reportUser(){
 
-  alert(
-    "Report submitted. Thank you for helping keep OmeTV 4 safe."
-  );
+if(!currentUser)return;
+
+await db.ref("reports").push({
+
+reporter:currentUser.uid,
+
+match:currentMatch||"unknown",
+
+time:firebase.database.ServerValue.TIMESTAMP
+
+});
+
+alert("🚨 Report submitted.");
 
 }
 
@@ -360,9 +762,9 @@ function reportUser(){
 
 async function logout(){
 
-  stopTracks();
+await stopChat();
 
-  await auth.signOut();
+await auth.signOut();
 
 }
 
