@@ -1,1 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmeTV 4</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    .app {
+      width: 92%;
+      max-width: 420px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    }
+
+    h1 {
+      font-size: 38px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      opacity: 0.9;
+      margin-bottom: 25px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #startBtn {
+      background: white;
+      color: #6b4bb3;
+    }
+
+    #cameraBtn {
+      background: #22c55e;
+      color: white;
+    }
+
+    #nextBtn {
+      background: #3b82f6;
+      color: white;
+    }
+
+    #stopBtn {
+      background: #ef4444;
+      color: white;
+    }
+
+    video {
+      width: 100%;
+      margin-top: 20px;
+      border-radius: 18px;
+      background: #111;
+      display: none;
+      transform: scaleX(-1);
+    }
+
+    #status {
+      margin-top: 18px;
+      font-size: 15px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <div id="home">
+      <h1>OmeTV 4</h1>
+      <p class="subtitle">Meet people. Talk. Have fun. 👋</p>
+
+      <button id="startBtn" onclick="startApp()">
+        START
+      </button>
+    </div>
+
+    <div id="chat" class="hidden">
+      <h1>OmeTV 4</h1>
+      <p class="subtitle">Video Chat 🎥</p>
+
+      <video id="video" autoplay playsinline muted></video>
+
+      <button id="cameraBtn" onclick="openCamera()">
+        📷 Open Camera
+      </button>
+
+      <button id="nextBtn" onclick="nextPerson()">
+        ➡️ NEXT
+      </button>
+
+      <button id="stopBtn" onclick="stopCamera()">
+        ⛔ STOP
+      </button>
+
+      <p id="status">Ready to start</p>
+    </div>
+
+  </div>
+
+  <script>
+    let stream = null;
+
+    function startApp() {
+      document.getElementById("home").classList.add("hidden");
+      document.getElementById("chat").classList.remove("hidden");
+      document.getElementById("status").innerText =
+        "Press Open Camera to continue 📷";
+    }
+
+    async function openCamera() {
+      const status = document.getElementById("status");
+      const video = document.getElementById("video");
+
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true
+        });
+
+        video.srcObject = stream;
+        video.style.display = "block";
+
+        status.innerText = "Camera & microphone ready ✅";
+
+      } catch (error) {
+        console.error(error);
+
+        status.innerText =
+          "Camera permission denied ❌ Please allow Camera & Microphone.";
+
+        alert(
+          "Camera/Microphone permission चाहिन्छ। Browser मा Allow थिच्नुहोस्।"
+        );
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+
+      const video = document.getElementById("video");
+      video.srcObject = null;
+      video.style.display = "none";
+
+      document.getElementById("status").innerText =
+        "Camera stopped ⛔";
+    }
+
+    function nextPerson() {
+      document.getElementById("status").innerText =
+        "Searching for next person... 🔎";
+
+      setTimeout(() => {
+        document.getElementById("status").innerText =
+          "No other user connected yet.";
+      }, 1500);
+    }
+  </script>
+
+</body>
+</html>
