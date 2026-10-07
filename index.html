@@ -1,14 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ne">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>OmeTV 4</title>
-
-<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-database-compat.js"></script>
+<title>FF Top Up</title>
 
 <style>
 *{box-sizing:border-box}
@@ -16,755 +11,380 @@
 body{
 margin:0;
 font-family:Arial,sans-serif;
-background:linear-gradient(135deg,#111827,#4f46e5);
+background:linear-gradient(135deg,#111827,#7c2d12);
 color:white;
 min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
+padding:20px;
 }
 
-.box{
-width:94%;
-max-width:520px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(15px);
+.container{
+max-width:500px;
+margin:auto;
+background:#ffffff18;
+backdrop-filter:blur(12px);
 border-radius:25px;
 padding:22px;
-text-align:center;
-box-shadow:0 10px 40px #0006;
+box-shadow:0 10px 40px #0008;
 }
 
-h1{font-size:36px;margin:5px}
+h1{
+text-align:center;
+font-size:32px;
+}
 
-button,select{
+.subtitle{
+text-align:center;
+opacity:.8;
+}
+
+.payment-box{
+background:#0005;
+padding:18px;
+border-radius:18px;
+margin:15px 0;
+text-align:center;
+}
+
+.esewa{
+color:#58d68d;
+font-size:22px;
+font-weight:bold;
+}
+
+label{
+display:block;
+margin-top:15px;
+margin-bottom:6px;
+font-weight:bold;
+}
+
+input,select{
+width:100%;
+padding:14px;
+border:0;
+border-radius:12px;
+font-size:16px;
+outline:none;
+}
+
+.packages{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:10px;
+}
+
+.package{
+background:#ffffff18;
+border:2px solid transparent;
+padding:15px;
+border-radius:15px;
+text-align:center;
+cursor:pointer;
+}
+
+.package:hover{
+border-color:#facc15;
+}
+
+.package b{
+display:block;
+font-size:20px;
+margin-bottom:5px;
+}
+
+button{
 width:100%;
 padding:15px;
-margin:7px 0;
+margin-top:18px;
 border:0;
 border-radius:14px;
 font-size:17px;
 font-weight:bold;
+cursor:pointer;
 }
 
-button{cursor:pointer}
-
-.google{background:white;color:#222}
-.start{background:#22c55e;color:white}
-.next{background:#3b82f6;color:white}
-.stop{background:#ef4444;color:white}
-.report{background:#f59e0b;color:white}
-
-video{
-width:100%;
-height:280px;
-object-fit:cover;
-background:#000;
-border-radius:18px;
-margin:10px 0;
+.whatsapp{
+background:#25D366;
+color:white;
 }
 
-.hidden{display:none}
-
-.status{
-padding:12px;
-background:#0004;
-border-radius:12px;
-margin:10px 0;
+.support{
+background:#2563eb;
+color:white;
 }
 
-.small{
+.copy{
+background:#facc15;
+color:#111;
+}
+
+.note{
 font-size:13px;
-opacity:.8;
+opacity:.75;
+text-align:center;
+margin-top:15px;
+}
+
+.success{
+display:none;
+background:#16a34a;
+padding:12px;
+border-radius:12px;
+margin-top:15px;
+text-align:center;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="container">
 
-<!-- LOGIN -->
-<div id="loginPage">
+<h1>🔥 FF TOP UP 💎</h1>
 
-<h1>OmeTV 4</h1>
+<p class="subtitle">
+Fast & Easy Free Fire Top Up
+</p>
 
-<p>Random Video Chat 🌎</p>
+<div class="payment-box">
 
-<button class="google" onclick="googleLogin()">
-🔵 Continue with Google
+<div>💳 Payment Method</div>
+
+<div class="esewa">
+eSewa
+</div>
+
+<div>
+📱 9761996391
+</div>
+
+<button class="copy" onclick="copyEsewa()">
+📋 COPY eSewa NUMBER
 </button>
 
-<div id="loginStatus" class="status">
-Please login
+</div>
+
+<label>Free Fire UID</label>
+
+<input
+id="uid"
+type="number"
+placeholder="Enter your FF UID"
+>
+
+<label>Diamond Package</label>
+
+<div class="packages">
+
+<div class="package"
+onclick="selectPackage('100 Diamonds - Rs 150')">
+<b>💎 100</b>
+Rs. 150
+</div>
+
+<div class="package"
+onclick="selectPackage('310 Diamonds - Rs 450')">
+<b>💎 310</b>
+Rs. 450
+</div>
+
+<div class="package"
+onclick="selectPackage('520 Diamonds - Rs 750')">
+<b>💎 520</b>
+Rs. 750
+</div>
+
+<div class="package"
+onclick="selectPackage('1060 Diamonds - Rs 1500')">
+<b>💎 1060</b>
+Rs. 1500
 </div>
 
 </div>
 
+<input
+id="package"
+type="text"
+placeholder="Select a package"
+readonly
+>
 
-<!-- HOME -->
-<div id="homePage" class="hidden">
+<label>Payment Method</label>
 
-<h1>OmeTV 4</h1>
+<select id="payment">
 
-<p id="userInfo"></p>
+<option value="">
+Select payment method
+</option>
 
-<select id="country">
-<option value="all">🌎 All Countries</option>
-<option value="Nepal">🇳🇵 Nepal</option>
-<option value="India">🇮🇳 India</option>
-<option value="USA">🇺🇸 USA</option>
-<option value="UK">🇬🇧 UK</option>
-<option value="Japan">🇯🇵 Japan</option>
-<option value="Korea">🇰🇷 Korea</option>
+<option value="eSewa">
+eSewa
+</option>
+
 </select>
 
-<button class="start" onclick="startChat()">
-🎥 START
-</button>
+<label>Transaction ID</label>
 
-<button class="stop" onclick="logout()">
-🚪 Logout
-</button>
+<input
+id="transaction"
+type="text"
+placeholder="Enter payment transaction ID"
+>
 
+<div
+id="success"
+class="success">
+Order ready! WhatsApp खोलिँदैछ...
 </div>
 
+<button
+class="whatsapp"
+onclick="sendOrder()">
 
-<!-- CHAT -->
-<div id="chatPage" class="hidden">
+📲 SEND ORDER ON WHATSAPP
 
-<h2>Video Chat 🎥</h2>
-
-<video id="remoteVideo" autoplay playsinline></video>
-
-<video id="localVideo" autoplay playsinline muted></video>
-
-<div id="status" class="status">
-Starting...
-</div>
-
-<button class="next" onclick="nextPerson()">
-➡️ NEXT
 </button>
 
-<button class="stop" onclick="stopChat()">
-⛔ STOP
+<button
+class="support"
+onclick="support()">
+
+💬 WHATSAPP SUPPORT
+
 </button>
 
-<button class="report" onclick="reportUser()">
-🚨 REPORT
-</button>
-
-<p class="small">
-Your camera preview is shown below the other person.
+<p class="note">
+पहिले eSewa मा payment गर्नुहोस्। त्यसपछि Transaction ID राखेर order पठाउनुहोस्।
 </p>
 
 </div>
 
-</div>
-
-
 <script>
 
-// ===============================
-// FIREBASE
-// ===============================
+const WHATSAPP_NUMBER =
+"9779761996391";
 
-const firebaseConfig = {
-apiKey:"AIzaSyDX18nNNVbSd3jwdODlh_-XhuFrn2lQEAQ",
-authDomain:"ome-tv-4-5fd7b.firebaseapp.com",
-projectId:"ome-tv-4-5fd7b",
-storageBucket:"ome-tv-4-5fd7b.firebasestorage.app",
-messagingSenderId:"827380900936",
-appId:"1:827380900936:web:62a7f50dd008c94149a47d",
-measurementId:"G-Q82KTMQ43C"
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const auth=firebase.auth();
-const db=firebase.database();
+const ESEWA_NUMBER =
+"9761996391";
 
 
-// ===============================
-// VARIABLES
-// ===============================
+function selectPackage(pkg){
 
-let currentUser=null;
-let localStream=null;
-let peer=null;
-let currentMatch=null;
-let matchListener=null;
-let offerListener=null;
-let answerListener=null;
-let candidateListener1=null;
-let candidateListener2=null;
-let searching=false;
-
-
-// ===============================
-// GOOGLE LOGIN
-// ===============================
-
-async function googleLogin(){
-
-document.getElementById("loginStatus").innerText=
-"Opening Google Login...";
-
-try{
-
-const provider=new firebase.auth.GoogleAuthProvider();
-
-await auth.signInWithPopup(provider);
-
-}catch(error){
-
-console.error(error);
-
-document.getElementById("loginStatus").innerText=
-"Login failed: "+error.message;
-
-}
+document.getElementById("package").value=pkg;
 
 }
 
 
-// ===============================
-// AUTH
-// ===============================
+function copyEsewa(){
 
-auth.onAuthStateChanged(user=>{
+navigator.clipboard.writeText(ESEWA_NUMBER);
 
-if(user){
-
-currentUser=user;
-
-document.getElementById("loginPage")
-.classList.add("hidden");
-
-document.getElementById("homePage")
-.classList.remove("hidden");
-
-document.getElementById("userInfo").innerText=
-"👤 "+(user.displayName||user.email);
-
-}else{
-
-currentUser=null;
-
-document.getElementById("loginPage")
-.classList.remove("hidden");
-
-document.getElementById("homePage")
-.classList.add("hidden");
-
-document.getElementById("chatPage")
-.classList.add("hidden");
-
-}
-
-});
-
-
-// ===============================
-// START CHAT
-// ===============================
-
-async function startChat(){
-
-if(!currentUser)return;
-
-document.getElementById("homePage")
-.classList.add("hidden");
-
-document.getElementById("chatPage")
-.classList.remove("hidden");
-
-document.getElementById("status").innerText=
-"Requesting camera and microphone...";
-
-try{
-
-localStream=
-await navigator.mediaDevices.getUserMedia({
-video:true,
-audio:true
-});
-
-document.getElementById("localVideo").srcObject=
-localStream;
-
-document.getElementById("status").innerText=
-"🔎 Searching for another person...";
-
-searching=true;
-
-await findPerson();
-
-}catch(error){
-
-console.error(error);
-
-document.getElementById("status").innerText=
-"Camera/Microphone permission denied.";
-
-}
+alert("eSewa नम्बर copied: "+ESEWA_NUMBER);
 
 }
 
 
-// ===============================
-// FIND PERSON
-// ===============================
+function sendOrder(){
 
-async function findPerson(){
+const uid=
+document.getElementById("uid").value.trim();
 
-if(!searching)return;
+const pkg=
+document.getElementById("package").value;
 
-const myCountry=
-document.getElementById("country").value;
+const payment=
+document.getElementById("payment").value;
 
-const waitingRef=db.ref("waiting");
-
-const snapshot=
-await waitingRef.once("value");
-
-let found=null;
-
-snapshot.forEach(child=>{
-
-if(child.key!==currentUser.uid){
-
-const data=child.val();
-
-if(
-myCountry==="all" ||
-data.country==="all" ||
-data.country===myCountry
-){
-
-found={
-uid:child.key,
-country:data.country
-};
-
-}
-
-}
-
-});
+const transaction=
+document.getElementById("transaction").value.trim();
 
 
-if(found){
+if(!uid){
 
-const ids=[
-currentUser.uid,
-found.uid
-].sort();
+alert("कृपया Free Fire UID राख्नुहोस्।");
 
-const matchId=ids[0]+"_"+ids[1];
-
-currentMatch=matchId;
-
-await db.ref("matches/"+matchId).update({
-
-user1:ids[0],
-user2:ids[1],
-createdAt:firebase.database.ServerValue.TIMESTAMP
-
-});
-
-await db.ref("waiting/"+found.uid).remove();
-
-await db.ref("waiting/"+currentUser.uid).remove();
-
-if(currentUser.uid===ids[0]){
-
-await createOffer(matchId);
-
-}else{
-
-await waitForOffer(matchId);
-
-}
-
-}else{
-
-await db.ref("waiting/"+currentUser.uid).set({
-
-country:myCountry,
-
-name:currentUser.displayName||"User",
-
-timestamp:firebase.database.ServerValue.TIMESTAMP
-
-});
-
-db.ref("waiting/"+currentUser.uid)
-.onDisconnect()
-.remove();
-
-document.getElementById("status").innerText=
-"🟢 Waiting for another online user...";
-
-}
+return;
 
 }
 
 
-// ===============================
-// WEBRTC
-// ===============================
+if(!pkg){
 
-function createPeer(matchId){
+alert("कृपया Diamond Package छान्नुहोस्।");
 
-peer=new RTCPeerConnection({
-
-iceServers:[
-{
-urls:"stun:stun.l.google.com:19302"
-},
-{
-urls:"stun:stun1.l.google.com:19302"
-}
-]
-
-});
-
-
-localStream.getTracks().forEach(track=>{
-
-peer.addTrack(track,localStream);
-
-});
-
-
-peer.ontrack=event=>{
-
-document.getElementById("remoteVideo").srcObject=
-event.streams[0];
-
-document.getElementById("status").innerText=
-"🟢 Connected!";
-
-};
-
-
-peer.onicecandidate=event=>{
-
-if(event.candidate){
-
-const path=
-"matches/"+matchId+"/candidates/"+
-(currentUser.uid);
-
-db.ref(path).push(event.candidate.toJSON());
-
-}
-
-};
+return;
 
 }
 
 
-// ===============================
-// CREATE OFFER
-// ===============================
+if(!payment){
 
-async function createOffer(matchId){
+alert("कृपया Payment Method छान्नुहोस्।");
 
-createPeer(matchId);
-
-const offer=
-await peer.createOffer();
-
-await peer.setLocalDescription(offer);
-
-await db.ref("matches/"+matchId+"/offer")
-.set({
-
-type:offer.type,
-sdp:offer.sdp
-
-});
-
-
-answerListener=
-db.ref("matches/"+matchId+"/answer")
-.on("value",async snap=>{
-
-const answer=snap.val();
-
-if(answer && !peer.currentRemoteDescription){
-
-await peer.setRemoteDescription(
-new RTCSessionDescription(answer)
-);
-
-}
-
-});
-
-listenCandidates(matchId);
-
-document.getElementById("status").innerText=
-"📞 Calling another user...";
+return;
 
 }
 
 
-// ===============================
-// WAIT FOR OFFER
-// ===============================
+if(!transaction){
 
-function waitForOffer(matchId){
+alert("कृपया Transaction ID राख्नुहोस्।");
 
-offerListener=
-db.ref("matches/"+matchId+"/offer")
-.on("value",async snap=>{
-
-const offer=snap.val();
-
-if(!offer)return;
-
-if(!peer){
-
-createPeer(matchId);
-
-await peer.setRemoteDescription(
-new RTCSessionDescription(offer)
-);
-
-const answer=
-await peer.createAnswer();
-
-await peer.setLocalDescription(answer);
-
-await db.ref("matches/"+matchId+"/answer")
-.set({
-
-type:answer.type,
-sdp:answer.sdp
-
-});
-
-listenCandidates(matchId);
-
-document.getElementById("status").innerText=
-"📞 Connecting...";
-
-}
-
-});
+return;
 
 }
 
 
-// ===============================
-// ICE CANDIDATES
-// ===============================
+const message=
+`🔥 FF TOP UP ORDER
 
-function listenCandidates(matchId){
+🎮 Free Fire UID:
+${uid}
 
-const myPath=
-"matches/"+matchId+"/candidates/";
+💎 Package:
+${pkg}
 
-const otherUid=
-currentMatch.split("_")
-.find(id=>id!==currentUser.uid);
+💰 Payment:
+${payment}
 
-if(!otherUid)return;
+🧾 Transaction ID:
+${transaction}
 
-const ref=
-db.ref(myPath+otherUid);
+💳 eSewa Number:
+9761996391
 
-ref.on("child_added",async snap=>{
+Please verify my payment and process my order.`;
 
-try{
 
-if(peer){
+const url=
+"https://wa.me/"+
+WHATSAPP_NUMBER+
+"?text="+
+encodeURIComponent(message);
 
-await peer.addIceCandidate(
-new RTCIceCandidate(snap.val())
-);
 
-}
+document.getElementById("success")
+.style.display="block";
 
-}catch(error){
 
-console.log(error);
-
-}
-
-});
+window.open(url,"_blank");
 
 }
 
 
-// ===============================
-// NEXT
-// ===============================
+function support(){
 
-async function nextPerson(){
+const message=
+"Hello, I need help with Free Fire Top Up.";
 
-document.getElementById("status").innerText=
-"➡️ Finding next person...";
+const url=
+"https://wa.me/"+
+WHATSAPP_NUMBER+
+"?text="+
+encodeURIComponent(message);
 
-await cleanupMatch();
-
-if(localStream){
-
-localStream.getTracks().forEach(track=>{
-track.stop();
-});
-
-}
-
-document.getElementById("remoteVideo").srcObject=null;
-
-try{
-
-localStream=
-await navigator.mediaDevices.getUserMedia({
-video:true,
-audio:true
-});
-
-document.getElementById("localVideo").srcObject=
-localStream;
-
-searching=true;
-
-await findPerson();
-
-}catch(error){
-
-document.getElementById("status").innerText=
-"Camera permission required.";
-
-}
-
-}
-
-
-// ===============================
-// STOP
-// ===============================
-
-async function stopChat(){
-
-searching=false;
-
-await cleanupMatch();
-
-if(localStream){
-
-localStream.getTracks().forEach(track=>{
-track.stop();
-});
-
-localStream=null;
-
-}
-
-document.getElementById("localVideo").srcObject=null;
-document.getElementById("remoteVideo").srcObject=null;
-
-document.getElementById("chatPage")
-.classList.add("hidden");
-
-document.getElementById("homePage")
-.classList.remove("hidden");
-
-}
-
-
-// ===============================
-// CLEANUP
-// ===============================
-
-async function cleanupMatch(){
-
-searching=false;
-
-if(peer){
-
-peer.close();
-
-peer=null;
-
-}
-
-if(matchListener){
-
-db.ref(matchListener).off();
-matchListener=null;
-
-}
-
-if(offerListener){
-
-db.ref("matches/"+currentMatch+"/offer").off();
-offerListener=null;
-
-}
-
-if(answerListener){
-
-db.ref("matches/"+currentMatch+"/answer").off();
-answerListener=null;
-
-}
-
-if(currentMatch){
-
-await db.ref("matches/"+currentMatch).remove();
-
-currentMatch=null;
-
-}
-
-if(currentUser){
-
-await db.ref("waiting/"+currentUser.uid).remove();
-
-}
-
-}
-
-
-// ===============================
-// REPORT
-// ===============================
-
-async function reportUser(){
-
-if(!currentUser)return;
-
-await db.ref("reports").push({
-
-reporter:currentUser.uid,
-
-match:currentMatch||"unknown",
-
-time:firebase.database.ServerValue.TIMESTAMP
-
-});
-
-alert("🚨 Report submitted.");
-
-}
-
-
-// ===============================
-// LOGOUT
-// ===============================
-
-async function logout(){
-
-await stopChat();
-
-await auth.signOut();
+window.open(url,"_blank");
 
 }
 
