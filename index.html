@@ -1,196 +1,372 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OmeTV 4</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OmeTV 4</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
 
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-    }
-
-    .app {
-      width: 92%;
-      max-width: 420px;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(15px);
-      border-radius: 25px;
-      padding: 30px 20px;
-      text-align: center;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-    }
-
-    h1 {
-      font-size: 38px;
-      margin-bottom: 10px;
-    }
-
-    .subtitle {
-      opacity: 0.9;
-      margin-bottom: 25px;
-    }
-
-    button {
-      width: 100%;
-      padding: 15px;
-      margin-top: 12px;
-      border: none;
-      border-radius: 14px;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    #startBtn {
-      background: white;
-      color: #6b4bb3;
-    }
-
-    #cameraBtn {
-      background: #22c55e;
-      color: white;
-    }
-
-    #nextBtn {
-      background: #3b82f6;
-      color: white;
-    }
-
-    #stopBtn {
-      background: #ef4444;
-      color: white;
-    }
-
-    video {
-      width: 100%;
-      margin-top: 20px;
-      border-radius: 18px;
-      background: #111;
-      display: none;
-      transform: scaleX(-1);
-    }
-
-    #status {
-      margin-top: 18px;
-      font-size: 15px;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#111827,#4f46e5);
+  color:white;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.container{
+  width:94%;
+  max-width:500px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(15px);
+  border-radius:25px;
+  padding:25px;
+  text-align:center;
+  box-shadow:0 10px 40px rgba(0,0,0,.3);
+}
+h1{margin-top:5px;font-size:36px}
+p{opacity:.85}
+button{
+  width:100%;
+  padding:15px;
+  margin:8px 0;
+  border:0;
+  border-radius:14px;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.google{background:white;color:#222}
+.start{background:#22c55e;color:white}
+.next{background:#3b82f6;color:white}
+.stop{background:#ef4444;color:white}
+.report{background:#f59e0b;color:white}
+video{
+  width:100%;
+  max-height:55vh;
+  background:#000;
+  border-radius:18px;
+  margin:15px 0;
+}
+.hidden{display:none}
+.status{
+  margin:12px 0;
+  padding:10px;
+  border-radius:10px;
+  background:rgba(0,0,0,.2);
+}
+.user{
+  font-size:14px;
+  opacity:.8;
+  margin-bottom:10px;
+}
+select{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:0;
+  margin:8px 0;
+  font-size:16px;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="app">
+<div class="container">
 
-    <div id="home">
-      <h1>OmeTV 4</h1>
-      <p class="subtitle">Meet people. Talk. Have fun. 👋</p>
+  <!-- LOGIN -->
+  <div id="loginPage">
+    <h1>OmeTV 4</h1>
+    <p>Random Video Chat</p>
 
-      <button id="startBtn" onclick="startApp()">
-        START
-      </button>
+    <button class="google" onclick="googleLogin()">
+      🔵 Continue with Google
+    </button>
+
+    <div class="status" id="loginStatus">
+      Please login to continue
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="homePage" class="hidden">
+    <h1>OmeTV 4</h1>
+
+    <div class="user" id="userInfo"></div>
+
+    <p>Meet new people around the world 🌎</p>
+
+    <select id="country">
+      <option value="all">🌎 All Countries</option>
+      <option value="Nepal">🇳🇵 Nepal</option>
+      <option value="India">🇮🇳 India</option>
+      <option value="USA">🇺🇸 USA</option>
+      <option value="UK">🇬🇧 United Kingdom</option>
+      <option value="Japan">🇯🇵 Japan</option>
+      <option value="Korea">🇰🇷 Korea</option>
+    </select>
+
+    <button class="start" onclick="startChat()">
+      🎥 START
+    </button>
+
+    <button class="stop" onclick="logout()">
+      🚪 Logout
+    </button>
+  </div>
+
+  <!-- CHAT -->
+  <div id="chatPage" class="hidden">
+
+    <h2>Video Chat 🎥</h2>
+
+    <div class="user" id="chatUser"></div>
+
+    <video id="video" autoplay playsinline muted></video>
+
+    <div class="status" id="status">
+      Press START to begin
     </div>
 
-    <div id="chat" class="hidden">
-      <h1>OmeTV 4</h1>
-      <p class="subtitle">Video Chat 🎥</p>
+    <button class="next" onclick="nextPerson()">
+      ➡️ NEXT
+    </button>
 
-      <video id="video" autoplay playsinline muted></video>
+    <button class="stop" onclick="stopCamera()">
+      ⛔ STOP
+    </button>
 
-      <button id="cameraBtn" onclick="openCamera()">
-        📷 Open Camera
-      </button>
-
-      <button id="nextBtn" onclick="nextPerson()">
-        ➡️ NEXT
-      </button>
-
-      <button id="stopBtn" onclick="stopCamera()">
-        ⛔ STOP
-      </button>
-
-      <p id="status">Ready to start</p>
-    </div>
+    <button class="report" onclick="reportUser()">
+      🚨 REPORT
+    </button>
 
   </div>
 
-  <script>
-    let stream = null;
+</div>
 
-    function startApp() {
-      document.getElementById("home").classList.add("hidden");
-      document.getElementById("chat").classList.remove("hidden");
+<script>
+
+// ===============================
+// FIREBASE CONFIG
+// ===============================
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDX18nNNVbSd3jwdODlh_-XhuFrn2lQEAQ",
+  authDomain: "ome-tv-4-5fd7b.firebaseapp.com",
+  projectId: "ome-tv-4-5fd7b",
+  storageBucket: "ome-tv-4-5fd7b.firebasestorage.app",
+  messagingSenderId: "827380900936",
+  appId: "1:827380900936:web:62a7f50dd008c94149a47d",
+  measurementId: "G-Q82KTMQ43C"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+
+// ===============================
+// GOOGLE LOGIN
+// ===============================
+
+async function googleLogin(){
+
+  const status = document.getElementById("loginStatus");
+
+  status.innerText = "Opening Google Login...";
+
+  try{
+
+    const provider = new firebase.auth.GoogleAuthProvider();
+
+    await auth.signInWithPopup(provider);
+
+  }catch(error){
+
+    console.error(error);
+
+    status.innerText =
+      "Login failed: " + error.message;
+
+  }
+
+}
+
+
+// ===============================
+// LOGIN STATE
+// ===============================
+
+auth.onAuthStateChanged(function(user){
+
+  if(user){
+
+    document.getElementById("loginPage")
+      .classList.add("hidden");
+
+    document.getElementById("homePage")
+      .classList.remove("hidden");
+
+    document.getElementById("userInfo").innerText =
+      "Logged in as: " +
+      (user.displayName || user.email);
+
+  }else{
+
+    document.getElementById("loginPage")
+      .classList.remove("hidden");
+
+    document.getElementById("homePage")
+      .classList.add("hidden");
+
+    document.getElementById("chatPage")
+      .classList.add("hidden");
+
+  }
+
+});
+
+
+// ===============================
+// START CHAT
+// ===============================
+
+async function startChat(){
+
+  document.getElementById("homePage")
+    .classList.add("hidden");
+
+  document.getElementById("chatPage")
+    .classList.remove("hidden");
+
+  document.getElementById("chatUser").innerText =
+    "Country: " +
+    document.getElementById("country").value;
+
+  document.getElementById("status").innerText =
+    "Requesting camera permission...";
+
+  try{
+
+    const stream =
+      await navigator.mediaDevices.getUserMedia({
+        video:true,
+        audio:true
+      });
+
+    document.getElementById("video").srcObject = stream;
+
+    document.getElementById("status").innerText =
+      "Camera ready. Searching for someone...";
+
+    setTimeout(function(){
+
       document.getElementById("status").innerText =
-        "Press Open Camera to continue 📷";
-    }
+        "Waiting for another online user...";
 
-    async function openCamera() {
-      const status = document.getElementById("status");
-      const video = document.getElementById("video");
+    },1500);
 
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true
-        });
+  }catch(error){
 
-        video.srcObject = stream;
-        video.style.display = "block";
+    console.error(error);
 
-        status.innerText = "Camera & microphone ready ✅";
+    document.getElementById("status").innerText =
+      "Camera permission denied. Please allow Camera & Microphone.";
 
-      } catch (error) {
-        console.error(error);
+  }
 
-        status.innerText =
-          "Camera permission denied ❌ Please allow Camera & Microphone.";
+}
 
-        alert(
-          "Camera/Microphone permission चाहिन्छ। Browser मा Allow थिच्नुहोस्।"
-        );
-      }
-    }
 
-    function stopCamera() {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
-      }
+// ===============================
+// NEXT
+// ===============================
 
-      const video = document.getElementById("video");
-      video.srcObject = null;
-      video.style.display = "none";
+function nextPerson(){
 
-      document.getElementById("status").innerText =
-        "Camera stopped ⛔";
-    }
+  stopTracks();
 
-    function nextPerson() {
-      document.getElementById("status").innerText =
-        "Searching for next person... 🔎";
+  document.getElementById("status").innerText =
+    "Searching for next person...";
 
-      setTimeout(() => {
-        document.getElementById("status").innerText =
-          "No other user connected yet.";
-      }, 1500);
-    }
-  </script>
+  setTimeout(function(){
+
+    document.getElementById("status").innerText =
+      "Waiting for another online user...";
+
+  },1000);
+
+}
+
+
+// ===============================
+// STOP CAMERA
+// ===============================
+
+function stopCamera(){
+
+  stopTracks();
+
+  document.getElementById("chatPage")
+    .classList.add("hidden");
+
+  document.getElementById("homePage")
+    .classList.remove("hidden");
+
+}
+
+
+function stopTracks(){
+
+  const video =
+    document.getElementById("video");
+
+  if(video.srcObject){
+
+    video.srcObject
+      .getTracks()
+      .forEach(track => track.stop());
+
+    video.srcObject = null;
+
+  }
+
+}
+
+
+// ===============================
+// REPORT
+// ===============================
+
+function reportUser(){
+
+  alert(
+    "Report submitted. Thank you for helping keep OmeTV 4 safe."
+  );
+
+}
+
+
+// ===============================
+// LOGOUT
+// ===============================
+
+async function logout(){
+
+  stopTracks();
+
+  await auth.signOut();
+
+}
+
+</script>
 
 </body>
 </html>
