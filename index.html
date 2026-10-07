@@ -1,390 +1,837 @@
 <!DOCTYPE html>
-<html lang="ne">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>FF Top Up</title>
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>Shorts Nepal</title>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
 
 <style>
-*{box-sizing:border-box}
+*{
+box-sizing:border-box;
+}
 
-body{
+html,body{
 margin:0;
-font-family:Arial,sans-serif;
-background:linear-gradient(135deg,#111827,#7c2d12);
-color:white;
-min-height:100vh;
-padding:20px;
-}
-
-.container{
-max-width:500px;
-margin:auto;
-background:#ffffff18;
-backdrop-filter:blur(12px);
-border-radius:25px;
-padding:22px;
-box-shadow:0 10px 40px #0008;
-}
-
-h1{
-text-align:center;
-font-size:32px;
-}
-
-.subtitle{
-text-align:center;
-opacity:.8;
-}
-
-.payment-box{
-background:#0005;
-padding:18px;
-border-radius:18px;
-margin:15px 0;
-text-align:center;
-}
-
-.esewa{
-color:#58d68d;
-font-size:22px;
-font-weight:bold;
-}
-
-label{
-display:block;
-margin-top:15px;
-margin-bottom:6px;
-font-weight:bold;
-}
-
-input,select{
+padding:0;
 width:100%;
-padding:14px;
-border:0;
-border-radius:12px;
-font-size:16px;
-outline:none;
-}
-
-.packages{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-top:10px;
-}
-
-.package{
-background:#ffffff18;
-border:2px solid transparent;
-padding:15px;
-border-radius:15px;
-text-align:center;
-cursor:pointer;
-}
-
-.package:hover{
-border-color:#facc15;
-}
-
-.package b{
-display:block;
-font-size:20px;
-margin-bottom:5px;
+height:100%;
+font-family:Arial,sans-serif;
+background:#000;
+color:#fff;
 }
 
 button{
-width:100%;
-padding:15px;
-margin-top:18px;
 border:0;
-border-radius:14px;
-font-size:17px;
-font-weight:bold;
 cursor:pointer;
 }
 
-.whatsapp{
-background:#25D366;
+.hidden{
+display:none!important;
+}
+
+/* LOGIN */
+
+#loginPage{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:
+linear-gradient(135deg,#111,#7c3aed,#ec4899);
+}
+
+.loginBox{
+width:100%;
+max-width:400px;
+background:#ffffff18;
+backdrop-filter:blur(15px);
+padding:30px 22px;
+border-radius:25px;
+text-align:center;
+}
+
+.logo{
+font-size:40px;
+font-weight:900;
+margin-bottom:10px;
+}
+
+.loginBtn{
+width:100%;
+padding:15px;
+margin-top:12px;
+border-radius:14px;
+font-size:16px;
+font-weight:bold;
+}
+
+.google{
+background:#fff;
+color:#222;
+}
+
+.facebook{
+background:#1877f2;
+color:#fff;
+}
+
+/* APP */
+
+#app{
+height:100vh;
+background:#000;
+position:relative;
+overflow:hidden;
+}
+
+.top{
+position:absolute;
+top:0;
+left:0;
+right:0;
+z-index:10;
+padding:14px;
+display:flex;
+gap:10px;
+align-items:center;
+background:linear-gradient(#0009,transparent);
+}
+
+.search{
+flex:1;
+background:#ffffff20;
+border:1px solid #ffffff30;
 color:white;
+padding:11px 15px;
+border-radius:25px;
+outline:none;
 }
 
-.support{
-background:#2563eb;
+.search::placeholder{
+color:#ddd;
+}
+
+.feed{
+height:100vh;
+overflow-y:auto;
+scroll-snap-type:y mandatory;
+}
+
+.videoCard{
+height:100vh;
+position:relative;
+scroll-snap-align:start;
+background:#111;
+}
+
+.videoCard video{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.info{
+position:absolute;
+left:15px;
+bottom:90px;
+right:80px;
+z-index:5;
+text-shadow:0 2px 5px #000;
+}
+
+.username{
+font-weight:bold;
+font-size:19px;
+}
+
+.caption{
+margin-top:8px;
+line-height:1.4;
+}
+
+.actions{
+position:absolute;
+right:12px;
+bottom:100px;
+z-index:5;
+display:flex;
+flex-direction:column;
+gap:15px;
+align-items:center;
+}
+
+.action{
+width:50px;
+height:50px;
+border-radius:50%;
+background:#0008;
 color:white;
+font-size:23px;
 }
 
-.copy{
-background:#facc15;
-color:#111;
+.count{
+font-size:12px;
+margin-top:-10px;
 }
 
-.note{
+.bottom{
+position:absolute;
+bottom:0;
+left:0;
+right:0;
+height:65px;
+background:#000;
+display:flex;
+justify-content:space-around;
+align-items:center;
+z-index:20;
+}
+
+.nav{
+background:none;
+color:#fff;
 font-size:13px;
-opacity:.75;
-text-align:center;
-margin-top:15px;
 }
 
-.success{
-display:none;
-background:#16a34a;
-padding:12px;
-border-radius:12px;
-margin-top:15px;
+.nav span{
+display:block;
+font-size:22px;
+margin-bottom:3px;
+}
+
+/* PROFILE */
+
+#profilePage{
+position:absolute;
+inset:0;
+background:#111;
+z-index:30;
+padding:25px;
+overflow:auto;
+}
+
+.profileTop{
 text-align:center;
+margin-top:30px;
+}
+
+.avatar{
+width:90px;
+height:90px;
+border-radius:50%;
+object-fit:cover;
+}
+
+.close{
+position:absolute;
+top:15px;
+right:15px;
+background:#fff2;
+color:white;
+padding:10px 14px;
+border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
 
-<h1>🔥 FF TOP UP 💎</h1>
+<!-- LOGIN -->
 
-<p class="subtitle">
-Fast & Easy Free Fire Top Up
+<div id="loginPage">
+
+<div class="loginBox">
+
+<div class="logo">
+🎬 Shorts
+</div>
+
+<p>
+Watch and share short videos
 </p>
 
-<div class="payment-box">
-
-<div>💳 Payment Method</div>
-
-<div class="esewa">
-eSewa
-</div>
-
-<div>
-📱 9761996391
-</div>
-
-<button class="copy" onclick="copyEsewa()">
-📋 COPY eSewa NUMBER
-</button>
-
-</div>
-
-<label>Free Fire UID</label>
-
-<input
-id="uid"
-type="number"
-placeholder="Enter your FF UID"
->
-
-<label>Diamond Package</label>
-
-<div class="packages">
-
-<div class="package"
-onclick="selectPackage('100 Diamonds - Rs 150')">
-<b>💎 100</b>
-Rs. 150
-</div>
-
-<div class="package"
-onclick="selectPackage('310 Diamonds - Rs 450')">
-<b>💎 310</b>
-Rs. 450
-</div>
-
-<div class="package"
-onclick="selectPackage('520 Diamonds - Rs 750')">
-<b>💎 520</b>
-Rs. 750
-</div>
-
-<div class="package"
-onclick="selectPackage('1060 Diamonds - Rs 1500')">
-<b>💎 1060</b>
-Rs. 1500
-</div>
-
-</div>
-
-<input
-id="package"
-type="text"
-placeholder="Select a package"
-readonly
->
-
-<label>Payment Method</label>
-
-<select id="payment">
-
-<option value="">
-Select payment method
-</option>
-
-<option value="eSewa">
-eSewa
-</option>
-
-</select>
-
-<label>Transaction ID</label>
-
-<input
-id="transaction"
-type="text"
-placeholder="Enter payment transaction ID"
->
-
-<div
-id="success"
-class="success">
-Order ready! WhatsApp खोलिँदैछ...
-</div>
-
 <button
-class="whatsapp"
-onclick="sendOrder()">
+class="loginBtn google"
+onclick="googleLogin()">
 
-📲 SEND ORDER ON WHATSAPP
+🔵 Continue with Google
 
 </button>
 
 <button
-class="support"
-onclick="support()">
+class="loginBtn facebook"
+onclick="facebookLogin()">
 
-💬 WHATSAPP SUPPORT
+🔷 Continue with Facebook
 
 </button>
 
-<p class="note">
-पहिले eSewa मा payment गर्नुहोस्। त्यसपछि Transaction ID राखेर order पठाउनुहोस्।
+<p id="loginStatus">
+Please login
 </p>
 
 </div>
+
+</div>
+
+
+<!-- APP -->
+
+<div id="app" class="hidden">
+
+<div class="top">
+
+<input
+id="searchInput"
+class="search"
+placeholder="🔎 Search..."
+oninput="searchVideos()">
+
+</div>
+
+
+<div id="feed" class="feed">
+
+<!-- VIDEO 1 -->
+
+<div class="videoCard">
+
+<video
+src=""
+controls
+loop
+playsinline
+onclick="togglePlay(this)">
+</video>
+
+<div class="info">
+
+<div class="username">
+@shorts_user
+</div>
+
+<div class="caption">
+Welcome to Shorts 🎬🔥
+</div>
+
+</div>
+
+<div class="actions">
+
+<button
+class="action"
+onclick="likeVideo(this)">
+❤️
+</button>
+
+<div class="count">
+0
+</div>
+
+<button
+class="action"
+onclick="commentVideo()">
+💬
+</button>
+
+<div class="count">
+0
+</div>
+
+<button
+class="action"
+onclick="shareVideo()">
+↗️
+</button>
+
+</div>
+
+</div>
+
+
+<!-- DEMO VIDEO CARD -->
+
+<div class="videoCard">
+
+<video
+src=""
+controls
+loop
+playsinline
+onclick="togglePlay(this)">
+</video>
+
+<div class="info">
+
+<div class="username">
+@nepal_creator
+</div>
+
+<div class="caption">
+Nepal Shorts 🇳🇵❤️
+</div>
+
+</div>
+
+<div class="actions">
+
+<button
+class="action"
+onclick="likeVideo(this)">
+❤️
+</button>
+
+<div class="count">
+0
+</div>
+
+<button
+class="action"
+onclick="commentVideo()">
+💬
+</button>
+
+<div class="count">
+0
+</div>
+
+<button
+class="action"
+onclick="shareVideo()">
+↗️
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- BOTTOM NAV -->
+
+<div class="bottom">
+
+<button
+class="nav"
+onclick="goHome()">
+
+<span>🏠</span>
+Home
+
+</button>
+
+<button
+class="nav"
+onclick="searchFocus()">
+
+<span>🔎</span>
+Search
+
+</button>
+
+<button
+class="nav"
+onclick="uploadVideo()">
+
+<span>➕</span>
+Upload
+
+</button>
+
+<button
+class="nav"
+onclick="openProfile()">
+
+<span>👤</span>
+Profile
+
+</button>
+
+</div>
+
+
+<!-- PROFILE -->
+
+<div id="profilePage" class="hidden">
+
+<button
+class="close"
+onclick="closeProfile()">
+✕
+</button>
+
+<div class="profileTop">
+
+<img
+id="profileImage"
+class="avatar"
+src="https://via.placeholder.com/90">
+
+<h2 id="profileName">
+User
+</h2>
+
+<p id="profileEmail">
+</p>
+
+<p>
+Followers: 0
+&nbsp;&nbsp;
+Following: 0
+</p>
+
+<button
+class="loginBtn google"
+onclick="logout()">
+🚪 Logout
+</button>
+
+</div>
+
+</div>
+
+</div>
+
 
 <script>
 
-const WHATSAPP_NUMBER =
-"9779761996391";
+/* =========================
+FIREBASE
+========================= */
 
-const ESEWA_NUMBER =
-"9761996391";
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyDX18nNNVbSd3jwdODlh_-XhuFrn2lQEAQ",
+
+authDomain:
+"ome-tv-4-5fd7b.firebaseapp.com",
+
+projectId:
+"ome-tv-4-5fd7b",
+
+storageBucket:
+"ome-tv-4-5fd7b.firebasestorage.app",
+
+messagingSenderId:
+"827380900936",
+
+appId:
+"1:827380900936:web:62a7f50dd008c94149a47d",
+
+measurementId:
+"G-Q82KTMQ43C"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth=firebase.auth();
 
 
-function selectPackage(pkg){
+/* =========================
+GOOGLE LOGIN
+========================= */
 
-document.getElementById("package").value=pkg;
+async function googleLogin(){
+
+try{
+
+const provider=
+new firebase.auth.GoogleAuthProvider();
+
+await auth.signInWithPopup(provider);
+
+}catch(error){
+
+alert(
+"Google Login Error: "+
+error.message
+);
+
+}
 
 }
 
 
-function copyEsewa(){
+/* =========================
+FACEBOOK LOGIN
+========================= */
 
-navigator.clipboard.writeText(ESEWA_NUMBER);
+async function facebookLogin(){
 
-alert("eSewa नम्बर copied: "+ESEWA_NUMBER);
+try{
+
+const provider=
+new firebase.auth.FacebookAuthProvider();
+
+await auth.signInWithPopup(provider);
+
+}catch(error){
+
+alert(
+"Facebook Login setup required: "+
+error.message
+);
+
+}
 
 }
 
 
-function sendOrder(){
+/* =========================
+AUTH
+========================= */
 
-const uid=
-document.getElementById("uid").value.trim();
+auth.onAuthStateChanged(user=>{
 
-const pkg=
-document.getElementById("package").value;
+if(user){
 
-const payment=
-document.getElementById("payment").value;
+document
+.getElementById("loginPage")
+.classList.add("hidden");
 
-const transaction=
-document.getElementById("transaction").value.trim();
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+document
+.getElementById("profileName")
+.innerText=
+user.displayName || "User";
+
+document
+.getElementById("profileEmail")
+.innerText=
+user.email || "";
+
+if(user.photoURL){
+
+document
+.getElementById("profileImage")
+.src=
+user.photoURL;
+
+}
+
+}
+
+});
 
 
-if(!uid){
+/* =========================
+LIKE
+========================= */
 
-alert("कृपया Free Fire UID राख्नुहोस्।");
+function likeVideo(button){
 
-return;
+const count=
+button.parentElement
+.querySelector(".count");
+
+let n=
+parseInt(count.innerText)||0;
+
+if(button.dataset.liked!=="yes"){
+
+n++;
+
+button.innerText="❤️";
+
+button.dataset.liked="yes";
+
+}else{
+
+n--;
+
+button.innerText="♡";
+
+button.dataset.liked="no";
+
+}
+
+count.innerText=n;
 
 }
 
 
-if(!pkg){
+/* =========================
+COMMENT
+========================= */
 
-alert("कृपया Diamond Package छान्नुहोस्।");
+function commentVideo(){
 
-return;
+const comment=
+prompt("Write your comment:");
+
+if(comment){
+
+alert(
+"Comment added: "+
+comment
+);
+
+}
 
 }
 
 
-if(!payment){
+/* =========================
+SHARE
+========================= */
 
-alert("कृपया Payment Method छान्नुहोस्।");
+async function shareVideo(){
 
-return;
+if(navigator.share){
+
+try{
+
+await navigator.share({
+
+title:"Shorts",
+text:"Check this short video!",
+url:location.href
+
+});
+
+}catch(e){}
+
+}else{
+
+await navigator.clipboard.writeText(
+location.href
+);
+
+alert("Link copied!");
+
+}
 
 }
 
 
-if(!transaction){
+/* =========================
+VIDEO PLAY
+========================= */
 
-alert("कृपया Transaction ID राख्नुहोस्।");
+function togglePlay(video){
 
-return;
+if(video.paused){
+
+video.play();
+
+}else{
+
+video.pause();
+
+}
 
 }
 
 
-const message=
-`🔥 FF TOP UP ORDER
+/* =========================
+SEARCH
+========================= */
 
-🎮 Free Fire UID:
-${uid}
+function searchVideos(){
 
-💎 Package:
-${pkg}
+const query=
+document
+.getElementById("searchInput")
+.value
+.toLowerCase();
 
-💰 Payment:
-${payment}
+document
+.querySelectorAll(".videoCard")
+.forEach(card=>{
 
-🧾 Transaction ID:
-${transaction}
+const text=
+card.innerText.toLowerCase();
 
-💳 eSewa Number:
-9761996391
+card.style.display=
+text.includes(query)
+?"block"
+:"none";
 
-Please verify my payment and process my order.`;
-
-
-const url=
-"https://wa.me/"+
-WHATSAPP_NUMBER+
-"?text="+
-encodeURIComponent(message);
-
-
-document.getElementById("success")
-.style.display="block";
-
-
-window.open(url,"_blank");
+});
 
 }
 
 
-function support(){
+function searchFocus(){
 
-const message=
-"Hello, I need help with Free Fire Top Up.";
+document
+.getElementById("searchInput")
+.focus();
 
-const url=
-"https://wa.me/"+
-WHATSAPP_NUMBER+
-"?text="+
-encodeURIComponent(message);
+}
 
-window.open(url,"_blank");
+
+/* =========================
+UPLOAD
+========================= */
+
+function uploadVideo(){
+
+alert(
+"📹 Upload system will be connected to Firebase Storage next."
+);
+
+}
+
+
+/* =========================
+PROFILE
+========================= */
+
+function openProfile(){
+
+document
+.getElementById("profilePage")
+.classList.remove("hidden");
+
+}
+
+
+function closeProfile(){
+
+document
+.getElementById("profilePage")
+.classList.add("hidden");
+
+}
+
+
+function goHome(){
+
+closeProfile();
+
+document
+.getElementById("feed")
+.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+/* =========================
+LOGOUT
+========================= */
+
+async function logout(){
+
+await auth.signOut();
+
+location.reload();
 
 }
 
