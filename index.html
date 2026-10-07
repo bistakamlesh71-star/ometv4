@@ -2,1002 +2,859 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Ome TV 4</title>
 
 <style>
-
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
+*{box-sizing:border-box;margin:0;padding:0}
 
 html,body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    font-family:Arial,sans-serif;
-    background:#000;
+ width:100%;
+ height:100%;
+ font-family:Arial,sans-serif;
+ background:#000;
+ overflow:hidden;
 }
 
-/* =========================
-   SPLASH SCREEN
-========================= */
+/* ================= SPLASH ================= */
 
 #splash{
-    position:fixed;
-    inset:0;
-    background:#fff;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-    transition:opacity .7s ease;
+ position:fixed;
+ inset:0;
+ background:#fff;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ z-index:99999;
+ transition:opacity .7s;
 }
 
-.ometv-logo{
-    width:250px;
-    height:180px;
-    position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+.ome-logo{
+ position:relative;
+ width:250px;
+ height:180px;
 }
-
-/* TV BODY */
 
 .tv{
-    width:245px;
-    height:155px;
-    background:#fff;
-    border:16px solid #ed6539;
-    border-radius:32px;
-    position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    box-shadow:0 2px 5px rgba(0,0,0,.05);
+ position:absolute;
+ left:5px;
+ top:25px;
+ width:240px;
+ height:145px;
+ border:15px solid #ed6338;
+ border-radius:30px;
+ background:white;
+ display:flex;
+ align-items:center;
+ justify-content:center;
 }
 
-.tv::before{
-    content:"";
-    position:absolute;
-    width:13px;
-    height:13px;
-    background:#ed6539;
-    border-radius:50%;
-    right:-2px;
-    top:50%;
-    transform:translateY(-50%);
-    box-shadow:0 30px 0 #ed6539;
+.ome{
+ color:#ed6338;
+ font-size:56px;
+ line-height:1;
 }
 
-.ome-text{
-    font-size:57px;
-    font-weight:500;
-    color:#ed6539;
-    line-height:1;
+.tvword{
+ position:absolute;
+ top:75px;
+ left:74px;
+ color:#39a86b;
+ font-size:40px;
+ font-weight:bold;
 }
 
-.tv-text{
-    position:absolute;
-    font-size:42px;
-    font-weight:bold;
-    color:#38a66b;
-    top:76px;
-    left:73px;
+.dot1,.dot2{
+ position:absolute;
+ right:12px;
+ width:13px;
+ height:13px;
+ background:#ed6338;
+ border-radius:50%;
 }
 
-/* ANTENNA */
+.dot1{top:62px}
+.dot2{top:94px}
 
-.antenna-left,
-.antenna-right{
-    position:absolute;
-    width:11px;
-    height:60px;
-    background:#ed6539;
-    border-radius:8px;
-    top:-35px;
+.ant1,.ant2{
+ position:absolute;
+ width:10px;
+ height:55px;
+ background:#ed6338;
+ border-radius:10px;
+ top:-8px;
 }
 
-.antenna-left{
-    transform:rotate(-43deg);
-    left:94px;
+.ant1{
+ left:95px;
+ transform:rotate(-42deg);
 }
 
-.antenna-right{
-    transform:rotate(43deg);
-    left:145px;
+.ant2{
+ left:145px;
+ transform:rotate(42deg);
 }
 
-/* LOADING */
-
-.loading-text{
-    margin-top:35px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    color:#333;
-    font-size:22px;
+.splash-loading{
+ margin-top:25px;
+ display:flex;
+ align-items:center;
+ gap:10px;
+ font-size:21px;
+ color:#333;
 }
 
-.green-dot{
-    width:16px;
-    height:16px;
-    background:#6cff00;
-    border-radius:50%;
-    box-shadow:0 0 8px #6cff00;
+.green{
+ width:16px;
+ height:16px;
+ border-radius:50%;
+ background:#64ff00;
+ box-shadow:0 0 9px #64ff00;
 }
 
-/* =========================
-   APP
-========================= */
+/* ================= LOGIN ================= */
 
-#app{
-    position:fixed;
-    inset:0;
-    display:none;
-    background:#111;
-    color:white;
+.screen{
+ position:fixed;
+ inset:0;
+ background:linear-gradient(135deg,#111827,#020617);
+ color:white;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
 }
 
-/* CAMERA */
-
-#remoteVideo{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    background:#202020;
+.card{
+ width:100%;
+ max-width:390px;
+ background:rgba(255,255,255,.08);
+ backdrop-filter:blur(15px);
+ border:1px solid rgba(255,255,255,.12);
+ border-radius:22px;
+ padding:25px;
+ text-align:center;
+ box-shadow:0 15px 50px rgba(0,0,0,.5);
 }
 
-#localVideo{
-    position:absolute;
-    right:15px;
-    top:15px;
-    width:115px;
-    height:165px;
-    object-fit:cover;
-    border-radius:12px;
-    border:2px solid rgba(255,255,255,.7);
-    background:#222;
-    z-index:10;
+.card-logo{
+ width:115px;
+ height:115px;
+ border-radius:25px;
+ object-fit:cover;
+ margin-bottom:15px;
 }
 
-/* DARK OVERLAY */
-
-.overlay{
-    position:absolute;
-    inset:0;
-    background:
-      linear-gradient(
-        to bottom,
-        rgba(0,0,0,.55),
-        transparent 35%,
-        transparent 60%,
-        rgba(0,0,0,.65)
-      );
-    pointer-events:none;
+.card h1{
+ font-size:27px;
+ margin-bottom:8px;
 }
 
-/* LOGO */
-
-.logo-area{
-    position:absolute;
-    top:35px;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:20;
-    text-align:center;
+.card p{
+ color:#cbd5e1;
+ font-size:14px;
+ line-height:1.5;
+ margin-bottom:22px;
 }
 
-.logo-area img{
-    width:145px;
-    max-height:145px;
-    object-fit:contain;
+.google-btn{
+ width:100%;
+ height:52px;
+ border:0;
+ border-radius:12px;
+ background:white;
+ color:#222;
+ font-size:16px;
+ font-weight:bold;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:12px;
 }
 
-/* FALLBACK LOGO */
-
-.logo-fallback{
-    width:125px;
-    height:125px;
-    border-radius:50%;
-    background:#081733;
-    border:4px solid #2ecbff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    font-size:20px;
+.google-icon{
+ width:22px;
+ height:22px;
 }
 
-/* CONNECTING */
-
-.connecting{
-    position:absolute;
-    top:250px;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:20;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    font-size:25px;
-    text-shadow:0 2px 5px #000;
+.small{
+ margin-top:15px;
+ font-size:12px;
+ color:#94a3b8;
 }
 
-.connect-dot{
-    width:18px;
-    height:18px;
-    background:#6cff00;
-    border-radius:50%;
-    box-shadow:0 0 10px #6cff00;
+/* ================= PROFILE ================= */
+
+#profileScreen{
+ display:none;
 }
 
-/* CONTROLS */
-
-.controls{
-    position:absolute;
-    left:15px;
-    right:15px;
-    bottom:105px;
-    display:flex;
-    gap:10px;
-    z-index:30;
+.form{
+ width:100%;
+ max-width:390px;
+ background:#fff;
+ color:#111;
+ padding:25px;
+ border-radius:20px;
+ text-align:center;
 }
 
-.control{
-    flex:1;
-    min-height:62px;
-    border:1px solid rgba(255,255,255,.25);
-    border-radius:12px;
-    background:rgba(20,20,20,.55);
-    color:white;
-    font-size:16px;
-    font-weight:bold;
-    backdrop-filter:blur(8px);
+.form h2{
+ margin-bottom:8px;
 }
 
-.control:active{
-    transform:scale(.97);
+.form p{
+ color:#666;
+ margin-bottom:18px;
 }
 
-/* SAFETY */
+.form input,
+.form select{
+ width:100%;
+ padding:14px;
+ border:1px solid #ddd;
+ border-radius:10px;
+ margin-bottom:12px;
+ font-size:15px;
+}
+
+.continue-btn{
+ width:100%;
+ padding:14px;
+ border:0;
+ border-radius:11px;
+ background:#4f46e5;
+ color:white;
+ font-size:16px;
+ font-weight:bold;
+}
+
+/* ================= MAIN ================= */
+
+#mainScreen{
+ display:none;
+ position:fixed;
+ inset:0;
+ background:#111;
+ color:white;
+}
+
+#camera{
+ position:absolute;
+ inset:0;
+ width:100%;
+ height:100%;
+ object-fit:cover;
+ background:#222;
+}
+
+.dark{
+ position:absolute;
+ inset:0;
+ background:linear-gradient(
+   to bottom,
+   rgba(0,0,0,.5),
+   transparent 40%,
+   rgba(0,0,0,.7)
+ );
+}
+
+.main-logo{
+ position:absolute;
+ top:28px;
+ left:50%;
+ transform:translateX(-50%);
+ z-index:5;
+}
+
+.main-logo img{
+ width:120px;
+ height:120px;
+ object-fit:contain;
+}
+
+.connect{
+ position:absolute;
+ top:220px;
+ left:50%;
+ transform:translateX(-50%);
+ display:flex;
+ gap:10px;
+ align-items:center;
+ z-index:5;
+ font-size:22px;
+ white-space:nowrap;
+}
+
+.connect i{
+ width:15px;
+ height:15px;
+ background:#61ff00;
+ border-radius:50%;
+}
+
+.options{
+ position:absolute;
+ left:15px;
+ right:15px;
+ bottom:105px;
+ display:flex;
+ gap:10px;
+ z-index:10;
+}
+
+.option{
+ flex:1;
+ height:62px;
+ border:1px solid rgba(255,255,255,.2);
+ border-radius:12px;
+ background:rgba(0,0,0,.45);
+ color:white;
+ font-weight:bold;
+ font-size:15px;
+}
 
 .safety{
-    position:absolute;
-    left:15px;
-    right:15px;
-    bottom:58px;
-    z-index:20;
-    font-size:13px;
-    line-height:1.4;
-    text-shadow:0 1px 3px #000;
+ position:absolute;
+ left:15px;
+ right:15px;
+ bottom:58px;
+ font-size:13px;
+ line-height:1.4;
+ z-index:10;
+ text-shadow:0 2px 5px #000;
 }
 
 .safety b{
-    color:#ffd000;
+ color:#ffd000;
 }
 
-/* BOTTOM */
-
 .bottom{
-    position:absolute;
-    left:0;
-    right:0;
-    bottom:0;
-    height:52px;
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-    background:rgba(0,0,0,.55);
-    z-index:30;
-    font-size:26px;
+ position:absolute;
+ bottom:0;
+ left:0;
+ right:0;
+ height:50px;
+ display:flex;
+ align-items:center;
+ justify-content:space-around;
+ background:rgba(0,0,0,.55);
+ z-index:10;
 }
 
 .bottom button{
-    background:none;
-    border:none;
-    color:white;
-    font-size:25px;
-}
-
-/* START SCREEN */
-
-#startScreen{
-    position:absolute;
-    inset:0;
-    background:rgba(0,0,0,.72);
-    z-index:50;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    padding:25px;
-    text-align:center;
-}
-
-#startScreen h2{
-    font-size:28px;
-    margin-bottom:10px;
-}
-
-#startScreen p{
-    color:#ddd;
-    margin-bottom:25px;
-}
-
-.start-btn{
-    width:90%;
-    max-width:350px;
-    padding:17px;
-    border:0;
-    border-radius:14px;
-    background:#00d26a;
-    color:white;
-    font-size:19px;
-    font-weight:bold;
-}
-
-/* MODAL */
-
-.modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.7);
-    z-index:100;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-}
-
-.modal-box{
-    width:100%;
-    max-width:380px;
-    background:white;
-    color:#222;
-    border-radius:18px;
-    padding:22px;
-}
-
-.modal-box h3{
-    margin-bottom:18px;
-}
-
-.select{
-    width:100%;
-    padding:14px;
-    border-radius:10px;
-    border:1px solid #ddd;
-    margin-bottom:15px;
-    font-size:16px;
-}
-
-.modal-btn{
-    width:100%;
-    padding:13px;
-    border:0;
-    border-radius:10px;
-    background:#4f46e5;
-    color:white;
-    font-weight:bold;
-}
-
-.close{
-    margin-top:10px;
-    background:#ddd;
-    color:#222;
+ border:0;
+ background:none;
+ color:white;
+ font-size:24px;
 }
 
 /* MOBILE */
 
 @media(max-width:500px){
-
-    .ometv-logo{
-        transform:scale(.82);
-    }
-
-    .loading-text{
-        font-size:20px;
-    }
-
-    .connecting{
-        top:245px;
-        font-size:23px;
-    }
-
-    #localVideo{
-        width:100px;
-        height:145px;
-    }
-
-    .control{
-        font-size:14px;
-    }
-
+ .ome-logo{transform:scale(.85)}
+ .connect{top:235px}
 }
-
 </style>
 </head>
-
 
 <body>
 
 
-<!-- =================================
-     SPLASH
-================================= -->
+<!-- ================= SPLASH ================= -->
 
 <div id="splash">
 
-    <div class="ometv-logo">
+ <div class="ome-logo">
 
-        <div class="antenna-left"></div>
-        <div class="antenna-right"></div>
+  <div class="ant1"></div>
+  <div class="ant2"></div>
 
-        <div class="tv">
+  <div class="tv">
 
-            <div class="ome-text">
-                Ome
-            </div>
+   <div class="ome">Ome</div>
+   <div class="tvword">TV</div>
 
-            <div class="tv-text">
-                TV
-            </div>
+   <div class="dot1"></div>
+   <div class="dot2"></div>
 
-        </div>
+  </div>
 
-    </div>
+ </div>
 
-    <div class="loading-text">
-
-        <span class="green-dot"></span>
-
-        <span>Connecting...</span>
-
-    </div>
+ <div class="splash-loading">
+  <span class="green"></span>
+  <span>Connecting...</span>
+ </div>
 
 </div>
 
 
-<!-- =================================
-     APP
-================================= -->
+<!-- ================= GOOGLE LOGIN ================= -->
 
-<div id="app">
+<div id="loginScreen" class="screen">
 
-    <!-- REMOTE CAMERA -->
+ <div class="card">
 
-    <video
-        id="remoteVideo"
-        autoplay
-        playsinline>
-    </video>
+  <!-- आफ्नो logo -->
+  <img
+   src="nepali-chat.png"
+   class="card-logo"
+   onerror="this.style.display='none'"
+  >
 
+  <h1>Welcome to Ome TV 4</h1>
 
-    <!-- LOCAL CAMERA -->
+  <p>
+   Meet new people and make new friends.
+   Continue with Google to get started.
+  </p>
 
-    <video
-        id="localVideo"
-        autoplay
-        muted
-        playsinline>
-    </video>
+  <button
+   class="google-btn"
+   onclick="googleLogin()">
 
+   <span class="google-icon">
+    G
+   </span>
 
-    <div class="overlay"></div>
+   Continue with Google
 
+  </button>
 
-    <!-- NEPALI CHAT LOGO -->
+  <div class="small">
+   By continuing, you agree to our rules.
+  </div>
 
-    <div class="logo-area">
-
-        <img
-            src="nepali-chat.png"
-            alt="Nepali Chat"
-            onerror="this.style.display='none';document.getElementById('fallback').style.display='flex';">
-
-        <div
-            id="fallback"
-            class="logo-fallback"
-            style="display:none;">
-            Nepali<br>Chat
-        </div>
-
-    </div>
-
-
-    <!-- CONNECTING -->
-
-    <div class="connecting">
-
-        <span class="connect-dot"></span>
-
-        <span id="connectText">
-            Connecting...
-        </span>
-
-    </div>
-
-
-    <!-- START SCREEN -->
-
-    <div id="startScreen">
-
-        <h2>
-            🇳🇵 Nepali Chat
-        </h2>
-
-        <p>
-            Connect with people through video chat
-        </p>
-
-        <button
-            class="start-btn"
-            onclick="startCamera()">
-
-            📹 Start Video Chat
-
-        </button>
-
-    </div>
-
-
-    <!-- CONTROLS -->
-
-    <div class="controls">
-
-        <button
-            class="control"
-            onclick="openPerson()">
-
-            I AM 👤
-
-        </button>
-
-        <button
-            class="control"
-            onclick="openCountry()">
-
-            🇳🇵 NEPAL
-
-        </button>
-
-    </div>
-
-
-    <!-- SAFETY -->
-
-    <div class="safety">
-
-        <b>⚠ Safety Reminder</b>
-        <br>
-
-        By using this video chat, you agree to our rules.
-        Keep your face visible in camera frame.
-
-    </div>
-
-
-    <!-- BOTTOM -->
-
-    <div class="bottom">
-
-        <button onclick="nextPerson()">
-            🔄
-        </button>
-
-        <button onclick="reaction('😂')">
-            😂
-        </button>
-
-        <button onclick="reaction('❤️')">
-            ❤️
-        </button>
-
-        <button onclick="reaction('👍')">
-            👍
-        </button>
-
-        <button onclick="reaction('😊')">
-            😊
-        </button>
-
-        <button onclick="openChat()">
-            💬
-        </button>
-
-    </div>
+ </div>
 
 </div>
 
 
-<!-- =================================
-     PERSON MODAL
-================================= -->
+<!-- ================= PROFILE ================= -->
 
-<div
-    class="modal"
-    id="personModal">
+<div id="profileScreen" class="screen">
 
-    <div class="modal-box">
+ <div class="form">
 
-        <h3>
-            I AM
-        </h3>
+  <h2>Complete Your Profile</h2>
 
-        <select
-            class="select"
-            id="gender">
+  <p>
+   Enter your details to continue.
+  </p>
 
-            <option value="male">
-                👨 Male
-            </option>
+  <input
+   id="name"
+   type="text"
+   placeholder="Your name"
+  >
 
-            <option value="female">
-                👩 Female
-            </option>
+  <select id="gender">
 
-            <option value="other">
-                👤 Other
-            </option>
+   <option value="">
+    Select gender
+   </option>
 
-        </select>
+   <option value="male">
+    👨 Male
+   </option>
 
-        <button
-            class="modal-btn"
-            onclick="savePerson()">
+   <option value="female">
+    👩 Female
+   </option>
 
-            Save
+   <option value="other">
+    👤 Other
+   </option>
 
-        </button>
+  </select>
 
-        <button
-            class="modal-btn close"
-            onclick="closePerson()">
+  <button
+   class="continue-btn"
+   onclick="completeProfile()">
 
-            Cancel
+   Continue
 
-        </button>
+  </button>
 
-    </div>
+ </div>
 
 </div>
 
 
-<!-- =================================
-     COUNTRY MODAL
-================================= -->
+<!-- ================= MAIN ================= -->
 
-<div
-    class="modal"
-    id="countryModal">
+<div id="mainScreen">
 
-    <div class="modal-box">
+ <video
+  id="camera"
+  autoplay
+  muted
+  playsinline>
+ </video>
 
-        <h3>
-            🌍 Select Country
-        </h3>
+ <div class="dark"></div>
 
-        <select
-            class="select"
-            id="country">
+ <div class="main-logo">
 
-            <option value="NP">
-                🇳🇵 Nepal
-            </option>
+  <img
+   src="nepali-chat.png"
+   onerror="this.style.display='none'"
+  >
 
-            <option value="IN">
-                🇮🇳 India
-            </option>
+ </div>
 
-            <option value="BD">
-                🇧🇩 Bangladesh
-            </option>
+ <div class="connect">
 
-            <option value="US">
-                🇺🇸 USA
-            </option>
+  <i></i>
 
-            <option value="GB">
-                🇬🇧 United Kingdom
-            </option>
+  <span id="connectText">
+   Connecting...
+  </span>
 
-            <option value="ALL">
-                🌍 Worldwide
-            </option>
+ </div>
 
-        </select>
+ <div class="options">
 
-        <button
-            class="modal-btn"
-            onclick="saveCountry()">
+  <button
+   class="option"
+   onclick="changeGender()">
 
-            Select
+   I AM 👤
 
-        </button>
+  </button>
 
-        <button
-            class="modal-btn close"
-            onclick="closeCountry()">
+  <button
+   class="option"
+   onclick="changeCountry()">
 
-            Cancel
+   🇳🇵 NEPAL
 
-        </button>
+  </button>
 
-    </div>
+ </div>
+
+ <div class="safety">
+
+  <b>⚠ Safety Reminder</b><br>
+
+  By using this video chat, you agree to our rules.
+  Try to keep your face visible in camera frame.
+
+ </div>
+
+ <div class="bottom">
+
+  <button onclick="nextPerson()">🔄</button>
+  <button>😂</button>
+  <button>❤️</button>
+  <button>👍</button>
+  <button>😊</button>
+  <button>💬</button>
+
+ </div>
 
 </div>
+
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 
 
 <script>
 
-/* =================================
-   SPLASH
-================================= */
+/* ================= FIREBASE ================= */
 
-window.addEventListener(
-    "load",
-    function(){
+const firebaseConfig = {
 
-        setTimeout(
-            function(){
+ apiKey:
+ "AIzaSyDX18nNNVbSd3jwdODlh_-XhuFrn2lQEAQ",
 
-                const splash =
-                    document.getElementById(
-                        "splash"
-                    );
+ authDomain:
+ "ome-tv-4-5fd7b.firebaseapp.com",
 
-                splash.style.opacity="0";
+ projectId:
+ "ome-tv-4-5fd7b",
 
-                setTimeout(
-                    function(){
+ storageBucket:
+ "ome-tv-4-5fd7b.firebasestorage.app",
 
-                        splash.style.display="none";
+ messagingSenderId:
+ "827380900936",
 
-                        document.getElementById(
-                            "app"
-                        ).style.display="block";
+ appId:
+ "1:827380900936:web:62a7f50dd008c94149a47d",
 
-                    },
-                    700
-                );
+ measurementId:
+ "G-Q82KTMQ43C"
 
-            },
-            2200
-        );
+};
 
-    }
-);
+firebase.initializeApp(firebaseConfig);
+
+const auth =
+ firebase.auth();
 
 
-/* =================================
-   CAMERA
-================================= */
+/* ================= SPLASH ================= */
 
-let localStream = null;
+setTimeout(function(){
 
+ document.getElementById(
+  "splash"
+ ).style.opacity="0";
+
+ setTimeout(function(){
+
+  document.getElementById(
+   "splash"
+  ).style.display="none";
+
+  checkLogin();
+
+ },700);
+
+},2500);
+
+
+/* ================= LOGIN CHECK ================= */
+
+function checkLogin(){
+
+ auth.onAuthStateChanged(function(user){
+
+  if(user){
+
+   const savedName =
+    localStorage.getItem("userName");
+
+   if(savedName){
+
+    showMain();
+
+   }else{
+
+    showProfile();
+
+   }
+
+  }else{
+
+   document.getElementById(
+    "loginScreen"
+   ).style.display="flex";
+
+  }
+
+ });
+
+}
+
+
+/* ================= GOOGLE LOGIN ================= */
+
+function googleLogin(){
+
+ const provider =
+  new firebase.auth.GoogleAuthProvider();
+
+ auth.signInWithPopup(provider)
+
+ .then(function(result){
+
+  showProfile();
+
+ })
+
+ .catch(function(error){
+
+  console.error(error);
+
+  alert(
+   "Google login failed:\n\n" +
+   error.message
+  );
+
+ });
+
+}
+
+
+/* ================= PROFILE ================= */
+
+function showProfile(){
+
+ document.getElementById(
+  "loginScreen"
+ ).style.display="none";
+
+ document.getElementById(
+  "profileScreen"
+ ).style.display="flex";
+
+}
+
+
+function completeProfile(){
+
+ const name =
+  document.getElementById(
+   "name"
+  ).value.trim();
+
+ const gender =
+  document.getElementById(
+   "gender"
+  ).value;
+
+ if(!name){
+
+  alert("Please enter your name.");
+
+  return;
+
+ }
+
+ if(!gender){
+
+  alert("Please select your gender.");
+
+  return;
+
+ }
+
+ localStorage.setItem(
+  "userName",
+  name
+ );
+
+ localStorage.setItem(
+  "gender",
+  gender
+ );
+
+ showMain();
+
+}
+
+
+/* ================= MAIN ================= */
+
+async function showMain(){
+
+ document.getElementById(
+  "loginScreen"
+ ).style.display="none";
+
+ document.getElementById(
+  "profileScreen"
+ ).style.display="none";
+
+ document.getElementById(
+  "mainScreen"
+ ).style.display="block";
+
+ startCamera();
+
+}
+
+
+/* ================= CAMERA ================= */
 
 async function startCamera(){
 
-    try{
+ try{
 
-        localStream =
-            await navigator.mediaDevices.getUserMedia({
+  const stream =
+   await navigator.mediaDevices
+   .getUserMedia({
 
-                video:{
-                    facingMode:"user",
-                    width:{
-                        ideal:1280
-                    },
-                    height:{
-                        ideal:720
-                    }
-                },
+    video:{
+     facingMode:"user"
+    },
 
-                audio:true
+    audio:true
 
-            });
+   });
 
+  document.getElementById(
+   "camera"
+  ).srcObject=stream;
 
-        document.getElementById(
-            "localVideo"
-        ).srcObject =
-            localStream;
+  document.getElementById(
+   "connectText"
+  ).textContent=
+   "Waiting for partner...";
 
+ }
+ catch(error){
 
-        document.getElementById(
-            "startScreen"
-        ).style.display="none";
+  console.error(error);
 
+  document.getElementById(
+   "connectText"
+  ).textContent=
+   "Camera permission needed";
 
-        document.getElementById(
-            "connectText"
-        ).textContent =
-            "Waiting for partner...";
-
-
-    }
-    catch(error){
-
-        console.error(error);
-
-        alert(
-            "Camera permission denied.\n\n" +
-            "Please allow Camera and Microphone permission, " +
-            "then reload the page."
-        );
-
-    }
+ }
 
 }
 
 
-/* =================================
-   NEXT
-================================= */
+/* ================= NEXT ================= */
 
 function nextPerson(){
 
-    document.getElementById(
-        "connectText"
-    ).textContent =
-        "Finding someone...";
+ document.getElementById(
+  "connectText"
+ ).textContent=
+  "Finding someone...";
 
-    setTimeout(
-        function(){
+ setTimeout(function(){
 
-            document.getElementById(
-                "connectText"
-            ).textContent =
-                "Waiting for partner...";
+  document.getElementById(
+   "connectText"
+  ).textContent=
+   "Waiting for partner...";
 
-        },
-        1500
-    );
+ },1500);
 
 }
 
 
-/* =================================
-   PERSON
-================================= */
+/* ================= BUTTONS ================= */
 
-function openPerson(){
+function changeGender(){
 
-    document.getElementById(
-        "personModal"
-    ).style.display="flex";
-
-}
-
-function closePerson(){
-
-    document.getElementById(
-        "personModal"
-    ).style.display="none";
+ alert(
+  "Your profile gender: " +
+  (localStorage.getItem("gender") || "Not selected")
+ );
 
 }
 
-function savePerson(){
+function changeCountry(){
 
-    const value =
-        document.getElementById(
-            "gender"
-        ).value;
+ const country =
+  prompt(
+   "Enter country:",
+   "Nepal"
+  );
 
-    localStorage.setItem(
-        "gender",
-        value
-    );
+ if(country){
 
-    closePerson();
+  document.querySelector(
+   ".option:nth-child(2)"
+  ).textContent=
+   "🌍 " + country;
 
-}
-
-
-/* =================================
-   COUNTRY
-================================= */
-
-function openCountry(){
-
-    document.getElementById(
-        "countryModal"
-    ).style.display="flex";
+ }
 
 }
-
-function closeCountry(){
-
-    document.getElementById(
-        "countryModal"
-    ).style.display="none";
-
-}
-
-function saveCountry(){
-
-    const country =
-        document.getElementById(
-            "country"
-        );
-
-    const text =
-        country.options[
-            country.selectedIndex
-        ].text;
-
-    document.querySelector(
-        ".control:nth-child(2)"
-    ).textContent =
-        text;
-
-    localStorage.setItem(
-        "country",
-        country.value
-    );
-
-    closeCountry();
-
-}
-
-
-/* =================================
-   REACTION
-================================= */
-
-function reaction(emoji){
-
-    console.log(
-        "Reaction:",
-        emoji
-    );
-
-}
-
-
-/* =================================
-   CHAT
-================================= */
-
-function openChat(){
-
-    alert(
-        "Chat will be available after connecting with a partner."
-    );
-
-}
-
-
-/* =================================
-   STOP CAMERA WHEN PAGE CLOSES
-================================= */
-
-window.addEventListener(
-    "beforeunload",
-    function(){
-
-        if(localStream){
-
-            localStream
-                .getTracks()
-                .forEach(
-                    track =>
-                    track.stop()
-                );
-
-        }
-
-    }
-);
 
 </script>
 
