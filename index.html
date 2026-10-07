@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>OmeTV 4</title>
 
 <script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
@@ -36,7 +37,7 @@ box-shadow:0 10px 40px #0006;
 
 h1{font-size:36px;margin:5px}
 
-button,select,input{
+button,select{
 width:100%;
 padding:15px;
 margin:7px 0;
@@ -53,7 +54,6 @@ button{cursor:pointer}
 .next{background:#3b82f6;color:white}
 .stop{background:#ef4444;color:white}
 .report{background:#f59e0b;color:white}
-.age{background:#22c55e;color:white}
 
 video{
 width:100%;
@@ -73,14 +73,6 @@ border-radius:12px;
 margin:10px 0;
 }
 
-.warning{
-background:#7f1d1d;
-padding:15px;
-border-radius:15px;
-margin:15px 0;
-line-height:1.5;
-}
-
 .small{
 font-size:13px;
 opacity:.8;
@@ -92,39 +84,12 @@ opacity:.8;
 
 <div class="box">
 
-<!-- AGE VERIFICATION -->
-<div id="agePage">
-
-<h1>OmeTV 4 🔞</h1>
-
-<p>You must be 18 or older to use live video chat.</p>
-
-<div class="warning">
-🚫 No nudity or sexual content<br>
-🚫 No illegal content<br>
-🚫 No harassment or abuse<br>
-🚨 Violations may result in a 1-day suspension.
-</div>
-
-<label>Date of Birth</label>
-
-<input type="date" id="dob">
-
-<button class="age" onclick="verifyAge()">
-✅ Continue
-</button>
-
-<div id="ageStatus" class="status"></div>
-
-</div>
-
-
 <!-- LOGIN -->
-<div id="loginPage" class="hidden">
+<div id="loginPage">
 
 <h1>OmeTV 4</h1>
 
-<p>18+ Random Video Chat 🌎</p>
+<p>Random Video Chat 🌎</p>
 
 <button class="google" onclick="googleLogin()">
 🔵 Continue with Google
@@ -144,13 +109,6 @@ Please login
 
 <p id="userInfo"></p>
 
-<div class="warning">
-🚫 NO NUDITY<br>
-🚫 NO SEXUAL CONTENT<br>
-🚫 NO ILLEGAL CONTENT<br>
-🚨 Breaking the rules may cause a 1-day suspension.
-</div>
-
 <select id="country">
 <option value="all">🌎 All Countries</option>
 <option value="Nepal">🇳🇵 Nepal</option>
@@ -162,7 +120,7 @@ Please login
 </select>
 
 <button class="start" onclick="startChat()">
-🎥 START LIVE
+🎥 START
 </button>
 
 <button class="stop" onclick="logout()">
@@ -175,18 +133,14 @@ Please login
 <!-- CHAT -->
 <div id="chatPage" class="hidden">
 
-<h2>Live Video Chat 🎥</h2>
-
-<div class="warning">
-🚫 No nudity • No sexual content • No illegal content
-</div>
+<h2>Video Chat 🎥</h2>
 
 <video id="remoteVideo" autoplay playsinline></video>
 
 <video id="localVideo" autoplay playsinline muted></video>
 
 <div id="status" class="status">
-Searching...
+Starting...
 </div>
 
 <button class="next" onclick="nextPerson()">
@@ -198,8 +152,12 @@ Searching...
 </button>
 
 <button class="report" onclick="reportUser()">
-🚨 REPORT USER
+🚨 REPORT
 </button>
+
+<p class="small">
+Your camera preview is shown below the other person.
+</p>
 
 </div>
 
@@ -236,58 +194,12 @@ let currentUser=null;
 let localStream=null;
 let peer=null;
 let currentMatch=null;
+let matchListener=null;
+let offerListener=null;
+let answerListener=null;
+let candidateListener1=null;
+let candidateListener2=null;
 let searching=false;
-
-
-// ===============================
-// AGE VERIFICATION
-// ===============================
-
-function verifyAge(){
-
-const dob=document.getElementById("dob").value;
-
-if(!dob){
-
-document.getElementById("ageStatus").innerText=
-"Please enter your date of birth.";
-
-return;
-
-}
-
-const birth=new Date(dob);
-const today=new Date();
-
-let age=today.getFullYear()-birth.getFullYear();
-
-const month=today.getMonth()-birth.getMonth();
-
-if(
-month<0 ||
-(month===0 && today.getDate()<birth.getDate())
-){
-age--;
-}
-
-if(age<18){
-
-document.getElementById("ageStatus").innerText=
-"❌ You must be 18 or older to use live video chat.";
-
-return;
-
-}
-
-localStorage.setItem("ome_age_verified","true");
-
-document.getElementById("agePage")
-.classList.add("hidden");
-
-document.getElementById("loginPage")
-.classList.remove("hidden");
-
-}
 
 
 // ===============================
@@ -321,7 +233,7 @@ document.getElementById("loginStatus").innerText=
 // AUTH
 // ===============================
 
-auth.onAuthStateChanged(async user=>{
+auth.onAuthStateChanged(user=>{
 
 if(user){
 
@@ -339,6 +251,15 @@ document.getElementById("userInfo").innerText=
 }else{
 
 currentUser=null;
+
+document.getElementById("loginPage")
+.classList.remove("hidden");
+
+document.getElementById("homePage")
+.classList.add("hidden");
+
+document.getElementById("chatPage")
+.classList.add("hidden");
 
 }
 
@@ -374,13 +295,15 @@ document.getElementById("localVideo").srcObject=
 localStream;
 
 document.getElementById("status").innerText=
-"🔎 Searching for another 18+ user...";
+"🔎 Searching for another person...";
 
 searching=true;
 
 await findPerson();
 
 }catch(error){
+
+console.error(error);
 
 document.getElementById("status").innerText=
 "Camera/Microphone permission denied.";
@@ -391,10 +314,15 @@ document.getElementById("status").innerText=
 
 
 // ===============================
-// FIND USER
+// FIND PERSON
 // ===============================
 
 async function findPerson(){
+
+if(!searching)return;
+
+const myCountry=
+document.getElementById("country").value;
 
 const waitingRef=db.ref("waiting");
 
@@ -407,7 +335,20 @@ snapshot.forEach(child=>{
 
 if(child.key!==currentUser.uid){
 
-found=child.key;
+const data=child.val();
+
+if(
+myCountry==="all" ||
+data.country==="all" ||
+data.country===myCountry
+){
+
+found={
+uid:child.key,
+country:data.country
+};
+
+}
 
 }
 
@@ -418,11 +359,10 @@ if(found){
 
 const ids=[
 currentUser.uid,
-found
+found.uid
 ].sort();
 
-const matchId=
-ids[0]+"_"+ids[1];
+const matchId=ids[0]+"_"+ids[1];
 
 currentMatch=matchId;
 
@@ -430,22 +370,21 @@ await db.ref("matches/"+matchId).update({
 
 user1:ids[0],
 user2:ids[1],
-
-createdAt:
-firebase.database.ServerValue.TIMESTAMP
+createdAt:firebase.database.ServerValue.TIMESTAMP
 
 });
 
-await db.ref("waiting/"+found).remove();
+await db.ref("waiting/"+found.uid).remove();
+
 await db.ref("waiting/"+currentUser.uid).remove();
 
 if(currentUser.uid===ids[0]){
 
-createOffer(matchId);
+await createOffer(matchId);
 
 }else{
 
-waitForOffer(matchId);
+await waitForOffer(matchId);
 
 }
 
@@ -453,14 +392,11 @@ waitForOffer(matchId);
 
 await db.ref("waiting/"+currentUser.uid).set({
 
-country:
-document.getElementById("country").value,
+country:myCountry,
 
-name:
-currentUser.displayName||"User",
+name:currentUser.displayName||"User",
 
-timestamp:
-firebase.database.ServerValue.TIMESTAMP
+timestamp:firebase.database.ServerValue.TIMESTAMP
 
 });
 
@@ -485,34 +421,44 @@ function createPeer(matchId){
 peer=new RTCPeerConnection({
 
 iceServers:[
-{urls:"stun:stun.l.google.com:19302"},
-{urls:"stun:stun1.l.google.com:19302"}
+{
+urls:"stun:stun.l.google.com:19302"
+},
+{
+urls:"stun:stun1.l.google.com:19302"
+}
 ]
 
 });
 
+
 localStream.getTracks().forEach(track=>{
+
 peer.addTrack(track,localStream);
+
 });
+
 
 peer.ontrack=event=>{
 
-document.getElementById("remoteVideo")
-.srcObject=event.streams[0];
+document.getElementById("remoteVideo").srcObject=
+event.streams[0];
 
 document.getElementById("status").innerText=
-"🟢 Connected";
+"🟢 Connected!";
 
 };
+
 
 peer.onicecandidate=event=>{
 
 if(event.candidate){
 
-db.ref(
-"matches/"+matchId+
-"/candidates/"+currentUser.uid
-).push(event.candidate.toJSON());
+const path=
+"matches/"+matchId+"/candidates/"+
+(currentUser.uid);
+
+db.ref(path).push(event.candidate.toJSON());
 
 }
 
@@ -522,7 +468,7 @@ db.ref(
 
 
 // ===============================
-// OFFER
+// CREATE OFFER
 // ===============================
 
 async function createOffer(matchId){
@@ -542,6 +488,8 @@ sdp:offer.sdp
 
 });
 
+
+answerListener=
 db.ref("matches/"+matchId+"/answer")
 .on("value",async snap=>{
 
@@ -559,15 +507,19 @@ new RTCSessionDescription(answer)
 
 listenCandidates(matchId);
 
+document.getElementById("status").innerText=
+"📞 Calling another user...";
+
 }
 
 
 // ===============================
-// ANSWER
+// WAIT FOR OFFER
 // ===============================
 
 function waitForOffer(matchId){
 
+offerListener=
 db.ref("matches/"+matchId+"/offer")
 .on("value",async snap=>{
 
@@ -598,6 +550,9 @@ sdp:answer.sdp
 
 listenCandidates(matchId);
 
+document.getElementById("status").innerText=
+"📞 Connecting...";
+
 }
 
 });
@@ -606,10 +561,13 @@ listenCandidates(matchId);
 
 
 // ===============================
-// ICE
+// ICE CANDIDATES
 // ===============================
 
 function listenCandidates(matchId){
+
+const myPath=
+"matches/"+matchId+"/candidates/";
 
 const otherUid=
 currentMatch.split("_")
@@ -617,10 +575,10 @@ currentMatch.split("_")
 
 if(!otherUid)return;
 
-db.ref(
-"matches/"+matchId+
-"/candidates/"+otherUid
-).on("child_added",async snap=>{
+const ref=
+db.ref(myPath+otherUid);
+
+ref.on("child_added",async snap=>{
 
 try{
 
@@ -632,9 +590,9 @@ new RTCIceCandidate(snap.val())
 
 }
 
-}catch(e){
+}catch(error){
 
-console.log(e);
+console.log(error);
 
 }
 
@@ -649,10 +607,20 @@ console.log(e);
 
 async function nextPerson(){
 
-await cleanup();
-
 document.getElementById("status").innerText=
-"🔎 Finding next person...";
+"➡️ Finding next person...";
+
+await cleanupMatch();
+
+if(localStream){
+
+localStream.getTracks().forEach(track=>{
+track.stop();
+});
+
+}
+
+document.getElementById("remoteVideo").srcObject=null;
 
 try{
 
@@ -662,14 +630,14 @@ video:true,
 audio:true
 });
 
-document.getElementById("localVideo")
-.srcObject=localStream;
+document.getElementById("localVideo").srcObject=
+localStream;
 
 searching=true;
 
 await findPerson();
 
-}catch(e){
+}catch(error){
 
 document.getElementById("status").innerText=
 "Camera permission required.";
@@ -685,7 +653,22 @@ document.getElementById("status").innerText=
 
 async function stopChat(){
 
-await cleanup();
+searching=false;
+
+await cleanupMatch();
+
+if(localStream){
+
+localStream.getTracks().forEach(track=>{
+track.stop();
+});
+
+localStream=null;
+
+}
+
+document.getElementById("localVideo").srcObject=null;
+document.getElementById("remoteVideo").srcObject=null;
 
 document.getElementById("chatPage")
 .classList.add("hidden");
@@ -700,22 +683,42 @@ document.getElementById("homePage")
 // CLEANUP
 // ===============================
 
-async function cleanup(){
+async function cleanupMatch(){
 
 searching=false;
 
 if(peer){
 
 peer.close();
+
 peer=null;
+
+}
+
+if(matchListener){
+
+db.ref(matchListener).off();
+matchListener=null;
+
+}
+
+if(offerListener){
+
+db.ref("matches/"+currentMatch+"/offer").off();
+offerListener=null;
+
+}
+
+if(answerListener){
+
+db.ref("matches/"+currentMatch+"/answer").off();
+answerListener=null;
 
 }
 
 if(currentMatch){
 
-await db.ref(
-"matches/"+currentMatch
-).remove();
+await db.ref("matches/"+currentMatch).remove();
 
 currentMatch=null;
 
@@ -723,26 +726,9 @@ currentMatch=null;
 
 if(currentUser){
 
-await db.ref(
-"waiting/"+currentUser.uid
-).remove();
+await db.ref("waiting/"+currentUser.uid).remove();
 
 }
-
-if(localStream){
-
-localStream.getTracks()
-.forEach(track=>track.stop());
-
-localStream=null;
-
-}
-
-document.getElementById("localVideo")
-.srcObject=null;
-
-document.getElementById("remoteVideo")
-.srcObject=null;
 
 }
 
@@ -759,22 +745,13 @@ await db.ref("reports").push({
 
 reporter:currentUser.uid,
 
-reportedMatch:
-currentMatch||"unknown",
+match:currentMatch||"unknown",
 
-time:
-firebase.database.ServerValue.TIMESTAMP,
-
-reason:
-"Inappropriate or illegal content"
+time:firebase.database.ServerValue.TIMESTAMP
 
 });
 
-alert(
-"🚨 Report submitted. The user can be reviewed by moderation."
-);
-
-await nextPerson();
+alert("🚨 Report submitted.");
 
 }
 
@@ -785,7 +762,7 @@ await nextPerson();
 
 async function logout(){
 
-await cleanup();
+await stopChat();
 
 await auth.signOut();
 
