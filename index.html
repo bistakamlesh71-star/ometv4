@@ -3,130 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>Question AI</title>
+<title>AI Question Solver</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
-  font-family:Arial,Helvetica,sans-serif;
+  font-family:Arial,sans-serif;
   background:#f5f7fb;
-  color:#172033;
+  color:#111827;
 }
 
-.app{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-}
-
-/* HEADER */
-
-.header{
+header{
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  color:white;
+  padding:18px;
   position:sticky;
   top:0;
-  z-index:20;
-  height:64px;
-  background:#ffffff;
-  border-bottom:1px solid #e5e7eb;
+  z-index:10;
+}
+
+.header{
+  max-width:900px;
+  margin:auto;
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  padding:0 16px;
+  align-items:center;
 }
 
 .logo{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  font-size:20px;
-  font-weight:800;
+  font-size:21px;
+  font-weight:bold;
 }
 
-.logoIcon{
-  width:38px;
-  height:38px;
-  border-radius:12px;
-  background:linear-gradient(135deg,#4f46e5,#7c3aed);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-}
-
-.newBtn{
+.new{
+  background:white;
+  color:#4f46e5;
   border:0;
-  background:#111827;
-  color:white;
-  padding:10px 14px;
-  border-radius:11px;
-  font-weight:700;
-  cursor:pointer;
+  padding:9px 13px;
+  border-radius:10px;
+  font-weight:bold;
 }
 
-/* MAIN */
-
-.main{
-  width:100%;
+main{
   max-width:900px;
   margin:auto;
-  padding:20px 15px 150px;
+  padding:25px 15px 150px;
 }
 
-.welcome{
+.hero{
   text-align:center;
-  padding:55px 10px 25px;
+  padding:25px 5px;
 }
 
-.welcome h1{
-  font-size:34px;
-  margin:0 0 10px;
+.hero h1{
+  font-size:32px;
+  margin:5px;
 }
 
-.welcome p{
+.hero p{
   color:#6b7280;
-  margin:0;
 }
 
 .subjects{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:10px;
-  margin:25px 0;
+  margin:20px 0;
 }
 
 .subject{
+  background:white;
   border:1px solid #e5e7eb;
-  background:#fff;
-  padding:15px 8px;
   border-radius:15px;
+  padding:15px 5px;
+  font-weight:bold;
   cursor:pointer;
-  font-weight:700;
-  transition:.2s;
 }
 
 .subject:hover{
-  transform:translateY(-2px);
-  box-shadow:0 5px 20px #0001;
+  box-shadow:0 5px 20px #0002;
 }
 
-.subject span{
+.icon{
   display:block;
   font-size:25px;
   margin-bottom:5px;
 }
 
-/* MESSAGES */
-
 .message{
   display:flex;
-  gap:12px;
-  margin:22px 0;
-  align-items:flex-start;
+  gap:10px;
+  margin:20px 0;
 }
 
 .avatar{
@@ -141,48 +110,118 @@ body{
   font-weight:bold;
 }
 
-.userAvatar{
+.user{
   background:#2563eb;
 }
 
-.aiAvatar{
-  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+.ai{
+  background:#7c3aed;
 }
 
-.messageBody{
+.content{
   flex:1;
-  min-width:0;
 }
 
-.messageName{
-  font-size:13px;
+.name{
   color:#6b7280;
+  font-size:13px;
+  font-weight:bold;
   margin-bottom:5px;
-  font-weight:700;
 }
 
-.messageText{
+.text{
   white-space:pre-wrap;
   line-height:1.65;
-  font-size:16px;
   overflow-wrap:anywhere;
 }
 
-.copyBtn{
-  margin-top:10px;
-  border:1px solid #ddd;
-  background:white;
-  border-radius:8px;
+.copy{
+  margin-top:8px;
   padding:7px 10px;
+  background:white;
+  border:1px solid #ddd;
+  border-radius:8px;
+}
+
+.inputArea{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#f5f7fb;
+  padding:10px;
+  z-index:20;
+}
+
+.inputBox{
+  max-width:900px;
+  margin:auto;
+  background:white;
+  border:1px solid #ddd;
+  border-radius:18px;
+  padding:8px;
+  display:flex;
+  align-items:flex-end;
+  gap:5px;
+  box-shadow:0 5px 25px #0002;
+}
+
+textarea{
+  flex:1;
+  border:0;
+  outline:0;
+  resize:none;
+  font-size:16px;
+  padding:10px;
+  font-family:Arial;
+  max-height:130px;
+}
+
+button{
   cursor:pointer;
 }
 
-/* TYPING */
+.send{
+  width:45px;
+  height:45px;
+  border:0;
+  border-radius:12px;
+  background:#4f46e5;
+  color:white;
+  font-size:20px;
+}
 
-.typing{
+.photo{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:12px;
+  background:#eef2ff;
+  font-size:20px;
+}
+
+#imageInput{
+  display:none;
+}
+
+.preview{
+  max-width:100px;
+  max-height:100px;
+  border-radius:10px;
+  margin:5px;
+  display:none;
+}
+
+.status{
+  text-align:center;
+  font-size:11px;
+  color:#777;
+  margin-top:5px;
+}
+
+.loading{
   display:flex;
   gap:5px;
-  padding:10px 0;
 }
 
 .dot{
@@ -190,762 +229,545 @@ body{
   height:7px;
   background:#777;
   border-radius:50%;
-  animation:bounce 1s infinite;
+  animation:b 1s infinite;
 }
 
-.dot:nth-child(2){
-  animation-delay:.15s;
+.dot:nth-child(2){animation-delay:.15s}
+.dot:nth-child(3){animation-delay:.3s}
+
+@keyframes b{
+  50%{transform:translateY(-6px)}
 }
-
-.dot:nth-child(3){
-  animation-delay:.3s;
-}
-
-@keyframes bounce{
-  0%,60%,100%{
-    transform:translateY(0);
-  }
-  30%{
-    transform:translateY(-6px);
-  }
-}
-
-/* INPUT */
-
-.inputArea{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:30;
-  padding:15px;
-  background:linear-gradient(
-    transparent,
-    #f5f7fb 25%
-  );
-}
-
-.inputBox{
-  max-width:900px;
-  margin:auto;
-  background:#fff;
-  border:1px solid #d9dce3;
-  border-radius:18px;
-  display:flex;
-  align-items:flex-end;
-  padding:8px;
-  box-shadow:0 8px 30px #0002;
-}
-
-textarea{
-  flex:1;
-  resize:none;
-  border:0;
-  outline:0;
-  font-size:16px;
-  padding:11px;
-  max-height:140px;
-  font-family:inherit;
-}
-
-.sendBtn{
-  width:44px;
-  height:44px;
-  border:0;
-  border-radius:13px;
-  background:#111827;
-  color:#fff;
-  font-size:20px;
-  cursor:pointer;
-}
-
-.sendBtn:disabled{
-  opacity:.4;
-  cursor:not-allowed;
-}
-
-.searchToggle{
-  border:0;
-  background:#eef2ff;
-  color:#4338ca;
-  border-radius:10px;
-  padding:8px 10px;
-  margin:0 5px;
-  cursor:pointer;
-  font-size:12px;
-  font-weight:bold;
-}
-
-.status{
-  max-width:900px;
-  margin:5px auto 0;
-  text-align:center;
-  color:#6b7280;
-  font-size:11px;
-}
-
-/* ERROR */
 
 .error{
   background:#fee2e2;
   color:#991b1b;
-  border:1px solid #fecaca;
   padding:12px;
-  border-radius:12px;
-  margin:15px 0;
-  line-height:1.5;
+  border-radius:10px;
+  margin:10px 0;
 }
 
-/* MOBILE */
-
 @media(max-width:600px){
-
-  .header{
-    height:58px;
-  }
-
-  .logo{
-    font-size:18px;
-  }
-
-  .logoIcon{
-    width:34px;
-    height:34px;
-  }
-
-  .newBtn{
-    padding:8px 10px;
-    font-size:12px;
-  }
-
-  .main{
-    padding:10px 12px 145px;
-  }
-
-  .welcome{
-    padding-top:35px;
-  }
-
-  .welcome h1{
-    font-size:28px;
-  }
-
   .subjects{
     grid-template-columns:repeat(2,1fr);
   }
 
-  .messageText{
-    font-size:15px;
+  .hero h1{
+    font-size:27px;
   }
-
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
-
-<!-- HEADER -->
-
-<header class="header">
-
-<div class="logo">
-  <div class="logoIcon">🤖</div>
-  Question AI
-</div>
-
-<button
-class="newBtn"
-onclick="newChat()">
-＋ New Chat
-</button>
-
+<header>
+  <div class="header">
+    <div class="logo">🤖 AI Question Solver</div>
+    <button class="new" onclick="newChat()">＋ New</button>
+  </div>
 </header>
 
+<main>
 
-<!-- MAIN -->
+<div id="hero" class="hero">
+  <h1>Ask Anything 🤖</h1>
+  <p>Math • Physics • Chemistry • Biology • English • Hindi • Nepali</p>
 
-<main
-id="main"
-class="main">
+  <div class="subjects">
 
-<div
-id="welcome"
-class="welcome">
+    <button class="subject" onclick="choose('Mathematics')">
+      <span class="icon">➗</span>Math
+    </button>
 
-<h1>
-Ask Anything 🤖
-</h1>
+    <button class="subject" onclick="choose('Physics')">
+      <span class="icon">⚡</span>Physics
+    </button>
 
-<p>
-Hindi • English • Math • Physics • Chemistry • Biology
-</p>
+    <button class="subject" onclick="choose('Chemistry')">
+      <span class="icon">🧪</span>Chemistry
+    </button>
 
-<div class="subjects">
+    <button class="subject" onclick="choose('Biology')">
+      <span class="icon">🧬</span>Biology
+    </button>
 
-<button
-class="subject"
-onclick="setSubject('Mathematics')">
-<span>➗</span>
-Math
-</button>
+    <button class="subject" onclick="choose('English')">
+      <span class="icon">🇬🇧</span>English
+    </button>
 
-<button
-class="subject"
-onclick="setSubject('Physics')">
-<span>⚡</span>
-Physics
-</button>
+    <button class="subject" onclick="choose('Hindi')">
+      <span class="icon">🇮🇳</span>Hindi
+    </button>
 
-<button
-class="subject"
-onclick="setSubject('Chemistry')">
-<span>🧪</span>
-Chemistry
-</button>
-
-<button
-class="subject"
-onclick="setSubject('Biology')">
-<span>🧬</span>
-Biology
-</button>
-
-<button
-class="subject"
-onclick="setSubject('English')">
-<span>🇬🇧</span>
-English
-</button>
-
-<button
-class="subject"
-onclick="setSubject('Hindi')">
-<span>🇮🇳</span>
-Hindi
-</button>
-
-</div>
-
+  </div>
 </div>
 
 <div id="chat"></div>
 
 </main>
 
-
-<!-- INPUT -->
-
 <div class="inputArea">
 
-<div class="inputBox">
+  <div class="inputBox">
 
-<textarea
-id="question"
-rows="1"
-placeholder="Ask your question..."
-oninput="resizeInput()"
-onkeydown="handleKey(event)">
-</textarea>
+    <input
+      id="imageInput"
+      type="file"
+      accept="image/*"
+      onchange="selectImage(event)"
+    >
 
-<button
-class="searchToggle"
-id="searchBtn"
-onclick="toggleSearch()">
-🔎 Search OFF
-</button>
+    <button
+      class="photo"
+      onclick="document.getElementById('imageInput').click()">
+      📷
+    </button>
 
-<button
-id="sendBtn"
-class="sendBtn"
-onclick="askAI()">
-➤
-</button>
+    <textarea
+      id="question"
+      rows="1"
+      placeholder="Write your question..."
+      onkeydown="enterSend(event)"
+    ></textarea>
 
-</div>
+    <button
+      class="send"
+      id="send"
+      onclick="solve()">
+      ➤
+    </button>
 
-<div
-id="status"
-class="status">
-Gemini AI
-</div>
+  </div>
 
-</div>
+  <img id="preview" class="preview">
+
+  <div class="status" id="status">
+    Gemini AI • Ready
+  </div>
 
 </div>
 
 
 <script>
 
-/*
-==================================================
-GEMINI SETTINGS
-==================================================
+/* ==================================================
+   🔑 PUT YOUR GEMINI API KEY HERE
+   ================================================== */
 
-1. Google AI Studio बाट API key बनाउनुहोस्.
-2. तल YOUR_GEMINI_API_KEY मा राख्नुहोस्.
-
-WARNING:
-यो demo/testing का लागि हो.
-Public website मा API key expose नगर्नुहोस्.
-Production मा backend प्रयोग गर्नुहोस्.
-==================================================
-*/
-
-const API_KEY =
-"YOUR_GEMINI_API_KEY";
+const API_KEY = "YOUR_GEMINI_API_KEY";
 
 
-/*
-Current stable model used here.
-Google's model availability can change.
-*/
+/* Gemini model */
 
-const MODEL =
-"gemini-2.5-flash";
+const MODEL = "gemini-2.5-flash";
 
 
-let selectedSubject =
-"General";
+let subject = "General";
 
-let useSearch =
-false;
+let selectedImage = null;
 
-let busy =
-false;
+let selectedMime = null;
+
+let busy = false;
 
 
-/* =========================
-SUBJECT
-========================= */
+/* ==================================================
+   SUBJECT
+   ================================================== */
 
-function setSubject(subject){
+function choose(name){
 
-  selectedSubject =
-  subject;
+  subject = name;
 
-  const input =
-  document.getElementById("question");
+  document.getElementById("question").placeholder =
+    name + " question लेख्नुहोस्...";
 
-  input.placeholder =
-  subject+
-  " question लेख्नुहोस्...";
-
-  input.focus();
+  document.getElementById("question").focus();
 
 }
 
 
-/* =========================
-SEARCH TOGGLE
-========================= */
+/* ==================================================
+   IMAGE
+   ================================================== */
 
-function toggleSearch(){
+function selectImage(event){
 
-  useSearch =
-  !useSearch;
+  const file =
+    event.target.files[0];
 
-  const btn =
-  document.getElementById("searchBtn");
+  if(!file) return;
 
-  if(useSearch){
+  if(file.size > 8 * 1024 * 1024){
 
-    btn.innerText =
-    "🔎 Search ON";
+    alert("Image 8MB भन्दा सानो राख्नुहोस्।");
 
-    btn.style.background =
-    "#dcfce7";
-
-    btn.style.color =
-    "#166534";
-
-  }else{
-
-    btn.innerText =
-    "🔎 Search OFF";
-
-    btn.style.background =
-    "#eef2ff";
-
-    btn.style.color =
-    "#4338ca";
+    return;
 
   }
 
+  selectedMime = file.type;
+
+  const reader = new FileReader();
+
+  reader.onload = function(){
+
+    const result = reader.result;
+
+    selectedImage =
+      result.split(",")[1];
+
+    const preview =
+      document.getElementById("preview");
+
+    preview.src = result;
+
+    preview.style.display = "block";
+
+  };
+
+  reader.readAsDataURL(file);
+
 }
 
 
-/* =========================
-ASK AI
-========================= */
+/* ==================================================
+   SOLVE
+   ================================================== */
 
-async function askAI(){
+async function solve(){
 
-  if(busy)
-  return;
+  if(busy) return;
 
   const input =
-  document.getElementById("question");
+    document.getElementById("question");
 
   const question =
-  input.value.trim();
+    input.value.trim();
 
-  if(!question)
-  return;
+  if(!question && !selectedImage){
+
+    alert("Question लेख्नुहोस् वा photo upload गर्नुहोस्।");
+
+    return;
+
+  }
 
 
   if(
-    !API_KEY ||
-    API_KEY ===
-    "YOUR_GEMINI_API_KEY"
+    API_KEY === "YOUR_GEMINI_API_KEY" ||
+    !API_KEY
   ){
 
-    addError(
-      "Gemini API key राखिएको छैन। पहिले API key राख्नुहोस्।"
+    showError(
+      "Gemini API key राखिएको छैन। Code मा API key राख्नुहोस्।"
     );
 
     return;
+
   }
 
 
-  busy=true;
+  busy = true;
 
-  document
-  .getElementById("sendBtn")
-  .disabled=true;
+  document.getElementById("send").disabled = true;
+
+  document.getElementById("hero")?.remove();
 
 
-  document
-  .getElementById("welcome")
-  ?.remove();
+  const finalQuestion =
+    question ||
+    "यो photo मा भएको question solve गर्नुहोस्।";
 
 
   addMessage(
-    question,
+    finalQuestion,
     "user"
   );
 
-  input.value="";
 
-  resizeInput();
+  input.value = "";
+
+  input.style.height = "auto";
 
 
-  const loadingId =
-  showTyping();
+  const loading =
+    showLoading();
 
 
   try{
 
     const answer =
-    await callGemini(
-      question
-    );
+      await askGemini(
+        finalQuestion
+      );
 
-    removeTyping(
-      loadingId
-    );
+    loading.remove();
 
     addMessage(
       answer,
       "ai"
     );
 
-  }catch(error){
+  }
+  catch(error){
 
-    removeTyping(
-      loadingId
-    );
+    loading.remove();
 
-    addError(
+    showError(
       error.message
     );
 
   }
 
 
-  busy=false;
+  busy = false;
 
-  document
-  .getElementById("sendBtn")
-  .disabled=false;
+  document.getElementById("send").disabled = false;
 
 }
 
 
-/* =========================
-GEMINI API
-========================= */
+/* ==================================================
+   GEMINI
+   ================================================== */
 
-async function callGemini(question){
+async function askGemini(question){
 
   const url =
-  "https://generativelanguage.googleapis.com/v1beta/models/"
-  +MODEL+
-  ":generateContent?key="
-  +encodeURIComponent(API_KEY);
+    "https://generativelanguage.googleapis.com/v1beta/models/"
+    + MODEL +
+    ":generateContent?key=" +
+    encodeURIComponent(API_KEY);
 
 
-  const systemInstruction = `
-You are Question AI, a helpful educational assistant.
+  const instruction = `
+You are an expert AI Question Solver and personal tutor.
 
-You help students solve:
-- Mathematics
-- Physics
-- Chemistry
-- Biology
-- English
-- Hindi
-- General academic questions
+Subject:
+${subject}
 
-Current subject:
-${selectedSubject}
+User question:
+${question}
 
-Rules:
-1. Answer in the same language as the user's question when possible.
-2. For mathematics and science, show clear step-by-step working.
-3. Explain formulas before using them.
-4. For chemistry, write chemical equations clearly.
-5. For biology, explain concepts simply and accurately.
-6. For Hindi and English, correct grammar and explain the answer.
-7. If the question is ambiguous, ask a short clarification.
-8. Do not invent facts.
-9. Keep the explanation student-friendly.
-10. Give the final answer clearly at the end.
+Solve the question accurately.
+
+Important rules:
+
+1. Answer in the same language as the user whenever possible.
+2. If user uses Nepali, answer in Nepali.
+3. If user uses Hindi, answer in Hindi.
+4. If user uses English, answer in English.
+5. For Mathematics, show step-by-step calculations.
+6. For Physics, show formula, values, calculation and final answer.
+7. For Chemistry, explain reactions and equations clearly.
+8. For Biology, explain concepts simply.
+9. For English/Hindi grammar, explain the correction.
+10. If an image is provided, read the question from the image.
+11. Do not make up an answer.
+12. Keep the answer easy for students to understand.
+13. Put the final answer clearly at the end.
 `;
+
+
+  const parts = [
+
+    {
+      text: instruction
+    }
+
+  ];
+
+
+  if(selectedImage){
+
+    parts.push({
+
+      inlineData:{
+        mimeType:selectedMime,
+        data:selectedImage
+      }
+
+    });
+
+  }
 
 
   const body = {
 
-    system_instruction:{
-      parts:[
-        {
-          text:
-          systemInstruction
-        }
-      ]
-    },
-
     contents:[
       {
         role:"user",
-        parts:[
-          {
-            text:
-            question
-          }
-        ]
+        parts:parts
       }
     ],
 
     generationConfig:{
-      temperature:0.3,
+      temperature:0.2,
       maxOutputTokens:4096
     }
 
   };
 
 
-  /*
-  Search grounding:
-  Gemini 2.5 Flash supports Google Search grounding.
-  */
-
-  if(useSearch){
-
-    body.tools=[
-      {
-        google_search:{}
-      }
-    ];
-
-  }
-
-
   const response =
-  await fetch(
-    url,
-    {
-      method:"POST",
+    await fetch(
+      url,
+      {
+        method:"POST",
 
-      headers:{
-        "Content-Type":
-        "application/json"
-      },
+        headers:{
+          "Content-Type":
+          "application/json"
+        },
 
-      body:
-      JSON.stringify(body)
-    }
-  );
+        body:
+        JSON.stringify(body)
+      }
+    );
 
 
   const data =
-  await response.json();
+    await response.json();
 
 
   if(!response.ok){
 
-    let msg =
-    "Gemini API error.";
-
-    if(data.error?.message){
-
-      msg =
-      data.error.message;
-
-    }
-
-    throw new Error(msg);
-
-  }
-
-
-  const parts =
-  data.candidates?.[0]?.content?.parts
-  ||[];
-
-
-  const text =
-  parts
-  .map(part=>part.text||"")
-  .join("");
-
-
-  if(!text){
-
     throw new Error(
-      "AI ले कुनै answer दिएन। फेरि try गर्नुहोस्।"
+      data.error?.message ||
+      "Gemini API error."
     );
 
   }
 
 
-  return text;
-
-}
-
-
-/* =========================
-ADD MESSAGE
-========================= */
-
-function addMessage(
-  text,
-  type
-){
-
-  const chat =
-  document.getElementById("chat");
+  const answer =
+    data.candidates?.[0]
+      ?.content?.parts
+      ?.map(x => x.text || "")
+      .join("");
 
 
-  const message =
-  document.createElement("div");
+  if(!answer){
 
-  message.className =
-  "message";
-
-
-  const avatar =
-  document.createElement("div");
-
-  avatar.className =
-  "avatar "+
-  (
-    type==="user"
-    ?"userAvatar"
-    :"aiAvatar"
-  );
-
-  avatar.innerText =
-  type==="user"
-  ?"U"
-  :"AI";
-
-
-  const body =
-  document.createElement("div");
-
-  body.className =
-  "messageBody";
-
-
-  const name =
-  document.createElement("div");
-
-  name.className =
-  "messageName";
-
-  name.innerText =
-  type==="user"
-  ?"You"
-  :"Question AI";
-
-
-  const textBox =
-  document.createElement("div");
-
-  textBox.className =
-  "messageText";
-
-  textBox.innerText =
-  text;
-
-
-  body.appendChild(name);
-
-  body.appendChild(textBox);
-
-
-  if(type==="ai"){
-
-    const copy =
-    document.createElement("button");
-
-    copy.className =
-    "copyBtn";
-
-    copy.innerText =
-    "📋 Copy";
-
-    copy.onclick =
-    function(){
-
-      navigator.clipboard
-      .writeText(text);
-
-      copy.innerText =
-      "✓ Copied";
-
-      setTimeout(
-        ()=>{
-          copy.innerText =
-          "📋 Copy";
-        },
-        1500
-      );
-
-    };
-
-    body.appendChild(copy);
+    throw new Error(
+      "AI ले answer दिएन। फेरि try गर्नुहोस्।"
+    );
 
   }
 
 
-  message.appendChild(
-    avatar
-  );
+  return answer;
 
-  message.appendChild(
-    body
-  );
+}
 
 
-  chat.appendChild(
-    message
-  );
+/* ==================================================
+   MESSAGE
+   ================================================== */
+
+function addMessage(text,type){
+
+  const chat =
+    document.getElementById("chat");
 
 
-  message.scrollIntoView({
+  const box =
+    document.createElement("div");
+
+  box.className =
+    "message";
+
+
+  const avatar =
+    document.createElement("div");
+
+  avatar.className =
+    "avatar " +
+    (type === "user" ? "user" : "ai");
+
+  avatar.textContent =
+    type === "user" ? "U" : "AI";
+
+
+  const content =
+    document.createElement("div");
+
+  content.className =
+    "content";
+
+
+  const name =
+    document.createElement("div");
+
+  name.className =
+    "name";
+
+  name.textContent =
+    type === "user"
+    ? "You"
+    : "AI Question Solver";
+
+
+  const textBox =
+    document.createElement("div");
+
+  textBox.className =
+    "text";
+
+  textBox.textContent =
+    text;
+
+
+  content.appendChild(name);
+
+  content.appendChild(textBox);
+
+
+  if(type === "ai"){
+
+    const copy =
+      document.createElement("button");
+
+    copy.className =
+      "copy";
+
+    copy.textContent =
+      "📋 Copy Answer";
+
+    copy.onclick =
+      async function(){
+
+        await navigator.clipboard
+          .writeText(text);
+
+        copy.textContent =
+          "✓ Copied";
+
+        setTimeout(
+          () => {
+            copy.textContent =
+              "📋 Copy Answer";
+          },
+          1500
+        );
+
+      };
+
+    content.appendChild(copy);
+
+  }
+
+
+  box.appendChild(avatar);
+
+  box.appendChild(content);
+
+  chat.appendChild(box);
+
+
+  box.scrollIntoView({
     behavior:"smooth",
     block:"start"
   });
@@ -953,72 +775,41 @@ function addMessage(
 }
 
 
-/* =========================
-ERROR
-========================= */
+/* ==================================================
+   LOADING
+   ================================================== */
 
-function addError(text){
-
-  const chat =
-  document.getElementById("chat");
-
-  const div =
-  document.createElement("div");
-
-  div.className =
-  "error";
-
-  div.innerText =
-  "⚠️ "+text;
-
-  chat.appendChild(div);
-
-  div.scrollIntoView({
-    behavior:"smooth"
-  });
-
-}
-
-
-/* =========================
-TYPING
-========================= */
-
-function showTyping(){
-
-  const id =
-  "typing_"+Date.now();
+function showLoading(){
 
   const chat =
-  document.getElementById("chat");
+    document.getElementById("chat");
 
 
-  const message =
-  document.createElement("div");
+  const box =
+    document.createElement("div");
 
-  message.className =
-  "message";
-
-  message.id =
-  id;
+  box.className =
+    "message";
 
 
-  message.innerHTML = `
+  box.innerHTML = `
 
-    <div class="avatar aiAvatar">
+    <div class="avatar ai">
       AI
     </div>
 
-    <div class="messageBody">
+    <div class="content">
 
-      <div class="messageName">
-        Question AI
+      <div class="name">
+        AI Question Solver
       </div>
 
-      <div class="typing">
+      <div class="loading">
+
         <div class="dot"></div>
         <div class="dot"></div>
         <div class="dot"></div>
+
       </div>
 
     </div>
@@ -1026,99 +817,87 @@ function showTyping(){
   `;
 
 
-  chat.appendChild(
-    message
-  );
+  chat.appendChild(box);
 
 
-  message.scrollIntoView({
+  box.scrollIntoView({
     behavior:"smooth"
   });
 
 
-  return id;
+  return box;
 
 }
 
 
-function removeTyping(id){
+/* ==================================================
+   ERROR
+   ================================================== */
 
-  document
-  .getElementById(id)
-  ?.remove();
+function showError(message){
+
+  const chat =
+    document.getElementById("chat");
+
+
+  const error =
+    document.createElement("div");
+
+  error.className =
+    "error";
+
+  error.textContent =
+    "⚠️ " + message;
+
+
+  chat.appendChild(error);
+
+
+  error.scrollIntoView({
+    behavior:"smooth"
+  });
 
 }
 
 
-/* =========================
-NEW CHAT
-========================= */
+/* ==================================================
+   NEW CHAT
+   ================================================== */
 
 function newChat(){
 
-  document
-  .getElementById("chat")
-  .innerHTML="";
+  document.getElementById("chat")
+    .innerHTML = "";
 
+  subject = "General";
 
-  selectedSubject =
-  "General";
+  selectedImage = null;
 
+  selectedMime = null;
 
-  const input =
-  document.getElementById("question");
+  document.getElementById("preview")
+    .style.display = "none";
 
-  input.value="";
-
-  input.placeholder =
-  "Ask your question...";
-
-
-  document
-  .getElementById("main")
-  .scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+  document.getElementById("imageInput")
+    .value = "";
 
 }
 
 
-/* =========================
-TEXTAREA
-========================= */
+/* ==================================================
+   ENTER
+   ================================================== */
 
-function resizeInput(){
-
-  const input =
-  document.getElementById("question");
-
-  input.style.height =
-  "auto";
-
-  input.style.height =
-  Math.min(
-    input.scrollHeight,
-    140
-  )+"px";
-
-}
-
-
-/* =========================
-ENTER
-========================= */
-
-function handleKey(event){
+function enterSend(event){
 
   if(
-    event.key==="Enter" &&
+    event.key === "Enter" &&
     !event.shiftKey
   ){
 
     event.preventDefault();
 
-    askAI();
+    solve();
 
   }
 
