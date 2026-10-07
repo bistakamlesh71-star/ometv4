@@ -2,974 +2,1002 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0">
 
-<title>AI Question Solver</title>
+<title>Ome TV 4</title>
 
 <style>
+
 *{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-body{
-  font-family:Arial,sans-serif;
-  background:#f3f4f6;
-  color:#111827;
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#000;
 }
 
-header{
-  background:linear-gradient(135deg,#4f46e5,#7c3aed);
-  color:white;
-  text-align:center;
-  padding:22px 15px;
+/* =========================
+   SPLASH SCREEN
+========================= */
+
+#splash{
+    position:fixed;
+    inset:0;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    transition:opacity .7s ease;
 }
 
-header h1{
-  font-size:25px;
+.ometv-logo{
+    width:250px;
+    height:180px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-header p{
-  margin-top:7px;
-  font-size:14px;
-  opacity:.9;
+/* TV BODY */
+
+.tv{
+    width:245px;
+    height:155px;
+    background:#fff;
+    border:16px solid #ed6539;
+    border-radius:32px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 2px 5px rgba(0,0,0,.05);
 }
 
-.container{
-  width:100%;
-  max-width:900px;
-  margin:auto;
-  padding:15px;
+.tv::before{
+    content:"";
+    position:absolute;
+    width:13px;
+    height:13px;
+    background:#ed6539;
+    border-radius:50%;
+    right:-2px;
+    top:50%;
+    transform:translateY(-50%);
+    box-shadow:0 30px 0 #ed6539;
 }
 
-/* API */
-
-.api-box{
-  background:white;
-  padding:15px;
-  border-radius:15px;
-  margin-bottom:15px;
-  box-shadow:0 3px 12px rgba(0,0,0,.08);
+.ome-text{
+    font-size:57px;
+    font-weight:500;
+    color:#ed6539;
+    line-height:1;
 }
 
-.api-box h3{
-  margin-bottom:10px;
+.tv-text{
+    position:absolute;
+    font-size:42px;
+    font-weight:bold;
+    color:#38a66b;
+    top:76px;
+    left:73px;
 }
 
-.api-row{
-  display:flex;
-  gap:8px;
+/* ANTENNA */
+
+.antenna-left,
+.antenna-right{
+    position:absolute;
+    width:11px;
+    height:60px;
+    background:#ed6539;
+    border-radius:8px;
+    top:-35px;
 }
 
-.api-row input{
-  flex:1;
-  padding:13px;
-  border:1px solid #d1d5db;
-  border-radius:10px;
-  font-size:14px;
-  outline:none;
+.antenna-left{
+    transform:rotate(-43deg);
+    left:94px;
 }
 
-.api-row button{
-  background:#4f46e5;
-  color:white;
-  border:none;
-  padding:12px 18px;
-  border-radius:10px;
-  font-weight:bold;
-}
-
-.api-status{
-  margin-top:9px;
-  font-size:13px;
-}
-
-/* SUBJECT */
-
-.subjects{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  margin-bottom:15px;
-  padding-bottom:5px;
-}
-
-.subject{
-  border:none;
-  background:white;
-  padding:10px 15px;
-  border-radius:20px;
-  white-space:nowrap;
-  cursor:pointer;
-  box-shadow:0 2px 7px rgba(0,0,0,.06);
-}
-
-.subject.active{
-  background:#4f46e5;
-  color:white;
-}
-
-/* CHAT */
-
-.chat{
-  background:white;
-  min-height:430px;
-  max-height:60vh;
-  overflow-y:auto;
-  padding:15px;
-  border-radius:15px;
-  box-shadow:0 3px 12px rgba(0,0,0,.08);
-}
-
-.welcome{
-  text-align:center;
-  padding:70px 20px;
-  color:#6b7280;
-}
-
-.welcome-icon{
-  font-size:55px;
-  margin-bottom:15px;
-}
-
-.message{
-  display:flex;
-  margin:12px 0;
-}
-
-.message.user{
-  justify-content:flex-end;
-}
-
-.bubble{
-  max-width:88%;
-  padding:13px 15px;
-  border-radius:15px;
-  line-height:1.6;
-  white-space:pre-wrap;
-  word-break:break-word;
-}
-
-.user .bubble{
-  background:#4f46e5;
-  color:white;
-  border-bottom-right-radius:4px;
-}
-
-.ai .bubble{
-  background:#eef2ff;
-  color:#111827;
-  border-bottom-left-radius:4px;
-}
-
-/* INPUT */
-
-.input-box{
-  margin-top:15px;
-  background:white;
-  padding:12px;
-  border-radius:15px;
-  box-shadow:0 3px 12px rgba(0,0,0,.08);
-}
-
-textarea{
-  width:100%;
-  min-height:90px;
-  border:1px solid #d1d5db;
-  border-radius:12px;
-  padding:13px;
-  font-size:15px;
-  resize:none;
-  outline:none;
-}
-
-.actions{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-top:10px;
-}
-
-.subject-name{
-  color:#6b7280;
-  font-size:14px;
-}
-
-.solve{
-  background:#16a34a;
-  color:white;
-  border:none;
-  padding:13px 22px;
-  border-radius:10px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.new-chat{
-  margin-top:10px;
-  width:100%;
-  background:#ef4444;
-  color:white;
-  border:none;
-  padding:11px;
-  border-radius:10px;
-  cursor:pointer;
+.antenna-right{
+    transform:rotate(43deg);
+    left:145px;
 }
 
 /* LOADING */
 
-.loading{
-  display:flex;
-  align-items:center;
-  gap:5px;
+.loading-text{
+    margin-top:35px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#333;
+    font-size:22px;
 }
 
-.dot{
-  width:8px;
-  height:8px;
-  background:#4f46e5;
-  border-radius:50%;
-  animation:blink 1s infinite;
+.green-dot{
+    width:16px;
+    height:16px;
+    background:#6cff00;
+    border-radius:50%;
+    box-shadow:0 0 8px #6cff00;
 }
 
-.dot:nth-child(2){
-  animation-delay:.2s;
+/* =========================
+   APP
+========================= */
+
+#app{
+    position:fixed;
+    inset:0;
+    display:none;
+    background:#111;
+    color:white;
 }
 
-.dot:nth-child(3){
-  animation-delay:.4s;
+/* CAMERA */
+
+#remoteVideo{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    background:#202020;
 }
 
-@keyframes blink{
-  0%,100%{opacity:.2}
-  50%{opacity:1}
+#localVideo{
+    position:absolute;
+    right:15px;
+    top:15px;
+    width:115px;
+    height:165px;
+    object-fit:cover;
+    border-radius:12px;
+    border:2px solid rgba(255,255,255,.7);
+    background:#222;
+    z-index:10;
+}
+
+/* DARK OVERLAY */
+
+.overlay{
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(0,0,0,.55),
+        transparent 35%,
+        transparent 60%,
+        rgba(0,0,0,.65)
+      );
+    pointer-events:none;
+}
+
+/* LOGO */
+
+.logo-area{
+    position:absolute;
+    top:35px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:20;
+    text-align:center;
+}
+
+.logo-area img{
+    width:145px;
+    max-height:145px;
+    object-fit:contain;
+}
+
+/* FALLBACK LOGO */
+
+.logo-fallback{
+    width:125px;
+    height:125px;
+    border-radius:50%;
+    background:#081733;
+    border:4px solid #2ecbff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:20px;
+}
+
+/* CONNECTING */
+
+.connecting{
+    position:absolute;
+    top:250px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:20;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:25px;
+    text-shadow:0 2px 5px #000;
+}
+
+.connect-dot{
+    width:18px;
+    height:18px;
+    background:#6cff00;
+    border-radius:50%;
+    box-shadow:0 0 10px #6cff00;
+}
+
+/* CONTROLS */
+
+.controls{
+    position:absolute;
+    left:15px;
+    right:15px;
+    bottom:105px;
+    display:flex;
+    gap:10px;
+    z-index:30;
+}
+
+.control{
+    flex:1;
+    min-height:62px;
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:12px;
+    background:rgba(20,20,20,.55);
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    backdrop-filter:blur(8px);
+}
+
+.control:active{
+    transform:scale(.97);
+}
+
+/* SAFETY */
+
+.safety{
+    position:absolute;
+    left:15px;
+    right:15px;
+    bottom:58px;
+    z-index:20;
+    font-size:13px;
+    line-height:1.4;
+    text-shadow:0 1px 3px #000;
+}
+
+.safety b{
+    color:#ffd000;
+}
+
+/* BOTTOM */
+
+.bottom{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:52px;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    background:rgba(0,0,0,.55);
+    z-index:30;
+    font-size:26px;
+}
+
+.bottom button{
+    background:none;
+    border:none;
+    color:white;
+    font-size:25px;
+}
+
+/* START SCREEN */
+
+#startScreen{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.72);
+    z-index:50;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:25px;
+    text-align:center;
+}
+
+#startScreen h2{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+#startScreen p{
+    color:#ddd;
+    margin-bottom:25px;
+}
+
+.start-btn{
+    width:90%;
+    max-width:350px;
+    padding:17px;
+    border:0;
+    border-radius:14px;
+    background:#00d26a;
+    color:white;
+    font-size:19px;
+    font-weight:bold;
+}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    z-index:100;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal-box{
+    width:100%;
+    max-width:380px;
+    background:white;
+    color:#222;
+    border-radius:18px;
+    padding:22px;
+}
+
+.modal-box h3{
+    margin-bottom:18px;
+}
+
+.select{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    margin-bottom:15px;
+    font-size:16px;
+}
+
+.modal-btn{
+    width:100%;
+    padding:13px;
+    border:0;
+    border-radius:10px;
+    background:#4f46e5;
+    color:white;
+    font-weight:bold;
+}
+
+.close{
+    margin-top:10px;
+    background:#ddd;
+    color:#222;
 }
 
 /* MOBILE */
 
-@media(max-width:600px){
+@media(max-width:500px){
 
-  .api-row{
-    flex-direction:column;
-  }
+    .ometv-logo{
+        transform:scale(.82);
+    }
 
-  .api-row button{
-    width:100%;
-  }
+    .loading-text{
+        font-size:20px;
+    }
 
-  .actions{
-    flex-direction:column;
-    align-items:stretch;
-  }
+    .connecting{
+        top:245px;
+        font-size:23px;
+    }
 
-  .subject-name{
-    text-align:center;
-  }
+    #localVideo{
+        width:100px;
+        height:145px;
+    }
 
-  .solve{
-    width:100%;
-  }
+    .control{
+        font-size:14px;
+    }
 
-  .bubble{
-    max-width:94%;
-  }
 }
+
 </style>
 </head>
 
+
 <body>
 
-<header>
-  <h1>🤖 AI Question Solver</h1>
-  <p>Math • Physics • Chemistry • Biology • English • Hindi</p>
-</header>
 
+<!-- =================================
+     SPLASH
+================================= -->
 
-<div class="container">
+<div id="splash">
 
-  <!-- API KEY -->
+    <div class="ometv-logo">
 
-  <div class="api-box">
+        <div class="antenna-left"></div>
+        <div class="antenna-right"></div>
 
-    <h3>🔑 Gemini API Key</h3>
+        <div class="tv">
 
-    <div class="api-row">
+            <div class="ome-text">
+                Ome
+            </div>
 
-      <input
-        type="password"
-        id="apiKey"
-        placeholder="Paste Gemini API key (AIza...)"
-      >
+            <div class="tv-text">
+                TV
+            </div>
 
-      <button onclick="saveKey()">
-        Save Key
-      </button>
+        </div>
 
     </div>
 
-    <div
-      class="api-status"
-      id="apiStatus">
-    </div>
+    <div class="loading-text">
 
-  </div>
+        <span class="green-dot"></span>
 
-
-  <!-- SUBJECTS -->
-
-  <div class="subjects">
-
-    <button
-      class="subject active"
-      onclick="chooseSubject('General',this)">
-      🤖 General
-    </button>
-
-    <button
-      class="subject"
-      onclick="chooseSubject('Math',this)">
-      🧮 Math
-    </button>
-
-    <button
-      class="subject"
-      onclick="chooseSubject('Physics',this)">
-      ⚡ Physics
-    </button>
-
-    <button
-      class="subject"
-      onclick="chooseSubject('Chemistry',this)">
-      🧪 Chemistry
-    </button>
-
-    <button
-      class="subject"
-      onclick="chooseSubject('Biology',this)">
-      🧬 Biology
-    </button>
-
-    <button
-      class="subject"
-      onclick="chooseSubject('English',this)">
-      🇬🇧 English
-    </button>
-
-    <button
-      class="subject"
-      onclick="chooseSubject('Hindi',this)">
-      🇮🇳 Hindi
-    </button>
-
-  </div>
-
-
-  <!-- CHAT -->
-
-  <div
-    class="chat"
-    id="chat">
-
-    <div
-      class="welcome"
-      id="welcome">
-
-      <div class="welcome-icon">
-        🤖
-      </div>
-
-      <h2>
-        AI Question Solver
-      </h2>
-
-      <p style="margin-top:10px">
-        आफ्नो question लेख्नुहोस्।
-      </p>
-
-      <p style="margin-top:7px">
-        म step-by-step solution दिनेछु।
-      </p>
+        <span>Connecting...</span>
 
     </div>
 
-  </div>
+</div>
 
 
-  <!-- INPUT -->
+<!-- =================================
+     APP
+================================= -->
 
-  <div class="input-box">
+<div id="app">
 
-    <textarea
-      id="question"
-      placeholder="Write your question here..."
-      onkeydown="enterToSend(event)">
-    </textarea>
+    <!-- REMOTE CAMERA -->
 
-    <div class="actions">
+    <video
+        id="remoteVideo"
+        autoplay
+        playsinline>
+    </video>
 
-      <div class="subject-name">
-        Subject:
-        <b id="currentSubject">
-          General
-        </b>
-      </div>
 
-      <button
-        class="solve"
-        onclick="solveQuestion()">
-        🚀 Solve Question
-      </button>
+    <!-- LOCAL CAMERA -->
+
+    <video
+        id="localVideo"
+        autoplay
+        muted
+        playsinline>
+    </video>
+
+
+    <div class="overlay"></div>
+
+
+    <!-- NEPALI CHAT LOGO -->
+
+    <div class="logo-area">
+
+        <img
+            src="nepali-chat.png"
+            alt="Nepali Chat"
+            onerror="this.style.display='none';document.getElementById('fallback').style.display='flex';">
+
+        <div
+            id="fallback"
+            class="logo-fallback"
+            style="display:none;">
+            Nepali<br>Chat
+        </div>
 
     </div>
 
-    <button
-      class="new-chat"
-      onclick="newChat()">
-      🗑️ New Chat
-    </button>
 
-  </div>
+    <!-- CONNECTING -->
+
+    <div class="connecting">
+
+        <span class="connect-dot"></span>
+
+        <span id="connectText">
+            Connecting...
+        </span>
+
+    </div>
+
+
+    <!-- START SCREEN -->
+
+    <div id="startScreen">
+
+        <h2>
+            🇳🇵 Nepali Chat
+        </h2>
+
+        <p>
+            Connect with people through video chat
+        </p>
+
+        <button
+            class="start-btn"
+            onclick="startCamera()">
+
+            📹 Start Video Chat
+
+        </button>
+
+    </div>
+
+
+    <!-- CONTROLS -->
+
+    <div class="controls">
+
+        <button
+            class="control"
+            onclick="openPerson()">
+
+            I AM 👤
+
+        </button>
+
+        <button
+            class="control"
+            onclick="openCountry()">
+
+            🇳🇵 NEPAL
+
+        </button>
+
+    </div>
+
+
+    <!-- SAFETY -->
+
+    <div class="safety">
+
+        <b>⚠ Safety Reminder</b>
+        <br>
+
+        By using this video chat, you agree to our rules.
+        Keep your face visible in camera frame.
+
+    </div>
+
+
+    <!-- BOTTOM -->
+
+    <div class="bottom">
+
+        <button onclick="nextPerson()">
+            🔄
+        </button>
+
+        <button onclick="reaction('😂')">
+            😂
+        </button>
+
+        <button onclick="reaction('❤️')">
+            ❤️
+        </button>
+
+        <button onclick="reaction('👍')">
+            👍
+        </button>
+
+        <button onclick="reaction('😊')">
+            😊
+        </button>
+
+        <button onclick="openChat()">
+            💬
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =================================
+     PERSON MODAL
+================================= -->
+
+<div
+    class="modal"
+    id="personModal">
+
+    <div class="modal-box">
+
+        <h3>
+            I AM
+        </h3>
+
+        <select
+            class="select"
+            id="gender">
+
+            <option value="male">
+                👨 Male
+            </option>
+
+            <option value="female">
+                👩 Female
+            </option>
+
+            <option value="other">
+                👤 Other
+            </option>
+
+        </select>
+
+        <button
+            class="modal-btn"
+            onclick="savePerson()">
+
+            Save
+
+        </button>
+
+        <button
+            class="modal-btn close"
+            onclick="closePerson()">
+
+            Cancel
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =================================
+     COUNTRY MODAL
+================================= -->
+
+<div
+    class="modal"
+    id="countryModal">
+
+    <div class="modal-box">
+
+        <h3>
+            🌍 Select Country
+        </h3>
+
+        <select
+            class="select"
+            id="country">
+
+            <option value="NP">
+                🇳🇵 Nepal
+            </option>
+
+            <option value="IN">
+                🇮🇳 India
+            </option>
+
+            <option value="BD">
+                🇧🇩 Bangladesh
+            </option>
+
+            <option value="US">
+                🇺🇸 USA
+            </option>
+
+            <option value="GB">
+                🇬🇧 United Kingdom
+            </option>
+
+            <option value="ALL">
+                🌍 Worldwide
+            </option>
+
+        </select>
+
+        <button
+            class="modal-btn"
+            onclick="saveCountry()">
+
+            Select
+
+        </button>
+
+        <button
+            class="modal-btn close"
+            onclick="closeCountry()">
+
+            Cancel
+
+        </button>
+
+    </div>
 
 </div>
 
 
 <script>
 
-/* ==================================================
-   GEMINI SETTINGS
-================================================== */
+/* =================================
+   SPLASH
+================================= */
 
-const MODEL =
-  "gemini-3.8-flash";
+window.addEventListener(
+    "load",
+    function(){
 
-const API_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/"
-  + MODEL
-  + ":generateContent";
+        setTimeout(
+            function(){
 
+                const splash =
+                    document.getElementById(
+                        "splash"
+                    );
 
-/* ==================================================
-   VARIABLES
-================================================== */
+                splash.style.opacity="0";
 
-let apiKey =
-  localStorage.getItem("gemini_api_key") || "";
+                setTimeout(
+                    function(){
 
-let currentSubject =
-  "General";
+                        splash.style.display="none";
 
+                        document.getElementById(
+                            "app"
+                        ).style.display="block";
 
-/* ==================================================
-   LOAD
-================================================== */
+                    },
+                    700
+                );
 
-window.addEventListener("load",function(){
-
-  if(apiKey){
-
-    document.getElementById("apiKey").value =
-      apiKey;
-
-    document.getElementById("apiStatus").textContent =
-      "✅ API key saved on this device.";
-
-    document.getElementById("apiStatus").style.color =
-      "#16a34a";
-  }
-
-});
-
-
-/* ==================================================
-   SAVE KEY
-================================================== */
-
-function saveKey(){
-
-  const key =
-    document.getElementById("apiKey")
-    .value
-    .trim();
-
-  if(!key){
-
-    alert(
-      "Please paste your Gemini API key."
-    );
-
-    return;
-  }
-
-  if(!key.startsWith("AIza")){
-
-    alert(
-      "Invalid Gemini API key format.\n\n" +
-      "Gemini API keys normally start with AIza."
-    );
-
-    return;
-  }
-
-  apiKey = key;
-
-  localStorage.setItem(
-    "gemini_api_key",
-    apiKey
-  );
-
-  document.getElementById("apiStatus").textContent =
-    "✅ API key saved successfully.";
-
-  document.getElementById("apiStatus").style.color =
-    "#16a34a";
-
-}
-
-
-/* ==================================================
-   SUBJECT
-================================================== */
-
-function chooseSubject(subject,button){
-
-  currentSubject =
-    subject;
-
-  document.getElementById(
-    "currentSubject"
-  ).textContent =
-    subject;
-
-  document.querySelectorAll(
-    ".subject"
-  ).forEach(function(btn){
-
-    btn.classList.remove("active");
-
-  });
-
-  button.classList.add("active");
-
-}
-
-
-/* ==================================================
-   ENTER
-================================================== */
-
-function enterToSend(event){
-
-  if(
-    event.key === "Enter" &&
-    !event.shiftKey
-  ){
-
-    event.preventDefault();
-
-    solveQuestion();
-
-  }
-
-}
-
-
-/* ==================================================
-   ADD MESSAGE
-================================================== */
-
-function addMessage(type,text){
-
-  const chat =
-    document.getElementById("chat");
-
-  const welcome =
-    document.getElementById("welcome");
-
-  if(welcome){
-    welcome.remove();
-  }
-
-  const message =
-    document.createElement("div");
-
-  message.className =
-    "message " + type;
-
-  const bubble =
-    document.createElement("div");
-
-  bubble.className =
-    "bubble";
-
-  bubble.textContent =
-    text;
-
-  message.appendChild(
-    bubble
-  );
-
-  chat.appendChild(
-    message
-  );
-
-  chat.scrollTop =
-    chat.scrollHeight;
-
-}
-
-
-/* ==================================================
-   LOADING
-================================================== */
-
-function showLoading(){
-
-  const chat =
-    document.getElementById("chat");
-
-  const message =
-    document.createElement("div");
-
-  message.className =
-    "message ai";
-
-  message.id =
-    "loading";
-
-  message.innerHTML = `
-
-    <div class="bubble loading">
-
-      <span>AI सोच्दैछ</span>
-
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-
-    </div>
-
-  `;
-
-  chat.appendChild(
-    message
-  );
-
-  chat.scrollTop =
-    chat.scrollHeight;
-
-}
-
-
-function hideLoading(){
-
-  const loading =
-    document.getElementById("loading");
-
-  if(loading){
-    loading.remove();
-  }
-
-}
-
-
-/* ==================================================
-   SOLVE
-================================================== */
-
-async function solveQuestion(){
-
-  const question =
-    document.getElementById(
-      "question"
-    ).value.trim();
-
-
-  /* KEY CHECK */
-
-  if(!apiKey){
-
-    alert(
-      "पहिले Gemini API Key paste गरेर Save Key थिच्नुहोस्।"
-    );
-
-    return;
-  }
-
-
-  /* QUESTION CHECK */
-
-  if(!question){
-
-    alert(
-      "Please write your question first."
-    );
-
-    return;
-  }
-
-
-  /* USER */
-
-  addMessage(
-    "user",
-    question
-  );
-
-
-  document.getElementById(
-    "question"
-  ).value = "";
-
-
-  showLoading();
-
-
-  /* PROMPT */
-
-  const prompt = `
-
-You are an expert AI student tutor.
-
-Subject:
-${currentSubject}
-
-User question:
-${question}
-
-Give the most accurate answer.
-
-Rules:
-
-- Explain clearly and simply.
-- Give step-by-step solution.
-- For Math, show formulas and calculations.
-- For Physics, show formula, values, units and final answer.
-- For Chemistry, explain equations, reactions and concepts.
-- For Biology, explain concepts in simple language.
-- For English, correct grammar and explain the correction.
-- For Hindi, answer naturally in Hindi.
-- If the user asks in Nepali, you can answer in Nepali.
-- Do not make up information.
-- If the question is unclear, say what information is missing.
-- Make the answer easy for a student to understand.
-
-Answer the question now.
-
-`;
-
-
-  /* REQUEST */
-
-  const requestBody = {
-
-    contents:[
-
-      {
-        role:"user",
-
-        parts:[
-          {
-            text:prompt
-          }
-        ]
-
-      }
-
-    ],
-
-    generationConfig:{
-
-      temperature:0.2,
-
-      maxOutputTokens:4096
-
-    }
-
-  };
-
-
-  try{
-
-    const response =
-      await fetch(
-        API_URL,
-        {
-          method:"POST",
-
-          headers:{
-            "Content-Type":
-              "application/json",
-
-            "x-goog-api-key":
-              apiKey
-          },
-
-          body:
-            JSON.stringify(
-              requestBody
-            )
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    hideLoading();
-
-
-    /* ERROR */
-
-    if(!response.ok){
-
-      console.error(
-        "Gemini API Error:",
-        data
-      );
-
-      let errorText =
-        "API request failed.";
-
-      if(
-        data &&
-        data.error &&
-        data.error.message
-      ){
-
-        errorText =
-          data.error.message;
-
-      }
-
-
-      addMessage(
-        "ai",
-        "❌ Gemini API Error\n\n" +
-        errorText +
-        "\n\nHTTP Status: " +
-        response.status
-      );
-
-      return;
-
-    }
-
-
-    /* GET ANSWER */
-
-    let answer = "";
-
-
-    if(
-      data.candidates &&
-      data.candidates.length > 0
-    ){
-
-      const candidate =
-        data.candidates[0];
-
-
-      if(
-        candidate.content &&
-        candidate.content.parts
-      ){
-
-        candidate.content.parts.forEach(
-          function(part){
-
-            if(part.text){
-
-              answer +=
-                part.text;
-
-            }
-
-          }
+            },
+            2200
         );
 
-      }
+    }
+);
+
+
+/* =================================
+   CAMERA
+================================= */
+
+let localStream = null;
+
+
+async function startCamera(){
+
+    try{
+
+        localStream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video:{
+                    facingMode:"user",
+                    width:{
+                        ideal:1280
+                    },
+                    height:{
+                        ideal:720
+                    }
+                },
+
+                audio:true
+
+            });
+
+
+        document.getElementById(
+            "localVideo"
+        ).srcObject =
+            localStream;
+
+
+        document.getElementById(
+            "startScreen"
+        ).style.display="none";
+
+
+        document.getElementById(
+            "connectText"
+        ).textContent =
+            "Waiting for partner...";
+
 
     }
+    catch(error){
 
+        console.error(error);
 
-    /* EMPTY */
-
-    if(!answer){
-
-      answer =
-        "AI ले कुनै answer पठाएन। कृपया फेरि try गर्नुहोस्।";
+        alert(
+            "Camera permission denied.\n\n" +
+            "Please allow Camera and Microphone permission, " +
+            "then reload the page."
+        );
 
     }
-
-
-    addMessage(
-      "ai",
-      answer
-    );
-
-
-  }
-  catch(error){
-
-    console.error(
-      "Network error:",
-      error
-    );
-
-    hideLoading();
-
-
-    addMessage(
-      "ai",
-
-      "❌ Network Error\n\n" +
-      "Internet connection check गर्नुहोस्.\n\n" +
-      error.message
-    );
-
-  }
 
 }
 
 
-/* ==================================================
-   NEW CHAT
-================================================== */
+/* =================================
+   NEXT
+================================= */
 
-function newChat(){
+function nextPerson(){
 
-  document.getElementById(
-    "chat"
-  ).innerHTML = `
+    document.getElementById(
+        "connectText"
+    ).textContent =
+        "Finding someone...";
 
-    <div
-      class="welcome"
-      id="welcome">
+    setTimeout(
+        function(){
 
-      <div class="welcome-icon">
-        🤖
-      </div>
+            document.getElementById(
+                "connectText"
+            ).textContent =
+                "Waiting for partner...";
 
-      <h2>
-        AI Question Solver
-      </h2>
-
-      <p style="margin-top:10px">
-        आफ्नो question लेख्नुहोस्।
-      </p>
-
-      <p style="margin-top:7px">
-        म step-by-step solution दिनेछु।
-      </p>
-
-    </div>
-
-  `;
+        },
+        1500
+    );
 
 }
+
+
+/* =================================
+   PERSON
+================================= */
+
+function openPerson(){
+
+    document.getElementById(
+        "personModal"
+    ).style.display="flex";
+
+}
+
+function closePerson(){
+
+    document.getElementById(
+        "personModal"
+    ).style.display="none";
+
+}
+
+function savePerson(){
+
+    const value =
+        document.getElementById(
+            "gender"
+        ).value;
+
+    localStorage.setItem(
+        "gender",
+        value
+    );
+
+    closePerson();
+
+}
+
+
+/* =================================
+   COUNTRY
+================================= */
+
+function openCountry(){
+
+    document.getElementById(
+        "countryModal"
+    ).style.display="flex";
+
+}
+
+function closeCountry(){
+
+    document.getElementById(
+        "countryModal"
+    ).style.display="none";
+
+}
+
+function saveCountry(){
+
+    const country =
+        document.getElementById(
+            "country"
+        );
+
+    const text =
+        country.options[
+            country.selectedIndex
+        ].text;
+
+    document.querySelector(
+        ".control:nth-child(2)"
+    ).textContent =
+        text;
+
+    localStorage.setItem(
+        "country",
+        country.value
+    );
+
+    closeCountry();
+
+}
+
+
+/* =================================
+   REACTION
+================================= */
+
+function reaction(emoji){
+
+    console.log(
+        "Reaction:",
+        emoji
+    );
+
+}
+
+
+/* =================================
+   CHAT
+================================= */
+
+function openChat(){
+
+    alert(
+        "Chat will be available after connecting with a partner."
+    );
+
+}
+
+
+/* =================================
+   STOP CAMERA WHEN PAGE CLOSES
+================================= */
+
+window.addEventListener(
+    "beforeunload",
+    function(){
+
+        if(localStream){
+
+            localStream
+                .getTracks()
+                .forEach(
+                    track =>
+                    track.stop()
+                );
+
+        }
+
+    }
+);
 
 </script>
 
