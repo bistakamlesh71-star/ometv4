@@ -1,236 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Pixora AI Studio</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#0b1020;color:#fff}
-button{border:0;border-radius:14px;padding:14px 18px;font-weight:700;cursor:pointer}
-.app{max-width:900px;margin:auto;padding:20px}
-.card{background:#151c32;border:1px solid #293451;border-radius:22px;padding:20px;margin:16px 0}
-h1{margin:0 0 8px;font-size:30px}
-.muted{color:#aeb8d0}
-.google{width:100%;background:#fff;color:#222;font-size:16px}
-.google span{margin-right:8px}
-.hidden{display:none!important}
-.profile{display:flex;align-items:center;gap:12px}
-.avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;background:#303a58}
-.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-input[type=file]{width:100%;padding:14px;background:#202943;border-radius:12px}
-.preview{width:100%;max-height:520px;object-fit:contain;border-radius:16px;background:#050812;margin-top:14px}
-.range{width:100%}
-.pro{background:linear-gradient(135deg,#8b5cf6,#ec4899);width:100%;color:white}
-.status{padding:12px;border-radius:12px;background:#202943;margin-top:12px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Video Generator</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: white;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid #444;
+      background: #1b1b1b;
+      color: white;
+      font-size: 16px;
+      resize: vertical;
+    }
+
+    select,
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 15px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+
+    select {
+      background: #1b1b1b;
+      color: white;
+      border: 1px solid #444;
+    }
+
+    button {
+      background: #ff1744;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    #status {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    video {
+      width: 100%;
+      margin-top: 20px;
+      border-radius: 12px;
+      background: black;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .buttons button {
+      background: #333;
+    }
+  </style>
 </head>
+
 <body>
-<div class="app">
-  <div class="card">
-    <h1>✨ Pixora AI Studio</h1>
-    <p class="muted">AI-style photo tools and Pro editing.</p>
 
-    <div id="loggedOut">
-      <button class="google" id="googleBtn"><span>G</span> Continue with Google</button>
-      <div id="loginStatus" class="status hidden"></div>
+  <div class="container">
+
+    <h1>🎬 AI Video Generator</h1>
+
+    <textarea
+      id="script"
+      placeholder="Write your video script here..."
+    ></textarea>
+
+    <select id="aspectRatio">
+      <option value="9:16">9:16 - TikTok / Shorts / Reels</option>
+      <option value="16:9">16:9 - YouTube</option>
+      <option value="1:1">1:1 - Square</option>
+    </select>
+
+    <button id="generateBtn" onclick="generateVideo()">
+      Generate AI Video
+    </button>
+
+    <div id="status"></div>
+
+    <video id="videoPlayer" controls style="display:none;"></video>
+
+    <div class="buttons" id="videoButtons" style="display:none;">
+      <button onclick="downloadVideo()">⬇️ Download</button>
+      <button onclick="shareVideo()">📤 Share</button>
     </div>
 
-    <div id="loggedIn" class="hidden">
-      <div class="profile">
-        <img id="avatar" class="avatar" alt="">
-        <div>
-          <b id="userName">User</b>
-          <div id="userEmail" class="muted"></div>
-        </div>
-      </div>
-      <br>
-      <button id="logoutBtn">Sign out</button>
-    </div>
   </div>
 
-  <div id="mainApp" class="hidden">
-    <div class="card">
-      <h2>📸 Photo Editor</h2>
-      <input id="fileInput" type="file" accept="image/*">
-      <canvas id="canvas" class="preview hidden"></canvas>
+<script>
 
-      <div id="controls" class="hidden">
-        <p>Brightness</p>
-        <input class="range" id="brightness" type="range" min="50" max="150" value="100">
-        <p>Contrast</p>
-        <input class="range" id="contrast" type="range" min="50" max="150" value="100">
-        <p>Saturation</p>
-        <input class="range" id="saturation" type="range" min="0" max="200" value="100">
-        <p>Blur</p>
-        <input class="range" id="blur" type="range" min="0" max="10" value="0">
+const BACKEND_URL = "https://ometv4.onrender.com";
 
-        <div class="actions">
-          <button id="resetBtn">Reset</button>
-          <button id="downloadBtn">Download</button>
-        </div>
-      </div>
-    </div>
+let generatedVideoUrl = "";
 
-    <div class="card">
-      <h2>💎 Pixora Pro</h2>
-      <p class="muted">Unlock premium editing tools.</p>
-      <button class="pro" id="proBtn">Unlock Pro — Rs. 500</button>
-      <div id="proStatus" class="status"></div>
-    </div>
-  </div>
-</div>
+async function generateVideo() {
 
-<script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+  const script = document.getElementById("script").value.trim();
+  const aspectRatio = document.getElementById("aspectRatio").value;
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAWsW-xLvR83b_hVOaWcCxjQJaRwKZlnj8",
-  authDomain: "pixora-ai-studio-66e53.firebaseapp.com",
-  projectId: "pixora-ai-studio-66e53",
-  storageBucket: "pixora-ai-studio-66e53.firebasestorage.app",
-  messagingSenderId: "540389702976",
-  appId: "1:540389702976:web:ba404edb08989a1bb94ea5",
-  measurementId: "G-HV9Q4G7418"
-};
+  const button = document.getElementById("generateBtn");
+  const status = document.getElementById("status");
+  const player = document.getElementById("videoPlayer");
+  const videoButtons = document.getElementById("videoButtons");
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({prompt:"select_account"});
+  if (!script) {
+    status.innerText = "Please enter a script first.";
+    return;
+  }
 
-const $ = id => document.getElementById(id);
-const loggedOut = $("loggedOut");
-const loggedIn = $("loggedIn");
-const mainApp = $("mainApp");
-const loginStatus = $("loginStatus");
+  button.disabled = true;
+  button.innerText = "Generating...";
+  status.innerText = "🎬 AI video is being generated...";
+  player.style.display = "none";
+  videoButtons.style.display = "none";
 
-function showLoginError(message){
-  loginStatus.textContent = message;
-  loginStatus.classList.remove("hidden");
-}
+  try {
 
-$("googleBtn").addEventListener("click", async ()=>{
-  loginStatus.classList.add("hidden");
-  const btn = $("googleBtn");
-  btn.disabled = true;
-  btn.textContent = "Opening Google…";
+    const response = await fetch(
+      `${BACKEND_URL}/api/generate-video`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          script: script,
+          aspectRatio: aspectRatio
+        })
+      }
+    );
 
-  try{
-    await signInWithPopup(auth, provider);
-  }catch(error){
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || "Video generation failed");
+    }
+
+    generatedVideoUrl = data.videoUrl.startsWith("http")
+      ? data.videoUrl
+      : `${BACKEND_URL}${data.videoUrl}`;
+
+    player.src = generatedVideoUrl;
+    player.style.display = "block";
+    videoButtons.style.display = "grid";
+
+    status.innerText = "✅ Video generated successfully!";
+
+  } catch (error) {
+
     console.error(error);
-    let msg = "Google sign-in failed.";
-    if(error.code === "auth/popup-blocked") msg = "Popup blocked. Allow popups for this site and try again.";
-    else if(error.code === "auth/popup-closed-by-user") msg = "Google window was closed. Please try again.";
-    else if(error.code === "auth/unauthorized-domain") msg = "This domain is not authorized in Firebase Authentication.";
-    else if(error.code === "auth/operation-not-allowed") msg = "Google Sign-in is not enabled in Firebase.";
-    else if(error.code === "auth/invalid-api-key") msg = "Firebase API key is invalid.";
-    else msg = error.message || msg;
-    showLoginError(msg);
-  }finally{
-    btn.disabled = false;
-    btn.innerHTML = "<span>G</span> Continue with Google";
+
+    status.innerText = "❌ Error: " + error.message;
+
+  } finally {
+
+    button.disabled = false;
+    button.innerText = "Generate AI Video";
+
   }
-});
-
-$("logoutBtn").addEventListener("click",()=>signOut(auth));
-
-onAuthStateChanged(auth,user=>{
-  if(user){
-    loggedOut.classList.add("hidden");
-    loggedIn.classList.remove("hidden");
-    mainApp.classList.remove("hidden");
-    $("userName").textContent = user.displayName || "Google User";
-    $("userEmail").textContent = user.email || "";
-    $("avatar").src = user.photoURL || "";
-  }else{
-    loggedOut.classList.remove("hidden");
-    loggedIn.classList.add("hidden");
-    mainApp.classList.add("hidden");
-  }
-});
-
-/* Photo editor */
-let originalImage = null;
-const canvas = $("canvas");
-const ctx = canvas.getContext("2d");
-
-function render(){
-  if(!originalImage)return;
-  canvas.width = originalImage.naturalWidth;
-  canvas.height = originalImage.naturalHeight;
-  ctx.filter =
-    `brightness(${$("brightness").value}%) `+
-    `contrast(${$("contrast").value}%) `+
-    `saturate(${$("saturation").value}%) `+
-    `blur(${$("blur").value}px)`;
-  ctx.drawImage(originalImage,0,0);
 }
 
-$("fileInput").addEventListener("change",e=>{
-  const file=e.target.files[0];
-  if(!file)return;
-  const url=URL.createObjectURL(file);
-  const img=new Image();
-  img.onload=()=>{
-    originalImage=img;
-    canvas.classList.remove("hidden");
-    $("controls").classList.remove("hidden");
-    render();
-    URL.revokeObjectURL(url);
-  };
-  img.src=url;
-});
 
-["brightness","contrast","saturation","blur"].forEach(id=>{
-  $(id).addEventListener("input",render);
-});
+function downloadVideo() {
 
-$("resetBtn").addEventListener("click",()=>{
-  $("brightness").value=100;
-  $("contrast").value=100;
-  $("saturation").value=100;
-  $("blur").value=0;
-  render();
-});
+  if (!generatedVideoUrl) return;
 
-$("downloadBtn").addEventListener("click",()=>{
-  if(!originalImage)return;
-  render();
-  const a=document.createElement("a");
-  a.download="pixora-edited.png";
-  a.href=canvas.toDataURL("image/png");
-  a.click();
-});
+  const link = document.createElement("a");
 
-/* Demo/manual Pro unlock */
-function updatePro(){
-  $("proStatus").textContent =
-    localStorage.getItem("pixoraPro")==="true"
-    ? "✅ Pro unlocked on this device."
-    : "🔒 Pro is locked. Price: Rs. 500";
+  link.href = generatedVideoUrl;
+  link.download = "ai-video.mp4";
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
-$("proBtn").addEventListener("click",()=>{
-  const ok=confirm(
-    "Pixora Pro — Rs. 500\\n\\n" +
-    "This demo uses manual payment confirmation. " +
-    "After you complete your eSewa payment, press OK to unlock Pro on this device."
-  );
-  if(ok){
-    localStorage.setItem("pixoraPro","true");
-    updatePro();
-    alert("Pro unlocked for this device.");
+
+
+async function shareVideo() {
+
+  if (!generatedVideoUrl) return;
+
+  if (navigator.share) {
+
+    try {
+
+      await navigator.share({
+        title: "AI Generated Video",
+        text: "Check out my AI generated video!",
+        url: generatedVideoUrl
+      });
+
+    } catch (error) {
+      console.log("Share cancelled");
+    }
+
+  } else {
+
+    await navigator.clipboard.writeText(generatedVideoUrl);
+
+    alert("Video link copied!");
+
   }
-});
-updatePro();
+}
+
 </script>
+
 </body>
 </html>
