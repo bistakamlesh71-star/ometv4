@@ -17,7 +17,10 @@ app.get("/", (req, res) => {
 
 app.post("/api/generate-video", async (req, res) => {
   try {
-    const { script, aspectRatio = "9:16" } = req.body;
+    const {
+      script,
+      aspectRatio = "9:16"
+    } = req.body;
 
     if (!script) {
       return res.status(400).json({
@@ -34,7 +37,7 @@ app.post("/api/generate-video", async (req, res) => {
     }
 
     const response = await fetch(
-      "https://api.magichour.ai/v1/video",
+      "https://api.magichour.ai/v1/text-to-video",
       {
         method: "POST",
 
@@ -45,8 +48,15 @@ app.post("/api/generate-video", async (req, res) => {
         },
 
         body: JSON.stringify({
-          prompt: script,
-          aspect_ratio: aspectRatio
+          name: "AI Video Generator",
+          end_seconds: 5,
+          aspect_ratio: aspectRatio,
+          resolution: "720p",
+          model: "kling-3.0",
+          audio: false,
+          style: {
+            prompt: script
+          }
         })
       }
     );
@@ -54,6 +64,8 @@ app.post("/api/generate-video", async (req, res) => {
     const data = await response.json();
 
     if (!response.ok) {
+      console.error("Magic Hour Error:", data);
+
       return res.status(response.status).json({
         success: false,
         error:
@@ -70,15 +82,14 @@ app.post("/api/generate-video", async (req, res) => {
     });
 
   } catch (error) {
-
-    console.error(error);
+    console.error("Server Error:", error);
 
     res.status(500).json({
       success: false,
-      error: error.message ||
+      error:
+        error.message ||
         "Video generation failed"
     });
-
   }
 });
 
