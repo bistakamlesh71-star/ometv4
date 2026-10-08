@@ -52,7 +52,7 @@ app.post("/api/generate-video", async (req, res) => {
           end_seconds: 5,
           aspect_ratio: aspectRatio,
           resolution: "720p",
-          model: "kling-3.0",
+          model: "kling-2.1",
           audio: false,
           style: {
             prompt: script
