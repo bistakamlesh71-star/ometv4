@@ -1,7 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs");
-const path = require("path");
 
 const app = express();
 
@@ -28,52 +26,64 @@ app.post("/api/generate-video", async (req, res) => {
       });
     }
 
-    if (!process.env.HF_TOKEN) {
+    if (!process.env.MAGIC_HOUR_API_KEY) {
       return res.status(500).json({
         success: false,
-        error: "HF_TOKEN is not configured"
+        error: "MAGIC_HOUR_API_KEY is not configured"
       });
     }
 
-    const { InferenceClient } = await import("@huggingface/inference");
+    const response = await fetch(
+      "https://api.magichour.ai/v1/video",
+      {
+        method: "POST",
 
-    const client = new InferenceClient(process.env.HF_TOKEN);
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization":
+            `Bearer ${process.env.MAGIC_HOUR_API_KEY}`
+        },
 
-    const video = await client.textToVideo({
-      provider: "fal-ai",
-      model: "Wan-AI/Wan2.1-T2V-1.3B",
-      inputs: script
-    });
+        body: JSON.stringify({
+          prompt: script,
+          aspect_ratio: aspectRatio
+        })
+      }
+    );
 
-    const outputDir = path.join(__dirname, "generated");
-    fs.mkdirSync(outputDir, { recursive: true });
+    const data = await response.json();
 
-    const fileName = `video-${Date.now()}.mp4`;
-    const filePath = path.join(outputDir, fileName);
-
-    const buffer = Buffer.from(await video.arrayBuffer());
-
-    fs.writeFileSync(filePath, buffer);
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        error:
+          data.error ||
+          data.message ||
+          "Magic Hour generation failed"
+      });
+    }
 
     res.json({
       success: true,
-      message: "Video generated successfully",
-      videoUrl: `/generated/${fileName}`,
-      aspectRatio
+      message: "Video generation started",
+      data: data
     });
 
   } catch (error) {
-    console.error("Video generation error:", error);
+
+    console.error(error);
 
     res.status(500).json({
       success: false,
-      error: error.message || "Video generation failed"
+      error: error.message ||
+        "Video generation failed"
     });
+
   }
 });
 
-app.use("/generated", express.static(path.join(__dirname, "generated")));
-
 app.listen(PORT, () => {
-  console.log(`AI Video Backend is running on port ${PORT}`);
+  console.log(
+    `AI Video Backend is running on port ${PORT}`
+  );
 });
