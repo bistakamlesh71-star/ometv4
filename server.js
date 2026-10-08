@@ -51,7 +51,7 @@ app.post("/api/generate-video", async (req, res) => {
           name: "AI Video Generator",
           end_seconds: 5,
           aspect_ratio: aspectRatio,
-          resolution: "720p",
+          
           model: "ltx-2.5",
           audio: false,
           style: {
