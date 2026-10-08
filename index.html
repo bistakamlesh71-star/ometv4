@@ -255,3 +255,15 @@ const supabaseClient = supabase.createClient(
   SUPABASE_KEY
 );
 </script>
+<div id="authBox">
+  <h2>🔐 Create Account</h2>
+
+  <input id="email" type="email" placeholder="Email">
+
+  <input id="password" type="password" placeholder="Password">
+
+  <button onclick="signUp()">Sign Up</button>
+  <button onclick="signIn()">Login</button>
+
+  <p id="authMessage"></p>
+</div>
