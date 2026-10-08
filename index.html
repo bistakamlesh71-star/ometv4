@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>AI Video Generator</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * {
@@ -28,35 +31,43 @@
       margin-bottom: 25px;
     }
 
-    textarea {
-      width: 100%;
-      min-height: 220px;
-      padding: 15px;
-      border-radius: 12px;
-      border: 1px solid #444;
+    #authBox {
       background: #1b1b1b;
-      color: white;
-      font-size: 16px;
-      resize: vertical;
+      padding: 18px;
+      border-radius: 14px;
+      margin-bottom: 25px;
     }
 
+    #authBox h2 {
+      margin-top: 0;
+    }
+
+    input,
+    textarea,
     select,
     button {
       width: 100%;
       padding: 14px;
-      margin-top: 15px;
+      margin-top: 12px;
       border-radius: 10px;
-      border: none;
       font-size: 16px;
     }
 
+    input,
+    textarea,
     select {
       background: #1b1b1b;
       color: white;
       border: 1px solid #444;
     }
 
+    textarea {
+      min-height: 220px;
+      resize: vertical;
+    }
+
     button {
+      border: none;
       background: #ff1744;
       color: white;
       font-weight: bold;
@@ -68,9 +79,18 @@
       cursor: not-allowed;
     }
 
+    #authMessage,
     #status {
       text-align: center;
-      margin: 20px 0;
+      margin-top: 15px;
+    }
+
+    #userInfo {
+      background: #222;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
     }
 
     video {
@@ -89,14 +109,62 @@
     .buttons button {
       background: #333;
     }
+
+    #generatorBox {
+      display: none;
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <h1>🎬 AI Video Generator</h1>
+  <h1>🎬 AI Video Generator</h1>
+
+  <!-- LOGIN / SIGNUP -->
+  <div id="authBox">
+
+    <h2>🔐 Create Account / Login</h2>
+
+    <input
+      id="email"
+      type="email"
+      placeholder="Enter your email"
+    >
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Enter your password"
+    >
+
+    <button onclick="signUp()">
+      📝 Sign Up
+    </button>
+
+    <button onclick="signIn()">
+      🔑 Login
+    </button>
+
+    <p id="authMessage"></p>
+
+  </div>
+
+
+  <!-- USER INFO -->
+  <div id="userInfo">
+    👤 Logged in as:
+    <span id="userEmail"></span>
+
+    <button onclick="signOut()">
+      Logout
+    </button>
+  </div>
+
+
+  <!-- VIDEO GENERATOR -->
+  <div id="generatorBox">
 
     <textarea
       id="script"
@@ -104,166 +172,533 @@
     ></textarea>
 
     <select id="aspectRatio">
-      <option value="9:16">9:16 - TikTok / Shorts / Reels</option>
-      <option value="16:9">16:9 - YouTube</option>
-      <option value="1:1">1:1 - Square</option>
+      <option value="9:16">
+        9:16 - TikTok / Shorts / Reels
+      </option>
+
+      <option value="16:9">
+        16:9 - YouTube
+      </option>
+
+      <option value="1:1">
+        1:1 - Square
+      </option>
     </select>
 
-    <button id="generateBtn" onclick="generateVideo()">
-      Generate AI Video
+    <button
+      id="generateBtn"
+      onclick="generateVideo()"
+    >
+      🎬 Generate AI Video
     </button>
 
     <div id="status"></div>
 
-    <video id="videoPlayer" controls style="display:none;"></video>
+    <video
+      id="videoPlayer"
+      controls
+      style="display:none;"
+    ></video>
 
-    <div class="buttons" id="videoButtons" style="display:none;">
-      <button onclick="downloadVideo()">⬇️ Download</button>
-      <button onclick="shareVideo()">📤 Share</button>
+    <div
+      class="buttons"
+      id="videoButtons"
+      style="display:none;"
+    >
+      <button onclick="downloadVideo()">
+        ⬇️ Download
+      </button>
+
+      <button onclick="shareVideo()">
+        📤 Share
+      </button>
     </div>
 
   </div>
 
+</div>
+
+
 <script>
 
-const BACKEND_URL = "https://ometv4.onrender.com";
+const SUPABASE_URL =
+  "https://vjpqbtwtxcnelsarvmii.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
+
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+const BACKEND_URL =
+  "https://ometv4.onrender.com";
 
 let generatedVideoUrl = "";
 
-async function generateVideo() {
 
-  const script = document.getElementById("script").value.trim();
-  const aspectRatio = document.getElementById("aspectRatio").value;
+/* =========================
+   SIGN UP
+========================= */
 
-  const button = document.getElementById("generateBtn");
-  const status = document.getElementById("status");
-  const player = document.getElementById("videoPlayer");
-  const videoButtons = document.getElementById("videoButtons");
+async function signUp() {
 
-  if (!script) {
-    status.innerText = "Please enter a script first.";
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  const message =
+    document.getElementById("authMessage");
+
+
+  if (!email || !password) {
+
+    message.innerText =
+      "❌ Email and password required.";
+
     return;
   }
 
+
+  if (password.length < 6) {
+
+    message.innerText =
+      "❌ Password must be at least 6 characters.";
+
+    return;
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth.signUp({
+
+      email: email,
+
+      password: password
+
+    });
+
+
+  if (error) {
+
+    message.innerText =
+      "❌ " + error.message;
+
+    return;
+  }
+
+
+  message.innerText =
+    "✅ Account created! Check your email if verification is required.";
+
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+async function signIn() {
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  const message =
+    document.getElementById("authMessage");
+
+
+  if (!email || !password) {
+
+    message.innerText =
+      "❌ Email and password required.";
+
+    return;
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth.signInWithPassword({
+
+      email: email,
+
+      password: password
+
+    });
+
+
+  if (error) {
+
+    message.innerText =
+      "❌ " + error.message;
+
+    return;
+  }
+
+
+  message.innerText =
+    "✅ Login successful!";
+
+
+  showUser(data.user);
+
+}
+
+
+/* =========================
+   SHOW USER
+========================= */
+
+function showUser(user) {
+
+  if (!user) return;
+
+
+  document.getElementById("authBox")
+    .style.display = "none";
+
+
+  document.getElementById("userInfo")
+    .style.display = "block";
+
+
+  document.getElementById("generatorBox")
+    .style.display = "block";
+
+
+  document.getElementById("userEmail")
+    .innerText = user.email;
+
+}
+
+
+/* =========================
+   CHECK LOGIN
+========================= */
+
+async function checkUser() {
+
+  const {
+    data
+  } =
+    await supabaseClient.auth.getUser();
+
+
+  if (data.user) {
+
+    showUser(data.user);
+
+  }
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function signOut() {
+
+  await supabaseClient.auth.signOut();
+
+
+  document.getElementById("authBox")
+    .style.display = "block";
+
+
+  document.getElementById("userInfo")
+    .style.display = "none";
+
+
+  document.getElementById("generatorBox")
+    .style.display = "none";
+
+
+  document.getElementById("authMessage")
+    .innerText = "Logged out.";
+
+}
+
+
+/* =========================
+   GENERATE VIDEO
+========================= */
+
+async function generateVideo() {
+
+  const script =
+    document.getElementById("script")
+      .value.trim();
+
+
+  const aspectRatio =
+    document.getElementById("aspectRatio")
+      .value;
+
+
+  const button =
+    document.getElementById("generateBtn");
+
+
+  const status =
+    document.getElementById("status");
+
+
+  const player =
+    document.getElementById("videoPlayer");
+
+
+  const videoButtons =
+    document.getElementById("videoButtons");
+
+
+  if (!script) {
+
+    status.innerText =
+      "Please enter a script first.";
+
+    return;
+  }
+
+
   button.disabled = true;
-  button.innerText = "Generating...";
-  status.innerText = "🎬 AI video is being generated...";
-  player.style.display = "none";
-  videoButtons.style.display = "none";
+
+  button.innerText =
+    "Generating...";
+
+
+  status.innerText =
+    "🎬 AI video is being generated...";
+
+
+  player.style.display =
+    "none";
+
+
+  videoButtons.style.display =
+    "none";
+
 
   try {
 
-    const response = await fetch(
-      `${BACKEND_URL}/api/generate-video`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          script: script,
-          aspectRatio: aspectRatio
-        })
-      }
-    );
+    const {
+      data
+    } =
+      await supabaseClient.auth.getSession();
 
-    const data = await response.json();
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.error || "Video generation failed");
+    if (!data.session) {
+
+      throw new Error(
+        "Please login first."
+      );
+
     }
 
-    generatedVideoUrl = data.videoUrl.startsWith("http")
-      ? data.videoUrl
-      : `${BACKEND_URL}${data.videoUrl}`;
 
-    player.src = generatedVideoUrl;
-    player.style.display = "block";
-    videoButtons.style.display = "grid";
+    const response =
+      await fetch(
 
-    status.innerText = "✅ Video generated successfully!";
+        `${BACKEND_URL}/api/generate-video`,
+
+        {
+
+          method: "POST",
+
+          headers: {
+
+            "Content-Type":
+              "application/json",
+
+            "Authorization":
+              `Bearer ${data.session.access_token}`
+
+          },
+
+          body: JSON.stringify({
+
+            script: script,
+
+            aspectRatio:
+              aspectRatio
+
+          })
+
+        }
+
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !result.success
+    ) {
+
+      throw new Error(
+        result.error ||
+        "Video generation failed"
+      );
+
+    }
+
+
+    generatedVideoUrl =
+      result.videoUrl.startsWith("http")
+
+        ? result.videoUrl
+
+        : `${BACKEND_URL}${result.videoUrl}`;
+
+
+    player.src =
+      generatedVideoUrl;
+
+
+    player.style.display =
+      "block";
+
+
+    videoButtons.style.display =
+      "grid";
+
+
+    status.innerText =
+      "✅ Video generated successfully!";
+
 
   } catch (error) {
 
     console.error(error);
 
-    status.innerText = "❌ Error: " + error.message;
+
+    status.innerText =
+      "❌ Error: " +
+      error.message;
+
 
   } finally {
 
-    button.disabled = false;
-    button.innerText = "Generate AI Video";
+    button.disabled =
+      false;
+
+
+    button.innerText =
+      "🎬 Generate AI Video";
 
   }
+
 }
 
+
+/* =========================
+   DOWNLOAD
+========================= */
 
 function downloadVideo() {
 
-  if (!generatedVideoUrl) return;
+  if (!generatedVideoUrl)
+    return;
 
-  const link = document.createElement("a");
 
-  link.href = generatedVideoUrl;
-  link.download = "ai-video.mp4";
+  const link =
+    document.createElement("a");
+
+
+  link.href =
+    generatedVideoUrl;
+
+
+  link.download =
+    "ai-video.mp4";
+
 
   document.body.appendChild(link);
+
+
   link.click();
+
+
   document.body.removeChild(link);
+
 }
 
 
+/* =========================
+   SHARE
+========================= */
+
 async function shareVideo() {
 
-  if (!generatedVideoUrl) return;
+  if (!generatedVideoUrl)
+    return;
+
 
   if (navigator.share) {
 
     try {
 
       await navigator.share({
-        title: "AI Generated Video",
-        text: "Check out my AI generated video!",
-        url: generatedVideoUrl
+
+        title:
+          "AI Generated Video",
+
+        text:
+          "Check out my AI generated video!",
+
+        url:
+          generatedVideoUrl
+
       });
 
     } catch (error) {
-      console.log("Share cancelled");
+
+      console.log(
+        "Share cancelled"
+      );
+
     }
 
   } else {
 
-    await navigator.clipboard.writeText(generatedVideoUrl);
+    await navigator.clipboard
+      .writeText(
+        generatedVideoUrl
+      );
 
-    alert("Video link copied!");
+
+    alert(
+      "Video link copied!"
+    );
 
   }
+
 }
+
+
+/* =========================
+   START
+========================= */
+
+checkUser();
 
 </script>
 
 </body>
 </html>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-const SUPABASE_URL = "https://vjpqbtwtxcnelsarvmii.supabase.co";
-const SUPABASE_KEY = "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-</script>
-<div id="authBox">
-  <h2>🔐 Create Account</h2>
-
-  <input id="email" type="email" placeholder="Email">
-
-  <input id="password" type="password" placeholder="Password">
-
-  <button onclick="signUp()">Sign Up</button>
-  <button onclick="signIn()">Login</button>
-
-  <p id="authMessage"></p>
-</div>
