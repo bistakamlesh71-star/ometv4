@@ -3,430 +3,317 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#090711">
-<title>KABIYA AI - Video Studio</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b16">
+<title>NEPAL X ESPORTS | Gaming Hub</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#090711;color:#fff;font-family:Arial,system-ui,sans-serif}
-.app{max-width:760px;margin:auto;padding:20px 15px 40px}
-header{display:flex;align-items:center;gap:12px;margin-bottom:35px}
-.logo{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:27px;background:linear-gradient(135deg,#9333ea,#ec4899)}
-h1{font-size:22px;margin:0}
-header small{color:#c084fc;letter-spacing:3px}
-.header-coins{display:none;margin-top:8px;padding:7px 12px;width:max-content;border:1px solid #a855f7;border-radius:20px;background:#25172f;color:#f0abfc;font-weight:bold;font-size:14px}
-.hero{text-align:center;margin:30px 0}
-.hero h2{font-size:clamp(32px,8vw,48px);line-height:1.15}
-.gradient{color:#e0a1ff}
-.muted{color:#aaa1bd;line-height:1.7}
-.card{padding:21px;border:1px solid #493254;border-radius:20px;background:#141020;margin-bottom:18px}
-label{display:block;margin:17px 0 8px;color:#e9d5ff;font-size:14px;font-weight:bold}
-input,textarea,select{width:100%;padding:13px;color:white;background:#0d0a16;border:1px solid #493254;border-radius:11px;font:inherit}
-textarea{min-height:120px;resize:vertical}
-select option{background:#0d0a16}
-button{width:100%;padding:14px;margin-top:12px;border:0;border-radius:11px;color:white;font-size:15px;font-weight:bold;background:linear-gradient(100deg,#9333ea,#db2777);cursor:pointer}
-button.secondary{background:#25172f;border:1px solid #493254}
-button:disabled{opacity:.6}
-#userInfo,#coinsBox,#generatorBox{display:none}
-.userbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.userbar button{width:auto}
-.coin-card{text-align:center;background:radial-gradient(ellipse at top,#422064,transparent 70%),#141020}
-.coin-icon{font-size:38px}
-.coin-number{font-size:36px;font-weight:900;color:#f0abfc;margin:10px}
-.coin-subtitle{color:#aaa1bd;font-size:13px;line-height:1.6}
-.formats{display:flex;gap:8px}
-.formats label{flex:1;padding:10px 4px;text-align:center;border:1px solid #493254;border-radius:10px}
-.formats input{width:auto}
-.notice{padding:12px;background:#21182b;border:1px solid #493254;border-radius:10px;color:#e9d5ff;font-size:13px;line-height:1.6;margin-top:15px}
-#authMessage,#coinMessage,#status{font-size:13px;line-height:1.7;overflow-wrap:anywhere}
-video{width:100%;max-height:500px;margin-top:15px;background:#000;border-radius:12px}
-footer{text-align:center;color:#796d8a;font-size:12px;line-height:1.8;margin-top:30px}
+:root {
+  --bg: #090b16;
+  --panel: #121629;
+  --purple: #8b5cf6;
+  --cyan: #22d3ee;
+  --text: #f4f5ff;
+  --muted: #a6abc4;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #090b16ed;
+  border-bottom: 1px solid #262b43;
+  padding: 14px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.logo { font-weight: 900; font-size: 17px; }
+.logo span { color: var(--cyan); }
+nav { display: flex; gap: 16px; }
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+}
+nav a:hover { color: var(--cyan); }
+button, .btn {
+  background: linear-gradient(100deg,var(--purple),#5544ec);
+  border: 0;
+  color: white;
+  padding: 12px 17px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+button:hover, .btn:hover { opacity: .88; }
+.hero {
+  padding: 75px 6% 65px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 0%,#5932a655,transparent 60%);
+}
+.tag {
+  display: inline-block;
+  color: var(--cyan);
+  border: 1px solid #22d3ee66;
+  background: #22d3ee10;
+  border-radius: 30px;
+  padding: 8px 13px;
+  font-size: 12px;
+}
+h1 {
+  font-size: clamp(36px,8vw,66px);
+  line-height: 1.05;
+  margin: 22px 0 15px;
+}
+h1 span {
+  background: linear-gradient(90deg,var(--cyan),#b69aff);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.hero p {
+  color: var(--muted);
+  max-width: 550px;
+  margin: 0 auto 25px;
+  line-height: 1.7;
+}
+section { padding: 45px 6%; }
+.section-title { font-size: 28px; margin: 0 0 8px; }
+.subtitle { color: var(--muted); margin-bottom: 25px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 16px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid #292e49;
+  border-radius: 16px;
+  padding: 20px;
+}
+.game-icon { font-size: 36px; margin-bottom: 12px; }
+.card h3 { margin: 5px 0 10px; }
+.card p {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 14px;
+}
+.pill {
+  display: inline-block;
+  background: #8b5cf622;
+  color: #c4b5fd;
+  border-radius: 20px;
+  padding: 6px 10px;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+form { display: grid; gap: 13px; }
+input, select, textarea {
+  width: 100%;
+  padding: 13px;
+  border-radius: 9px;
+  border: 1px solid #343954;
+  background: #0b0e1d;
+  color: white;
+  font-size: 15px;
+}
+label { font-size: 13px; color: var(--muted); }
+.field { display: grid; gap: 7px; }
+.notice {
+  color: #fcd34d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+#message { color: var(--cyan); line-height: 1.6; }
+footer {
+  border-top: 1px solid #262b43;
+  padding: 25px 6%;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+@media(max-width:650px) {
+  header { flex-wrap: wrap; }
+  nav { order: 3; width: 100%; justify-content: space-between; }
+  nav a { font-size: 12px; }
+  header .btn { padding: 10px 12px; font-size: 12px; }
+  .hero { padding: 55px 5% 45px; }
+  section { padding: 35px 5%; }
+  .grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
-<body>
-<main class="app">
 
+<body>
 <header>
-  <div class="logo">✦</div>
-  <div>
-    <h1>KABIYA AI</h1>
-    <small>VIDEO STUDIO</small>
-    <div id="headerCoins" class="header-coins">
-      🪙 <span id="headerCoinBalance">0</span> Coins
-    </div>
-  </div>
+  <div class="logo">NEPAL X <span>ESPORTS</span></div>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#games">Games</a>
+    <a href="#tournaments">Tournaments</a>
+    <a href="#teams">Teams</a>
+  </nav>
+  <a class="btn" href="#register">Join Now</a>
 </header>
 
-<section class="hero">
-  <p class="muted">✧ YOUR IMAGINATION, ANIMATED</p>
-  <h2>Create videos with<br><span class="gradient">the power of AI.</span></h2>
-  <p class="muted">Turn your ideas into videos with KABIYA AI.</p>
-</section>
+<main>
+  <section class="hero" id="home">
+    <div class="tag">🇳🇵 NEPAL GAMING COMMUNITY</div>
+    <h1>PLAY TOGETHER.<br><span>RISE TOGETHER.</span></h1>
+    <p>
+      Welcome to NEPAL X ESPORTS Gaming Hub.
+      Discover tournaments, meet your team and
+      become part of our gaming community.
+    </p>
+    <a class="btn" href="#tournaments">Explore Tournaments</a>
+  </section>
 
-<section id="authBox" class="card">
-  <h2>🔐 Welcome to KABIYA AI</h2>
-  <p class="muted">Log in or create your account.</p>
-  <form id="authForm">
-    <label for="email">Email address</label>
-    <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
-    <label for="password">Password</label>
-    <input id="password" type="password" autocomplete="current-password" minlength="6" placeholder="At least 6 characters" required>
-    <button id="loginBtn" type="submit">🔑 Log In</button>
-    <button id="signupBtn" class="secondary" type="button">＋ Create Account</button>
-  </form>
-  <p id="authMessage" role="status" aria-live="polite"></p>
-</section>
+  <section id="games">
+    <h2 class="section-title">🎮 Our Games</h2>
+    <p class="subtitle">Choose your battlefield.</p>
+    <div class="grid">
+      <article class="card">
+        <div class="game-icon">🔥</div>
+        <h3>Free Fire</h3>
+        <p>Squad up, practise your skills and join community events.</p>
+        <span class="pill">Mobile Gaming</span>
+      </article>
+      <article class="card">
+        <div class="game-icon">🎯</div>
+        <h3>PUBG Mobile</h3>
+        <p>Build teamwork and compete in friendly community matches.</p>
+        <span class="pill">Battle Royale</span>
+      </article>
+      <article class="card">
+        <div class="game-icon">⚡</div>
+        <h3>More Games</h3>
+        <p>More gaming categories can be added as the community grows.</p>
+        <span class="pill">Coming Soon</span>
+      </article>
+    </div>
+  </section>
 
-<section id="userInfo" class="card userbar">
-  <span id="userEmail"></span>
-  <button id="logoutBtn" class="secondary" type="button">Log out</button>
-</section>
+  <section id="tournaments">
+    <h2 class="section-title">🏆 Tournaments</h2>
+    <p class="subtitle">Check event details before registering.</p>
+    <div class="grid">
+      <article class="card">
+        <span class="pill">Community Event</span>
+        <h3>Free Fire Squad Match</h3>
+        <p>Mode: Squad<br>Entry fee: To be announced<br>Schedule: To be announced</p>
+        <a class="btn" href="#register">Register Interest</a>
+      </article>
+      <article class="card">
+        <span class="pill">Coming Soon</span>
+        <h3>2v2 Challenge</h3>
+        <p>Find a teammate and get ready for a friendly competition.</p>
+        <a class="btn" href="#register">Register Interest</a>
+      </article>
+      <article class="card">
+        <span class="pill">Updates</span>
+        <h3>New Events</h3>
+        <p>Tournament dates, rules and prizes will be announced here.</p>
+        <a class="btn" href="#register">Get Involved</a>
+      </article>
+    </div>
+  </section>
 
-<section id="coinsBox" class="card coin-card">
-  <div class="coin-icon">🎁</div>
-  <h2>Daily Rewards</h2>
-  <p class="muted">Claim your free daily coins!</p>
-  <div class="coin-number">🪙 <span id="coinBalance">0</span></div>
-  <p class="coin-subtitle">Your available app coins</p>
-  <button id="claimBtn" type="button">🎁 Claim 100 Coins</button>
-  <p id="coinMessage" role="status" aria-live="polite"></p>
-  <p class="coin-subtitle">Daily claim is limited to once every 24 hours.</p>
-</section>
+  <section id="teams">
+    <h2 class="section-title">👥 Our Teams</h2>
+    <p class="subtitle">Team information can be updated by the website owner.</p>
+    <div class="grid">
+      <article class="card">
+        <div class="game-icon">🛡️</div>
+        <h3>NEPAL X ESPORTS ONE</h3>
+        <p>Team roster and leader details coming soon.</p>
+      </article>
+      <article class="card">
+        <div class="game-icon">⚔️</div>
+        <h3>NEPAL X ESPORTS TWO</h3>
+        <p>Team roster and leader details coming soon.</p>
+      </article>
+      <article class="card">
+        <div class="game-icon">🌟</div>
+        <h3>Join Our Community</h3>
+        <p>Send your interest using the registration form below.</p>
+        <a class="btn" href="#register">Join</a>
+      </article>
+    </div>
+  </section>
 
-<section id="generatorBox" class="card">
-  <h2>🎬 AI Video Generator</h2>
-  <p class="muted">Describe the video you want to create.</p>
-
-  <label for="script">Video prompt</label>
-  <textarea id="script" maxlength="10000" placeholder="A cinematic dragon flying above the Himalayas at sunset..."></textarea>
-
-  <label for="duration">Video duration</label>
-  <select id="duration">
-    <option value="1">1 second</option>
-    <option value="2">2 seconds</option>
-    <option value="3" selected>3 seconds</option>
-  </select>
-
-  <label for="resolution">Video quality</label>
-  <select id="resolution">
-    <option value="480p">480p</option>
-    <option value="720p" selected>720p</option>
-    <option value="1080p">1080p</option>
-  </select>
-
-  <label>Aspect ratio</label>
-  <div class="formats">
-    <label><input type="radio" name="ratio" value="9:16" checked> 9:16</label>
-    <label><input type="radio" name="ratio" value="16:9"> 16:9</label>
-    <label><input type="radio" name="ratio" value="1:1"> 1:1</label>
-  </div>
-
-  <div class="notice">
-    Note: App coins are separate from Magic Hour provider credits.
-    Video generation may fail if the provider account lacks credits.
-  </div>
-
-  <button id="generateBtn" type="button">✨ Generate AI Video</button>
-  <p id="status" role="status" aria-live="polite"></p>
-  <video id="videoPlayer" controls playsinline hidden></video>
-</section>
-
-<footer>KABIYA AI Video Studio<br>Powered by your configured AI video service.</footer>
+  <section id="register">
+    <h2 class="section-title">📝 Player Registration</h2>
+    <p class="subtitle">Enter your details to try the demo form.</p>
+    <div class="card">
+      <form id="joinForm">
+        <div class="field">
+          <label for="player">Player name</label>
+          <input id="player" maxlength="40" required
+                 placeholder="Enter your gaming name">
+        </div>
+        <div class="field">
+          <label for="game">Choose game</label>
+          <select id="game" required>
+            <option value="">Select a game</option>
+            <option>Free Fire</option>
+            <option>PUBG Mobile</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="team">Team name (optional)</label>
+          <input id="team" maxlength="40" placeholder="Your team name">
+        </div>
+        <button type="submit">Submit Demo Registration</button>
+        <p id="message" aria-live="polite"></p>
+        <p class="notice">
+          Demo only: this form does not send or save your registration
+          to the website owner. Do not enter passwords, OTPs or private
+          account details.
+        </p>
+      </form>
+    </div>
+  </section>
 </main>
 
+<footer>
+  <p>© <span id="year"></span> NEPAL X ESPORTS</p>
+  <p>Built for the gaming community 🇳🇵</p>
+</footer>
+
 <script>
-(() => {
-"use strict";
+document.getElementById("year").textContent =
+  new Date().getFullYear();
 
-const $ = id => document.getElementById(id);
+document.getElementById("joinForm").addEventListener("submit", function(e) {
+  e.preventDefault();
 
-const SUPABASE_URL = "https://vjpqbtwtxcnelsarvmii.supabase.co";
-const SUPABASE_KEY = "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
-const BACKEND_URL = "https://ometv4.onrender.com";
+  const player = document.getElementById("player").value.trim();
+  const game = document.getElementById("game").value;
 
-let supabaseClient;
-
-function db() {
-  if (!window.supabase) {
-    throw new Error("Supabase library did not load. Refresh the page.");
-  }
-  if (!supabaseClient) {
-    supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-  }
-  return supabaseClient;
-}
-
-function setCoins(coins) {
-  $("coinBalance").textContent = coins;
-  $("headerCoinBalance").textContent = coins;
-  $("headerCoins").style.display = "block";
-}
-
-function showUser(user) {
-  $("authBox").style.display = "none";
-  $("userInfo").style.display = "flex";
-  $("coinsBox").style.display = "block";
-  $("generatorBox").style.display = "block";
-  $("userEmail").textContent = user.email || "Logged in";
-  loadCoins(user.id);
-}
-
-function showLoggedOut() {
-  $("authBox").style.display = "block";
-  $("userInfo").style.display = "none";
-  $("coinsBox").style.display = "none";
-  $("generatorBox").style.display = "none";
-  $("headerCoins").style.display = "none";
-}
-
-async function loadCoins(userId) {
-  $("coinMessage").textContent = "Loading balance...";
-  try {
-    const {data, error} = await db()
-      .from("profiles")
-      .select("coins")
-      .eq("id", userId)
-      .maybeSingle();
-
-    if (error) throw error;
-
-    if (data) {
-      setCoins(data.coins);
-      $("coinMessage").textContent = "Balance updated.";
-    } else {
-      setCoins(0);
-      $("coinMessage").textContent =
-        "No coin profile yet. Try claiming your daily coins.";
-    }
-  } catch (error) {
-    $("coinMessage").textContent = "Balance error: " + error.message;
-  }
-}
-
-async function claimCoins() {
-  const button = $("claimBtn");
-  button.disabled = true;
-  button.textContent = "Claiming...";
-  $("coinMessage").textContent = "Checking daily reward...";
-
-  try {
-    const {data: sessionData, error: sessionError} =
-      await db().auth.getSession();
-
-    if (sessionError) throw sessionError;
-    if (!sessionData.session) throw new Error("Please log in first.");
-
-    const {data, error} = await db().rpc("claim_daily_coins");
-    if (error) throw error;
-
-    if (data && data.coins !== undefined) {
-      setCoins(data.coins);
-    }
-
-    $("coinMessage").textContent =
-      data && data.message
-        ? data.message
-        : "Claim request completed.";
-  } catch (error) {
-    $("coinMessage").textContent = "Claim error: " + error.message;
-  } finally {
-    button.disabled = false;
-    button.textContent = "🎁 Claim 100 Coins";
-  }
-}
-
-async function login(event) {
-  event.preventDefault();
-  const button = $("loginBtn");
-  button.disabled = true;
-  button.textContent = "Logging in...";
-  $("authMessage").textContent = "";
-
-  try {
-    const {data, error} = await db().auth.signInWithPassword({
-      email: $("email").value.trim(),
-      password: $("password").value
-    });
-
-    if (error) throw error;
-    if (!data.user) throw new Error("Login could not be completed.");
-
-    showUser(data.user);
-    $("authMessage").textContent = "";
-  } catch (error) {
-    $("authMessage").textContent = "Login error: " + error.message;
-  } finally {
-    button.disabled = false;
-    button.textContent = "🔑 Log In";
-  }
-}
-
-async function signup() {
-  const email = $("email").value.trim();
-  const password = $("password").value;
-  const button = $("signupBtn");
-
-  if (!email || password.length < 6) {
-    $("authMessage").textContent =
-      "Enter your email and a password of at least 6 characters.";
+  if (!player || !game) {
+    document.getElementById("message").textContent =
+      "Please complete the required fields.";
     return;
   }
 
-  button.disabled = true;
-  button.textContent = "Creating account...";
+  document.getElementById("message").textContent =
+    "Demo successful, " + player +
+    "! This is only a preview. Your details have not been sent or saved.";
 
-  try {
-    const {data, error} = await db().auth.signUp({email, password});
-    if (error) throw error;
-
-    if (data.session && data.user) {
-      showUser(data.user);
-      $("authMessage").textContent = "Account created successfully!";
-    } else {
-      $("authMessage").textContent =
-        "Account request sent. Check your email if verification is required, then log in.";
-    }
-  } catch (error) {
-    $("authMessage").textContent = "Signup error: " + error.message;
-  } finally {
-    button.disabled = false;
-    button.textContent = "＋ Create Account";
-  }
-}
-
-async function logout() {
-  try {
-    const {error} = await db().auth.signOut();
-    if (error) throw error;
-    showLoggedOut();
-    $("status").textContent = "";
-    $("authMessage").textContent = "You have logged out.";
-  } catch (error) {
-    $("status").textContent = "Logout error: " + error.message;
-  }
-}
-
-async function generateVideo() {
-  const prompt = $("script").value.trim();
-  if (!prompt) {
-    $("status").textContent = "Please enter a video prompt first.";
-    return;
-  }
-
-  const button = $("generateBtn");
-  const player = $("videoPlayer");
-
-  button.disabled = true;
-  button.textContent = "Generating...";
-  $("status").textContent = "Connecting to the video service...";
-  player.hidden = true;
-  player.removeAttribute("src");
-
-  try {
-    const {data: sessionData, error: sessionError} =
-      await db().auth.getSession();
-
-    if (sessionError) throw sessionError;
-    if (!sessionData.session) throw new Error("Please log in again.");
-
-    const ratio = document.querySelector(
-      'input[name="ratio"]:checked'
-    ).value;
-
-    const response = await fetch(BACKEND_URL + "/api/generate-video", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + sessionData.session.access_token
-      },
-      body: JSON.stringify({
-        script: prompt,
-        aspectRatio: ratio,
-        duration: Number($("duration").value),
-        resolution: $("resolution").value
-      })
-    });
-
-    const result = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      throw new Error(
-        result.message || result.error ||
-        ("Video service returned HTTP " + response.status)
-      );
-    }
-
-    const videoUrl =
-      result.videoUrl ||
-      result.video_url ||
-      result.url ||
-      (result.data && (
-        result.data.videoUrl ||
-        result.data.video_url ||
-        result.data.url
-      )) ||
-      (result.result && (
-        result.result.videoUrl ||
-        result.result.video_url ||
-        result.result.url
-      ));
-
-    if (videoUrl && typeof videoUrl === "string") {
-      player.src = videoUrl;
-      player.hidden = false;
-      player.load();
-      $("status").textContent = "Video received! Press play to watch.";
-    } else {
-      $("status").textContent =
-        result.message ||
-        result.status ||
-        "Request received, but no video URL was returned. Check the backend response and generation status.";
-    }
-  } catch (error) {
-    $("status").textContent = "Generation error: " + error.message;
-  } finally {
-    button.disabled = false;
-    button.textContent = "✨ Generate AI Video";
-  }
-}
-
-$("authForm").addEventListener("submit", login);
-$("signupBtn").addEventListener("click", signup);
-$("logoutBtn").addEventListener("click", logout);
-$("claimBtn").addEventListener("click", claimCoins);
-$("generateBtn").addEventListener("click", generateVideo);
-
-async function init() {
-  try {
-    const {data, error} = await db().auth.getSession();
-    if (error) throw error;
-
-    if (data.session && data.session.user) {
-      showUser(data.session.user);
-    } else {
-      showLoggedOut();
-    }
-
-    db().auth.onAuthStateChange((_event, session) => {
-      if (session && session.user) {
-        showUser(session.user);
-      } else {
-        showLoggedOut();
-      }
-    });
-  } catch (error) {
-    showLoggedOut();
-    $("authMessage").textContent =
-      "Connection error: " + error.message;
-  }
-}
-
-init();
-})();
+  this.reset();
+});
 </script>
 </body>
 </html>
