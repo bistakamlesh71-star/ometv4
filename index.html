@@ -1,713 +1,749 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>AI Video Generator</title>
+  <meta name="theme-color" content="#090711">
+  <title>NOVA AI | Video Studio</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --bg: #090711;
+      --panel: #141020;
+      --panel2: #1b142a;
+      --purple: #a855f7;
+      --pink: #ec4899;
+      --text: #f8f5ff;
+      --muted: #aaa1bd;
+      --border: rgba(192, 132, 252, .19);
     }
+
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: white;
-      padding: 20px;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, system-ui, Arial, sans-serif;
+      background:
+        radial-gradient(ellipse at 50% 0%, #291344 0%, transparent 45%),
+        var(--bg);
     }
 
-    .container {
-      max-width: 700px;
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      width: 100%;
+      max-width: 850px;
       margin: auto;
+      padding: 20px 16px 45px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      font-size: 19px;
+      letter-spacing: 1px;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #9333ea, #ec4899);
+      box-shadow: 0 0 25px #a855f744;
+      font-size: 23px;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #c084fc;
+      margin-top: 3px;
+    }
+
+    .online {
+      font-size: 11px;
+      color: #d8b4fe;
+      background: #a855f71b;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 8px 10px;
+      white-space: nowrap;
+    }
+
+    .hero { text-align: center; margin-bottom: 26px; }
+
+    .eyebrow {
+      display: inline-block;
+      color: #d8b4fe;
+      background: #a855f719;
+      border: 1px solid var(--border);
+      padding: 7px 12px;
+      border-radius: 30px;
+      font-size: 11px;
+      letter-spacing: 1px;
     }
 
     h1 {
-      text-align: center;
-      margin-bottom: 25px;
+      font-size: clamp(32px, 8vw, 51px);
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin: 17px 0 12px;
     }
 
-    #authBox {
-      background: #1b1b1b;
-      padding: 18px;
-      border-radius: 14px;
-      margin-bottom: 25px;
+    .gradient-text {
+      background: linear-gradient(90deg, #c084fc, #f0abfc, #f9a8d4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
-    #authBox h2 {
-      margin-top: 0;
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      max-width: 510px;
+      margin: auto;
     }
 
-    input,
-    textarea,
-    select,
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 12px;
-      border-radius: 10px;
+    .card {
+      background: linear-gradient(145deg, #171124, #100d19);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 14px 45px #00000022;
+    }
+
+    .card-title {
       font-size: 16px;
+      font-weight: 800;
+      margin: 0 0 7px;
     }
 
-    input,
-    textarea,
-    select {
-      background: #1b1b1b;
-      color: white;
-      border: 1px solid #444;
+    .card-description {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      margin: 0 0 18px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #e9d5ff;
+      margin: 17px 0 9px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      color: var(--text);
+      background: #0d0a16;
+      border: 1px solid #372748;
+      border-radius: 12px;
+      padding: 14px;
+      outline: none;
+      transition: border .2s, box-shadow .2s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px #a855f71b;
     }
 
     textarea {
-      min-height: 220px;
+      min-height: 155px;
       resize: vertical;
+      line-height: 1.65;
     }
 
-    button {
-      border: none;
-      background: #ff1744;
+    input::placeholder, textarea::placeholder { color: #726783; }
+
+    .primary-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 15px;
+      font-weight: 800;
       color: white;
-      font-weight: bold;
+      background: linear-gradient(100deg, #9333ea, #c026d3, #db2777);
+      box-shadow: 0 7px 24px #a855f733;
+      transition: transform .2s, opacity .2s;
+    }
+
+    .primary-btn:active { transform: scale(.99); }
+    .primary-btn:disabled { opacity: .55; cursor: wait; }
+
+    .secondary-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: #21162f;
+      color: #eadcff;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 11px;
+    }
+
+    .format-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .format-option {
+      background: #0d0a16;
+      border: 1px solid #372748;
+      border-radius: 12px;
+      color: #cfc2e1;
+      padding: 13px 5px;
+      text-align: center;
       cursor: pointer;
     }
 
-    button:disabled {
-      background: #555;
-      cursor: not-allowed;
+    .format-option.active {
+      border-color: #c084fc;
+      background: #a855f71c;
+      color: white;
+      box-shadow: inset 0 0 0 1px #a855f733;
     }
 
-    #authMessage,
-    #status {
-      text-align: center;
-      margin-top: 15px;
+    .format-option strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
     }
 
-    #userInfo {
-      background: #222;
-      padding: 12px;
-      border-radius: 10px;
-      margin-bottom: 20px;
+    .format-option span { font-size: 10px; }
+
+    .format-option input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+    }
+
+    #authBox { max-width: 520px; margin: 0 auto 20px; }
+    #generatorBox, #userInfo { display: none; }
+
+    .userbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #171124;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+    }
+
+    .user-details { min-width: 0; }
+
+    .user-label {
+      color: var(--muted);
+      font-size: 10px;
+      margin-bottom: 5px;
+    }
+
+    #userEmail {
+      display: block;
+      overflow-wrap: anywhere;
+      font-size: 12px;
+    }
+
+    .logout {
+      flex-shrink: 0;
+      border: 1px solid #493254;
+      border-radius: 9px;
+      padding: 9px 12px;
+      color: #e9d5ff;
+      background: #25172f;
+    }
+
+    #authMessage, #status {
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    #authMessage { color: #e9d5ff; text-align: center; }
+    #status { color: #d8b4fe; text-align: center; }
+
+    .preview {
       display: none;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
     }
+
+    .preview h3 { font-size: 14px; margin: 0 0 12px; }
 
     video {
+      display: block;
       width: 100%;
-      margin-top: 20px;
-      border-radius: 12px;
-      background: black;
+      max-height: 570px;
+      background: #000;
+      border-radius: 14px;
     }
 
-    .buttons {
+    .video-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
+      margin-top: 12px;
     }
 
-    .buttons button {
-      background: #333;
+    .video-actions button {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 6px;
+      color: #f3e8ff;
+      background: #24172f;
+      font-weight: 700;
     }
 
-    #generatorBox {
-      display: none;
+    .tips {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .tip {
+      text-align: center;
+      background: #130f1e;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 15px 7px;
+    }
+
+    .tip-icon { font-size: 22px; }
+    .tip strong { display: block; font-size: 11px; margin: 8px 0 4px; }
+    .tip span { color: var(--muted); font-size: 10px; line-height: 1.5; }
+
+    footer {
+      text-align: center;
+      color: #796d8a;
+      font-size: 11px;
+      margin-top: 28px;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 420px) {
+      .app { padding: 16px 12px 32px; }
+      .card { padding: 16px; }
+      .brand { font-size: 16px; }
+      .online { font-size: 10px; }
+      .two-columns { grid-template-columns: 1fr; gap: 0; }
     }
   </style>
 </head>
 
 <body>
-
-<div class="container">
-
-  <h1>🎬 AI Video Generator</h1>
-
-  <!-- LOGIN / SIGNUP -->
-  <div id="authBox">
-
-    <h2>🔐 Create Account / Login</h2>
-
-    <input
-      id="email"
-      type="email"
-      placeholder="Enter your email"
-    >
-
-    <input
-      id="password"
-      type="password"
-      placeholder="Enter your password"
-    >
-
-    <button onclick="signUp()">
-      📝 Sign Up
-    </button>
-
-    <button onclick="signIn()">
-      🔑 Login
-    </button>
-
-    <p id="authMessage"></p>
-
-  </div>
-
-
-  <!-- USER INFO -->
-  <div id="userInfo">
-    👤 Logged in as:
-    <span id="userEmail"></span>
-
-    <button onclick="signOut()">
-      Logout
-    </button>
-  </div>
-
-
-  <!-- VIDEO GENERATOR -->
-  <div id="generatorBox">
-
-    <textarea
-      id="script"
-      placeholder="Write your video script here..."
-    ></textarea>
-
-    <select id="aspectRatio">
-      <option value="9:16">
-        9:16 - TikTok / Shorts / Reels
-      </option>
-
-      <option value="16:9">
-        16:9 - YouTube
-      </option>
-
-      <option value="1:1">
-        1:1 - Square
-      </option>
-    </select>
-
-    <button
-      id="generateBtn"
-      onclick="generateVideo()"
-    >
-      🎬 Generate AI Video
-    </button>
-
-    <div id="status"></div>
-
-    <video
-      id="videoPlayer"
-      controls
-      style="display:none;"
-    ></video>
-
-    <div
-      class="buttons"
-      id="videoButtons"
-      style="display:none;"
-    >
-      <button onclick="downloadVideo()">
-        ⬇️ Download
-      </button>
-
-      <button onclick="shareVideo()">
-        📤 Share
-      </button>
-    </div>
-
-  </div>
-
-</div>
-
-
-<script>
-
-const SUPABASE_URL =
-  "https://vjpqbtwtxcnelsarvmii.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
-
-const supabaseClient =
-  supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-
-const BACKEND_URL =
-  "https://ometv4.onrender.com";
-
-let generatedVideoUrl = "";
-
-
-/* =========================
-   SIGN UP
-========================= */
-
-async function signUp() {
-
-  const email =
-    document.getElementById("email").value.trim();
-
-  const password =
-    document.getElementById("password").value;
-
-  const message =
-    document.getElementById("authMessage");
-
-
-  if (!email || !password) {
-
-    message.innerText =
-      "❌ Email and password required.";
-
-    return;
-  }
-
-
-  if (password.length < 6) {
-
-    message.innerText =
-      "❌ Password must be at least 6 characters.";
-
-    return;
-  }
-
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient.auth.signUp({
-
-      email: email,
-
-      password: password
-
-    });
-
-
-  if (error) {
-
-    message.innerText =
-      "❌ " + error.message;
-
-    return;
-  }
-
-
-  message.innerText =
-    "✅ Account created! Check your email if verification is required.";
-
-}
-
-
-/* =========================
-   LOGIN
-========================= */
-
-async function signIn() {
-
-  const email =
-    document.getElementById("email").value.trim();
-
-  const password =
-    document.getElementById("password").value;
-
-  const message =
-    document.getElementById("authMessage");
-
-
-  if (!email || !password) {
-
-    message.innerText =
-      "❌ Email and password required.";
-
-    return;
-  }
-
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient.auth.signInWithPassword({
-
-      email: email,
-
-      password: password
-
-    });
-
-
-  if (error) {
-
-    message.innerText =
-      "❌ " + error.message;
-
-    return;
-  }
-
-
-  message.innerText =
-    "✅ Login successful!";
-
-
-  showUser(data.user);
-
-}
-
-
-/* =========================
-   SHOW USER
-========================= */
-
-function showUser(user) {
-
-  if (!user) return;
-
-
-  document.getElementById("authBox")
-    .style.display = "none";
-
-
-  document.getElementById("userInfo")
-    .style.display = "block";
-
-
-  document.getElementById("generatorBox")
-    .style.display = "block";
-
-
-  document.getElementById("userEmail")
-    .innerText = user.email;
-
-}
-
-
-/* =========================
-   CHECK LOGIN
-========================= */
-
-async function checkUser() {
-
-  const {
-    data
-  } =
-    await supabaseClient.auth.getUser();
-
-
-  if (data.user) {
-
-    showUser(data.user);
-
-  }
-
-}
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-async function signOut() {
-
-  await supabaseClient.auth.signOut();
-
-
-  document.getElementById("authBox")
-    .style.display = "block";
-
-
-  document.getElementById("userInfo")
-    .style.display = "none";
-
-
-  document.getElementById("generatorBox")
-    .style.display = "none";
-
-
-  document.getElementById("authMessage")
-    .innerText = "Logged out.";
-
-}
-
-
-/* =========================
-   GENERATE VIDEO
-========================= */
-
-async function generateVideo() {
-
-  const script =
-    document.getElementById("script")
-      .value.trim();
-
-
-  const aspectRatio =
-    document.getElementById("aspectRatio")
-      .value;
-
-
-  const button =
-    document.getElementById("generateBtn");
-
-
-  const status =
-    document.getElementById("status");
-
-
-  const player =
-    document.getElementById("videoPlayer");
-
-
-  const videoButtons =
-    document.getElementById("videoButtons");
-
-
-  if (!script) {
-
-    status.innerText =
-      "Please enter a script first.";
-
-    return;
-  }
-
-
-  button.disabled = true;
-
-  button.innerText =
-    "Generating...";
-
-
-  status.innerText =
-    "🎬 AI video is being generated...";
-
-
-  player.style.display =
-    "none";
-
-
-  videoButtons.style.display =
-    "none";
-
-
-  try {
-
-    const {
-      data
-    } =
-      await supabaseClient.auth.getSession();
-
-
-    if (!data.session) {
-
-      throw new Error(
-        "Please login first."
-      );
-
-    }
-
-
-    const response =
-      await fetch(
-
-        `${BACKEND_URL}/api/generate-video`,
-
-        {
-
-          method: "POST",
-
-          headers: {
-
-            "Content-Type":
-              "application/json",
-
-            "Authorization":
-              `Bearer ${data.session.access_token}`
-
-          },
-
-          body: JSON.stringify({
-
-            script: script,
-
-            aspectRatio:
-              aspectRatio
-
-          })
-
-        }
-
-      );
-
-
-    const result =
-      await response.json();
-
-
-    if (
-      !response.ok ||
-      !result.success
-    ) {
-
-      throw new Error(
-        result.error ||
-        "Video generation failed"
-      );
-
-    }
-
-
-    const videoData = result.data;
-
-console.log("Magic Hour response:", videoData);
-
-generatedVideoUrl =
-  videoData?.video_url ||
-  videoData?.videoUrl ||
-  videoData?.url ||
-  videoData?.video?.url ||
-  "";
-
-if (!generatedVideoUrl) {
-  throw new Error(
-    "Video URL not found. API response check garnu parcha."
-  );
-}
-
-    player.src =
-      generatedVideoUrl;
-
-
-    player.style.display =
-      "block";
-
-
-    videoButtons.style.display =
-      "grid";
-
-
-    status.innerText =
-      "✅ Video generated successfully!";
-
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    status.innerText =
-      "❌ Error: " +
-      error.message;
-
-
-  } finally {
-
-    button.disabled =
-      false;
-
-
-    button.innerText =
-      "🎬 Generate AI Video";
-
-  }
-
-}
-
-
-/* =========================
-   DOWNLOAD
-========================= */
-
-function downloadVideo() {
-
-  if (!generatedVideoUrl)
-    return;
-
-
-  const link =
-    document.createElement("a");
-
-
-  link.href =
-    generatedVideoUrl;
-
-
-  link.download =
-    "ai-video.mp4";
-
-
-  document.body.appendChild(link);
-
-
-  link.click();
-
-
-  document.body.removeChild(link);
-
-}
-
-
-/* =========================
-   SHARE
-========================= */
-
-async function shareVideo() {
-
-  if (!generatedVideoUrl)
-    return;
-
-
-  if (navigator.share) {
-
-    try {
-
-      await navigator.share({
-
-        title:
-          "AI Generated Video",
-
-        text:
-          "Check out my AI generated video!",
-
-        url:
-          generatedVideoUrl
-
-      });
-
-    } catch (error) {
-
-      console.log(
-        "Share cancelled"
-      );
-
-    }
-
-  } else {
-
-    await navigator.clipboard
-      .writeText(
-        generatedVideoUrl
-      );
-
-
-    alert(
-      "Video link copied!"
+  <main class="app">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">✦</div>
+        <div>
+          NOVA AI
+          <small>VIDEO STUDIO</small>
+        </div>
+      </div>
+      <div class="online">✦ AI VIDEO STUDIO</div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">✧ YOUR IMAGINATION, ANIMATED</div>
+      <h1>Create videos with<br><span class="gradient-text">the power of AI.</span></h1>
+      <p class="subtitle">
+        Turn your ideas into videos. Write a prompt, choose your format,
+        and create your next story.
+      </p>
+    </section>
+
+    <section id="authBox" class="card">
+      <h2 class="card-title">🔐 Welcome to NOVA AI</h2>
+      <p class="card-description">Create an account or log in to open your studio.</p>
+
+      <form id="authForm">
+        <label class="field-label" for="email">Email address</label>
+        <input id="email" type="email" placeholder="you@example.com"
+          autocomplete="email" required>
+
+        <label class="field-label" for="password">Password</label>
+        <input id="password" type="password" placeholder="At least 6 characters"
+          autocomplete="current-password" minlength="6" required>
+
+        <button class="primary-btn" id="loginBtn" type="button">🔑 Log In</button>
+        <button class="secondary-btn" id="signupBtn" type="button">＋ Create Account</button>
+      </form>
+      <p id="authMessage" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="userInfo" class="userbar">
+      <div class="user-details">
+        <div class="user-label">SIGNED IN AS</div>
+        <strong id="userEmail"></strong>
+      </div>
+      <button class="logout" id="logoutBtn" type="button">Log out</button>
+    </section>
+
+    <section id="generatorBox">
+      <div class="card">
+        <h2 class="card-title">✍️ Create your video</h2>
+        <p class="card-description">
+          Describe the scene, characters, movement, and visual style you want.
+        </p>
+
+        <label class="field-label" for="script">Your video prompt</label>
+        <textarea id="script"
+          placeholder="Example: A tiny robot explores a glowing purple forest at night. Cinematic camera movement, magical lighting, detailed 3D animation..."
+          maxlength="10000"></textarea>
+
+        <div class="two-columns">
+          <div>
+            <label class="field-label">Aspect ratio</label>
+            <div class="format-grid" id="formatGrid">
+              <label class="format-option active">
+                <input type="radio" name="aspectRatio" value="9:16" checked>
+                <strong>9:16</strong><span>Shorts</span>
+              </label>
+              <label class="format-option">
+                <input type="radio" name="aspectRatio" value="16:9">
+                <strong>16:9</strong><span>YouTube</span>
+              </label>
+              <label class="format-option">
+                <input type="radio" name="aspectRatio" value="1:1">
+                <strong>1:1</strong><span>Square</span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="field-label" for="styleSelect">Prompt helper</label>
+            <select id="styleSelect">
+              <option value="">Choose a style</option>
+              <option value="Cinematic 3D animation, expressive characters, detailed lighting.">3D Animation</option>
+              <option value="Anime-inspired art, dramatic composition, vibrant lighting.">Anime</option>
+              <option value="Photorealistic visuals, natural lighting, cinematic camera.">Realistic</option>
+              <option value="Fantasy atmosphere, magical particles, glowing environments.">Fantasy</option>
+              <option value="Cute cartoon style, colorful scenery, playful mood.">Cute Cartoon</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="primary-btn" id="generateBtn" type="button">
+          ✦ Generate AI Video
+        </button>
+
+        <div id="status" role="status" aria-live="polite"></div>
+
+        <div class="preview" id="preview">
+          <h3>🎬 Video preview</h3>
+          <video id="videoPlayer" controls playsinline></video>
+          <div class="video-actions">
+            <button id="downloadBtn" type="button">⬇ Download</button>
+            <button id="shareBtn" type="button">↗ Share link</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips">
+        <div class="tip">
+          <div class="tip-icon">✍️</div>
+          <strong>Write a prompt</strong>
+          <span>Describe your idea</span>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">✦</div>
+          <strong>Generate</strong>
+          <span>Send it to the AI service</span>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">⬇</div>
+          <strong>Save & share</strong>
+          <span>When the video is ready</span>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      NOVA AI Video Studio<br>
+      Generation availability depends on your connected AI provider and its limits.
+    </footer>
+  </main>
+
+  <script>
+    // Existing Supabase project configuration
+    const SUPABASE_URL =
+      "https://vjpqbtwtxcnelsarvmii.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
+
+    const supabaseClient = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
     );
 
-  }
+    // Existing Render backend
+    const BACKEND_URL = "https://ometv4.onrender.com";
 
-}
+    let generatedVideoUrl = "";
 
+    const $ = (id) => document.getElementById(id);
 
-/* =========================
-   START
-========================= */
+    function setAuthMessage(message) {
+      $("authMessage").textContent = message;
+    }
 
-checkUser();
+    function setStatus(message) {
+      $("status").textContent = message;
+    }
 
-</script>
+    function setBusy(button, busy, text) {
+      button.disabled = busy;
+      button.textContent = text;
+    }
 
-</body>
-</html>
+    function showUser(user) {
+      if (!user) return;
+
+      $("authBox").style.display = "none";
+      $("userInfo").style.display = "flex";
+      $("generatorBox").style.display = "block";
+      $("userEmail").textContent = user.email || "Logged in";
+    }
+
+    function showLoggedOut() {
+      $("authBox").style.display = "block";
+      $("userInfo").style.display = "none";
+      $("generatorBox").style.display = "none";
+    }
+
+    async function signUp() {
+      const email = $("email").value.trim();
+      const password = $("password").value;
+
+      if (!email || password.length < 6) {
+        setAuthMessage("Enter a valid email and a password of at least 6 characters.");
+        return;
+      }
+
+      setBusy($("signupBtn"), true, "Creating account...");
+
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        if (data.session && data.user) {
+          showUser(data.user);
+          setAuthMessage("");
+          setStatus("Account created. Welcome to NOVA AI!");
+        } else {
+          setAuthMessage(
+            "Account request submitted. Check your email if verification is required, then log in."
+          );
+        }
+      } catch (error) {
+        setAuthMessage("Sign-up error: " + error.message);
+      } finally {
+        setBusy($("signupBtn"), false, "＋ Create Account");
+      }
+    }
+
+    async function signIn() {
+      const email = $("email").value.trim();
+      const password = $("password").value;
+
+      if (!email || !password) {
+        setAuthMessage("Enter your email and password.");
+        return;
+      }
+
+      setBusy($("loginBtn"), true, "Logging in...");
+
+      try {
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+
+        if (error) throw error;
+
+        showUser(data.user);
+        setAuthMessage("");
+        setStatus("Welcome back! Write a prompt to get started.");
+      } catch (error) {
+        setAuthMessage("Login error: " + error.message);
+      } finally {
+        setBusy($("loginBtn"), false, "🔑 Log In");
+      }
+    }
+
+    async function signOut() {
+      const { error } = await supabaseClient.auth.signOut();
+
+      if (error) {
+        setStatus("Logout error: " + error.message);
+        return;
+      }
+
+      showLoggedOut();
+      setAuthMessage("You have logged out.");
+      setStatus("");
+      $("script").value = "";
+      $("preview").style.display = "none";
+      $("videoPlayer").removeAttribute("src");
+      generatedVideoUrl = "";
+    }
+
+    async function checkUser() {
+      try {
+        const { data, error } = await supabaseClient.auth.getUser();
+        if (error) throw error;
+
+        if (data.user) {
+          showUser(data.user);
+        } else {
+          showLoggedOut();
+        }
+      } catch (error) {
+        console.error("Session check failed:", error);
+        showLoggedOut();
+      }
+    }
+
+    function getAspectRatio() {
+      const selected = document.querySelector(
+        'input[name="aspectRatio"]:checked'
+      );
+      return selected ? selected.value : "9:16";
+    }
+
+    function updateFormatStyles() {
+      document.querySelectorAll(".format-option").forEach((label) => {
+        const radio = label.querySelector("input");
+        label.classList.toggle("active", radio.checked);
+      });
+    }
+
+    async function generateVideo() {
+      const promptText = $("script").value.trim();
+      const style = $("styleSelect").value;
+      const aspectRatio = getAspectRatio();
+      const button = $("generateBtn");
+
+      if (!promptText) {
+        setStatus("Please write a video prompt first.");
+        $("script").focus();
+        return;
+      }
+
+      const { data: sessionData, error: sessionError } =
+        await supabaseClient.auth.getSession();
+
+      if (sessionError || !sessionData.session) {
+        setStatus("Please log in before generating a video.");
+        return;
+      }
+
+      // Add the chosen style to the user's prompt.
+      const finalPrompt = style
+        ? promptText + "\nVisual style: " + style
+        : promptText;
+
+      setBusy(button, true, "✦ Sending request...");
+      setStatus("Connecting to the AI video service...");
+      $("preview").style.display = "none";
+      generatedVideoUrl = "";
+
+      try {
+        const response = await fetch(
+          `${BACKEND_URL}/api/generate-video`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization":
+                `Bearer ${sessionData.session.access_token}`
+            },
+            body: JSON.stringify({
+              script: finalPrompt,
+              aspectRatio
+            })
+          }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(
+            result.error || "The AI video request failed."
+          );
+        }
+
+        const videoData = result.data || {};
+
+        console.log("AI provider response:", videoData);
+
+        // Supports common direct-video URL response shapes.
+        generatedVideoUrl =
+          videoData.video_url ||
+          videoData.videoUrl ||
+          videoData.url ||
+          videoData.video?.url ||
+          videoData.output?.url ||
+          "";
+
+        if (generatedVideoUrl) {
+          $("videoPlayer").src = generatedVideoUrl;
+          $("preview").style.display = "block";
+          setStatus("Video URL received. Your preview is ready.");
+        } else {
+          // Some providers return a job ID first and finish rendering later.
+          const jobId =
+            videoData.id ||
+            videoData.job_id ||
+            videoData.jobId ||
+            "";
+
+          if (jobId) {
+            setStatus(
+              "The generation request was accepted, but the API returned a job ID instead of a video URL. A job-status check must be added to the backend before the finished video can appear."
+            );
+          } else {
+            setStatus(
+           
