@@ -20,9 +20,7 @@ app.post("/api/generate-video", async (req, res) => {
   try {
     const {
       script,
-      aspectRatio = "9:16",
-      duration = 1,
-      resolution = "480p"
+      aspectRatio = "9:16"
     } = req.body;
 
     if (typeof script !== "string" || !script.trim()) {
@@ -42,27 +40,11 @@ app.post("/api/generate-video", async (req, res) => {
     }
 
     const allowedRatios = ["9:16", "16:9", "1:1"];
-    const allowedResolutions = ["480p", "720p", "1080p"];
-    const allowedDurations = [1, 2, 3];
 
     if (!allowedRatios.includes(aspectRatio)) {
       return res.status(400).json({
         success: false,
         error: "Invalid aspect ratio"
-      });
-    }
-
-    if (!allowedResolutions.includes(resolution)) {
-      return res.status(400).json({
-        success: false,
-        error: "Invalid resolution"
-      });
-    }
-
-    if (!allowedDurations.includes(Number(duration))) {
-      return res.status(400).json({
-        success: false,
-        error: "Choose 1, 2, or 3 seconds"
       });
     }
 
@@ -76,10 +58,10 @@ app.post("/api/generate-video", async (req, res) => {
         },
         body: JSON.stringify({
           name: "KABIYA AI Video",
-          end_seconds: Number(duration),
+          end_seconds: 3,
           aspect_ratio: aspectRatio,
           model: "ltx-2.5",
-          resolution,
+          resolution: "480p",
           audio: false,
           style: {
             prompt: script.trim()
@@ -104,7 +86,7 @@ app.post("/api/generate-video", async (req, res) => {
 
     return res.json({
       success: true,
-      message: "Video generation request submitted",
+      message: "3-second video request submitted",
       data
     });
 
@@ -113,7 +95,7 @@ app.post("/api/generate-video", async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      error: error.message || "Video generation failed"
+      error: "Video generation request failed"
     });
   }
 });
