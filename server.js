@@ -49,7 +49,7 @@ app.post("/api/generate-video", async (req, res) => {
 
         body: JSON.stringify({
           name: "AI Video Generator",
-          end_seconds: 5,
+          end_seconds: 3,
           aspect_ratio: aspectRatio,
           model: "ltx-2.5",
           resolution: "480p",
