@@ -2,687 +2,430 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090711">
-  <title>KABIYA AI | Video Studio</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    :root {
-      --bg: #090711;
-      --purple: #a855f7;
-      --pink: #ec4899;
-      --text: #f8f5ff;
-      --muted: #aaa1bd;
-      --border: rgba(192,132,252,.22);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text);
-      font-family: system-ui, Arial, sans-serif;
-      background:
-        radial-gradient(ellipse at top, #291344, transparent 55%),
-        var(--bg);
-    }
-
-    .app {
-      width: 100%;
-      max-width: 720px;
-      margin: auto;
-      padding: 20px 14px 40px;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 35px;
-    }
-
-    .logo {
-      display: grid;
-      place-items: center;
-      width: 48px;
-      height: 48px;
-      border-radius: 15px;
-      font-size: 25px;
-      background: linear-gradient(135deg, #9333ea, #ec4899);
-    }
-
-    h1 { font-size: 21px; margin: 0; }
-    header small { color: #c084fc; letter-spacing: 3px; }
-    .hero { text-align: center; margin-bottom: 28px; }
-
-    .hero h2 {
-      font-size: clamp(32px, 8vw, 48px);
-      line-height: 1.12;
-    }
-
-    .gradient { color: #e0a1ff; }
-
-    .muted {
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .card {
-      padding: 22px;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      background: rgba(20,16,32,.95);
-      margin-bottom: 18px;
-    }
-
-    .field-label {
-      display: block;
-      margin: 18px 0 8px;
-      color: #e9d5ff;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 14px;
-      color: white;
-      background: #0d0a16;
-      border: 1px solid #493254;
-      border-radius: 12px;
-      font: inherit;
-    }
-
-    select option { background: #0d0a16; color: white; }
-    textarea { min-height: 120px; resize: vertical; }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 12px;
-      border: 0;
-      border-radius: 12px;
-      font: inherit;
-      font-weight: 800;
-      color: white;
-      background: linear-gradient(100deg, #9333ea, #db2777);
-      cursor: pointer;
-    }
-
-    button.secondary {
-      background: #25172f;
-      border: 1px solid var(--border);
-    }
-
-    button:disabled { opacity: .6; cursor: not-allowed; }
-
-    #authMessage, #status, #coinMessage {
-      font-size: 13px;
-      line-height: 1.7;
-      overflow-wrap: anywhere;
-    }
-
-    #generatorBox, #userInfo, #coinsBox { display: none; }
-
-    .userbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .userbar button { width: auto; }
-
-    .coin-card {
-      text-align: center;
-      background:
-        radial-gradient(ellipse at top, #422064, transparent 70%),
-        rgba(20,16,32,.95);
-    }
-
-    .coin-icon { font-size: 38px; }
-
-    .coin-number {
-      color: #f0abfc;
-      font-size: 36px;
-      font-weight: 900;
-      margin: 8px 0;
-    }
-
-    .coin-subtitle { color: var(--muted); font-size: 13px; }
-
-    .formats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .formats label {
-      padding: 12px 5px;
-      text-align: center;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 13px;
-    }
-
-    .formats input { width: auto; }
-
-    .notice {
-      padding: 12px;
-      border-radius: 10px;
-      background: #21182b;
-      border: 1px solid var(--border);
-      color: #e9d5ff;
-      font-size: 13px;
-      line-height: 1.6;
-      margin-top: 15px;
-    }
-
-    video {
-      width: 100%;
-      max-height: 550px;
-      margin-top: 12px;
-      background: black;
-      border-radius: 12px;
-    }
-
-    footer {
-      text-align: center;
-      color: #796d8a;
-      font-size: 12px;
-      line-height: 1.8;
-      margin-top: 28px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090711">
+<title>KABIYA AI - Video Studio</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090711;color:#fff;font-family:Arial,system-ui,sans-serif}
+.app{max-width:760px;margin:auto;padding:20px 15px 40px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:35px}
+.logo{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:27px;background:linear-gradient(135deg,#9333ea,#ec4899)}
+h1{font-size:22px;margin:0}
+header small{color:#c084fc;letter-spacing:3px}
+.header-coins{display:none;margin-top:8px;padding:7px 12px;width:max-content;border:1px solid #a855f7;border-radius:20px;background:#25172f;color:#f0abfc;font-weight:bold;font-size:14px}
+.hero{text-align:center;margin:30px 0}
+.hero h2{font-size:clamp(32px,8vw,48px);line-height:1.15}
+.gradient{color:#e0a1ff}
+.muted{color:#aaa1bd;line-height:1.7}
+.card{padding:21px;border:1px solid #493254;border-radius:20px;background:#141020;margin-bottom:18px}
+label{display:block;margin:17px 0 8px;color:#e9d5ff;font-size:14px;font-weight:bold}
+input,textarea,select{width:100%;padding:13px;color:white;background:#0d0a16;border:1px solid #493254;border-radius:11px;font:inherit}
+textarea{min-height:120px;resize:vertical}
+select option{background:#0d0a16}
+button{width:100%;padding:14px;margin-top:12px;border:0;border-radius:11px;color:white;font-size:15px;font-weight:bold;background:linear-gradient(100deg,#9333ea,#db2777);cursor:pointer}
+button.secondary{background:#25172f;border:1px solid #493254}
+button:disabled{opacity:.6}
+#userInfo,#coinsBox,#generatorBox{display:none}
+.userbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.userbar button{width:auto}
+.coin-card{text-align:center;background:radial-gradient(ellipse at top,#422064,transparent 70%),#141020}
+.coin-icon{font-size:38px}
+.coin-number{font-size:36px;font-weight:900;color:#f0abfc;margin:10px}
+.coin-subtitle{color:#aaa1bd;font-size:13px;line-height:1.6}
+.formats{display:flex;gap:8px}
+.formats label{flex:1;padding:10px 4px;text-align:center;border:1px solid #493254;border-radius:10px}
+.formats input{width:auto}
+.notice{padding:12px;background:#21182b;border:1px solid #493254;border-radius:10px;color:#e9d5ff;font-size:13px;line-height:1.6;margin-top:15px}
+#authMessage,#coinMessage,#status{font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+video{width:100%;max-height:500px;margin-top:15px;background:#000;border-radius:12px}
+footer{text-align:center;color:#796d8a;font-size:12px;line-height:1.8;margin-top:30px}
+</style>
 </head>
-
 <body>
 <main class="app">
 
-  <header>
-    <div class="logo">✦</div>
-    <div>
-      <h1>KABIYA AI</h1>
-      <small>VIDEO STUDIO</small>
+<header>
+  <div class="logo">✦</div>
+  <div>
+    <h1>KABIYA AI</h1>
+    <small>VIDEO STUDIO</small>
+    <div id="headerCoins" class="header-coins">
+      🪙 <span id="headerCoinBalance">0</span> Coins
     </div>
-  </header>
+  </div>
+</header>
 
-  <section class="hero">
-    <p class="muted">✧ YOUR IMAGINATION, ANIMATED</p>
-    <h2>Create videos with<br>
-      <span class="gradient">the power of AI.</span>
-    </h2>
-    <p class="muted">
-      Sign in to your studio and turn your ideas into videos.
-    </p>
-  </section>
+<section class="hero">
+  <p class="muted">✧ YOUR IMAGINATION, ANIMATED</p>
+  <h2>Create videos with<br><span class="gradient">the power of AI.</span></h2>
+  <p class="muted">Turn your ideas into videos with KABIYA AI.</p>
+</section>
 
-  <section id="authBox" class="card">
-    <h2>🔐 Welcome to KABIYA AI</h2>
-    <p class="muted">Create an account or log in.</p>
+<section id="authBox" class="card">
+  <h2>🔐 Welcome to KABIYA AI</h2>
+  <p class="muted">Log in or create your account.</p>
+  <form id="authForm">
+    <label for="email">Email address</label>
+    <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+    <label for="password">Password</label>
+    <input id="password" type="password" autocomplete="current-password" minlength="6" placeholder="At least 6 characters" required>
+    <button id="loginBtn" type="submit">🔑 Log In</button>
+    <button id="signupBtn" class="secondary" type="button">＋ Create Account</button>
+  </form>
+  <p id="authMessage" role="status" aria-live="polite"></p>
+</section>
 
-    <form id="authForm">
-      <label class="field-label" for="email">Email address</label>
-      <input id="email" type="email" autocomplete="email"
-        placeholder="you@example.com" required>
+<section id="userInfo" class="card userbar">
+  <span id="userEmail"></span>
+  <button id="logoutBtn" class="secondary" type="button">Log out</button>
+</section>
 
-      <label class="field-label" for="password">Password</label>
-      <input id="password" type="password"
-        autocomplete="current-password" minlength="6"
-        placeholder="At least 6 characters" required>
+<section id="coinsBox" class="card coin-card">
+  <div class="coin-icon">🎁</div>
+  <h2>Daily Rewards</h2>
+  <p class="muted">Claim your free daily coins!</p>
+  <div class="coin-number">🪙 <span id="coinBalance">0</span></div>
+  <p class="coin-subtitle">Your available app coins</p>
+  <button id="claimBtn" type="button">🎁 Claim 100 Coins</button>
+  <p id="coinMessage" role="status" aria-live="polite"></p>
+  <p class="coin-subtitle">Daily claim is limited to once every 24 hours.</p>
+</section>
 
-      <button id="loginBtn" type="submit">🔑 Log In</button>
+<section id="generatorBox" class="card">
+  <h2>🎬 AI Video Generator</h2>
+  <p class="muted">Describe the video you want to create.</p>
 
-      <button id="signupBtn" class="secondary" type="button">
-        ＋ Create Account
-      </button>
-    </form>
+  <label for="script">Video prompt</label>
+  <textarea id="script" maxlength="10000" placeholder="A cinematic dragon flying above the Himalayas at sunset..."></textarea>
 
-    <p id="authMessage" role="status" aria-live="polite"></p>
-  </section>
+  <label for="duration">Video duration</label>
+  <select id="duration">
+    <option value="1">1 second</option>
+    <option value="2">2 seconds</option>
+    <option value="3" selected>3 seconds</option>
+  </select>
 
-  <section id="userInfo" class="card userbar">
-    <span id="userEmail"></span>
-    <button id="logoutBtn" class="secondary" type="button">
-      Log out
-    </button>
-  </section>
+  <label for="resolution">Video quality</label>
+  <select id="resolution">
+    <option value="480p">480p</option>
+    <option value="720p" selected>720p</option>
+    <option value="1080p">1080p</option>
+  </select>
 
-  <!-- Daily coins -->
-  <section id="coinsBox" class="card coin-card">
-    <div class="coin-icon">🎁</div>
-    <h2>Daily Rewards</h2>
-    <p class="muted">Claim your free KABIYA AI coins!</p>
+  <label>Aspect ratio</label>
+  <div class="formats">
+    <label><input type="radio" name="ratio" value="9:16" checked> 9:16</label>
+    <label><input type="radio" name="ratio" value="16:9"> 16:9</label>
+    <label><input type="radio" name="ratio" value="1:1"> 1:1</label>
+  </div>
 
-    <div class="coin-number">
-      🪙 <span id="coinBalance">0</span>
-    </div>
-    <div class="coin-subtitle">Your available app coins</div>
+  <div class="notice">
+    Note: App coins are separate from Magic Hour provider credits.
+    Video generation may fail if the provider account lacks credits.
+  </div>
 
-    <button id="claimBtn" type="button">
-      🎁 Claim 100 Coins
-    </button>
+  <button id="generateBtn" type="button">✨ Generate AI Video</button>
+  <p id="status" role="status" aria-live="polite"></p>
+  <video id="videoPlayer" controls playsinline hidden></video>
+</section>
 
-    <p id="coinMessage" role="status" aria-live="polite"></p>
-    <p class="coin-subtitle">
-      One claim every 24 hours. Coins are for KABIYA AI only.
-    </p>
-  </section>
-
-  <section id="generatorBox" class="card">
-    <h2>✍️ Create your video</h2>
-    <p class="muted">Describe the video you want to generate.</p>
-
-    <label class="field-label" for="script">Your video prompt</label>
-    <textarea id="script" maxlength="10000"
-      placeholder="A cinematic robot exploring a glowing purple forest at night..."></textarea>
-
-    <label class="field-label" for="duration">Video duration</label>
-    <select id="duration">
-      <option value="1">1 second</option>
-      <option value="2">2 seconds</option>
-      <option value="3" selected>3 seconds</option>
-    </select>
-
-    <label class="field-label" for="resolution">Video quality</label>
-    <select id="resolution">
-      <option value="480p" selected>480p - Low</option>
-      <option value="720p">720p - Medium</option>
-      <option value="1080p">1080p - High</option>
-    </select>
-
-    <label class="field-label">Video format</label>
-    <div class="formats">
-      <label>
-        <input type="radio" name="ratio" value="9:16" checked>
-        9:16
-      </label>
-      <label>
-        <input type="radio" name="ratio" value="16:9">
-        16:9
-      </label>
-      <label>
-        <input type="radio" name="ratio" value="1:1">
-        1:1
-      </label>
-    </div>
-
-    <div class="notice">
-      ⚠️ Video generation may use provider credits.
-      App coins do not increase your AI provider balance.
-      Check the provider's cost before generating.
-    </div>
-
-    <button id="generateBtn" type="button">
-      ✦ Generate AI Video
-    </button>
-
-    <p id="status" role="status" aria-live="polite"></p>
-    <video id="videoPlayer" controls playsinline hidden></video>
-  </section>
-
-  <footer>
-    KABIYA AI Video Studio<br>
-    Video generation depends on your AI provider and its credit balance.
-  </footer>
+<footer>KABIYA AI Video Studio<br>Powered by your configured AI video service.</footer>
 </main>
 
 <script>
 (() => {
-  "use strict";
+"use strict";
 
-  const $ = id => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-  const SUPABASE_URL =
-    "https://vjpqbtwtxcnelsarvmii.supabase.co";
+const SUPABASE_URL = "https://vjpqbtwtxcnelsarvmii.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
+const BACKEND_URL = "https://ometv4.onrender.com";
 
-  const SUPABASE_KEY =
-    "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
+let supabaseClient;
 
-  const BACKEND_URL = "https://ometv4.onrender.com";
-
-  let client = null;
-
-  function authMessage(message) {
-    $("authMessage").textContent = message;
+function db() {
+  if (!window.supabase) {
+    throw new Error("Supabase library did not load. Refresh the page.");
   }
-
-  function statusMessage(message) {
-    $("status").textContent = message;
+  if (!supabaseClient) {
+    supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
   }
+  return supabaseClient;
+}
 
-  function coinMessage(message) {
-    $("coinMessage").textContent = message;
+function setCoins(coins) {
+  $("coinBalance").textContent = coins;
+  $("headerCoinBalance").textContent = coins;
+  $("headerCoins").style.display = "block";
+}
+
+function showUser(user) {
+  $("authBox").style.display = "none";
+  $("userInfo").style.display = "flex";
+  $("coinsBox").style.display = "block";
+  $("generatorBox").style.display = "block";
+  $("userEmail").textContent = user.email || "Logged in";
+  loadCoins(user.id);
+}
+
+function showLoggedOut() {
+  $("authBox").style.display = "block";
+  $("userInfo").style.display = "none";
+  $("coinsBox").style.display = "none";
+  $("generatorBox").style.display = "none";
+  $("headerCoins").style.display = "none";
+}
+
+async function loadCoins(userId) {
+  $("coinMessage").textContent = "Loading balance...";
+  try {
+    const {data, error} = await db()
+      .from("profiles")
+      .select("coins")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (data) {
+      setCoins(data.coins);
+      $("coinMessage").textContent = "Balance updated.";
+    } else {
+      setCoins(0);
+      $("coinMessage").textContent =
+        "No coin profile yet. Try claiming your daily coins.";
+    }
+  } catch (error) {
+    $("coinMessage").textContent = "Balance error: " + error.message;
   }
+}
 
-  function getClient() {
-    if (!window.supabase) {
-      throw new Error(
-        "Supabase library did not load. Refresh the page."
-      );
+async function claimCoins() {
+  const button = $("claimBtn");
+  button.disabled = true;
+  button.textContent = "Claiming...";
+  $("coinMessage").textContent = "Checking daily reward...";
+
+  try {
+    const {data: sessionData, error: sessionError} =
+      await db().auth.getSession();
+
+    if (sessionError) throw sessionError;
+    if (!sessionData.session) throw new Error("Please log in first.");
+
+    const {data, error} = await db().rpc("claim_daily_coins");
+    if (error) throw error;
+
+    if (data && data.coins !== undefined) {
+      setCoins(data.coins);
     }
 
-    if (!client) {
-      client = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
-    }
+    $("coinMessage").textContent =
+      data && data.message
+        ? data.message
+        : "Claim request completed.";
+  } catch (error) {
+    $("coinMessage").textContent = "Claim error: " + error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = "🎁 Claim 100 Coins";
+  }
+}
 
-    return client;
+async function login(event) {
+  event.preventDefault();
+  const button = $("loginBtn");
+  button.disabled = true;
+  button.textContent = "Logging in...";
+  $("authMessage").textContent = "";
+
+  try {
+    const {data, error} = await db().auth.signInWithPassword({
+      email: $("email").value.trim(),
+      password: $("password").value
+    });
+
+    if (error) throw error;
+    if (!data.user) throw new Error("Login could not be completed.");
+
+    showUser(data.user);
+    $("authMessage").textContent = "";
+  } catch (error) {
+    $("authMessage").textContent = "Login error: " + error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = "🔑 Log In";
+  }
+}
+
+async function signup() {
+  const email = $("email").value.trim();
+  const password = $("password").value;
+  const button = $("signupBtn");
+
+  if (!email || password.length < 6) {
+    $("authMessage").textContent =
+      "Enter your email and a password of at least 6 characters.";
+    return;
   }
 
-  function showUser(user) {
-    $("authBox").style.display = "none";
-    $("userInfo").style.display = "flex";
-    $("coinsBox").style.display = "block";
-    $("generatorBox").style.display = "block";
-    $("userEmail").textContent = user.email || "Logged in";
+  button.disabled = true;
+  button.textContent = "Creating account...";
 
-    loadCoins(user.id);
-  }
+  try {
+    const {data, error} = await db().auth.signUp({email, password});
+    if (error) throw error;
 
-  function showLoggedOut() {
-    $("authBox").style.display = "block";
-    $("userInfo").style.display = "none";
-    $("coinsBox").style.display = "none";
-    $("generatorBox").style.display = "none";
-  }
-
-  async function loadCoins(userId) {
-    coinMessage("Loading your coin balance...");
-
-    try {
-      const { data, error } = await getClient()
-        .from("profiles")
-        .select("coins")
-        .eq("id", userId)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      $("coinBalance").textContent =
-        data ? data.coins : 0;
-
-      coinMessage(
-        data
-          ? "Your coin balance is up to date."
-          : "Claim your first 100 coins below!"
-      );
-
-    } catch (error) {
-      console.error("Coin balance error:", error);
-      coinMessage(
-        "Could not load coins. Please refresh and try again."
-      );
-    }
-  }
-
-  async function claimCoins() {
-    const button = $("claimBtn");
-
-    button.disabled = true;
-    button.textContent = "Claiming...";
-    coinMessage("Checking your daily reward...");
-
-    try {
-      const { data: sessionData, error: sessionError } =
-        await getClient().auth.getSession();
-
-      if (sessionError) throw sessionError;
-
-      const user = sessionData.session?.user;
-
-      if (!user) {
-        throw new Error("Please log in first.");
-      }
-
-      const { data, error } = await getClient()
-        .rpc("claim_daily_coins");
-
-      if (error) throw error;
-
-      if (data && data.success) {
-        $("coinBalance").textContent = data.coins;
-        coinMessage("🎉 " + data.message);
-      } else {
-        if (data && data.coins !== undefined) {
-          $("coinBalance").textContent = data.coins;
-        }
-
-        coinMessage(
-          data?.message || "Unable to claim coins right now."
-        );
-      }
-
-    } catch (error) {
-      console.error("Claim coins error:", error);
-      coinMessage("Claim error: " + error.message);
-    } finally {
-      button.disabled = false;
-      button.textContent = "🎁 Claim 100 Coins";
-    }
-  }
-
-  async function login(event) {
-    event.preventDefault();
-
-    const button = $("loginBtn");
-    const email = $("email").value.trim();
-    const password = $("password").value;
-
-    if (!email || !password) {
-      authMessage("Please enter your email and password.");
-      return;
-    }
-
-    button.disabled = true;
-    button.textContent = "Logging in...";
-    authMessage("Connecting to KABIYA AI...");
-
-    try {
-      const { data, error } = await getClient().auth
-        .signInWithPassword({ email, password });
-
-      if (error) throw error;
-      if (!data.user) {
-        throw new Error("Please try logging in again.");
-      }
-
+    if (data.session && data.user) {
       showUser(data.user);
-      authMessage("");
-      statusMessage("Welcome back to KABIYA AI!");
-
-    } catch (error) {
-      console.error("Login error:", error);
-      authMessage("Login error: " + error.message);
-    } finally {
-      button.disabled = false;
-      button.textContent = "🔑 Log In";
+      $("authMessage").textContent = "Account created successfully!";
+    } else {
+      $("authMessage").textContent =
+        "Account request sent. Check your email if verification is required, then log in.";
     }
+  } catch (error) {
+    $("authMessage").textContent = "Signup error: " + error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = "＋ Create Account";
+  }
+}
+
+async function logout() {
+  try {
+    const {error} = await db().auth.signOut();
+    if (error) throw error;
+    showLoggedOut();
+    $("status").textContent = "";
+    $("authMessage").textContent = "You have logged out.";
+  } catch (error) {
+    $("status").textContent = "Logout error: " + error.message;
+  }
+}
+
+async function generateVideo() {
+  const prompt = $("script").value.trim();
+  if (!prompt) {
+    $("status").textContent = "Please enter a video prompt first.";
+    return;
   }
 
-  async function signup() {
-    const button = $("signupBtn");
-    const email = $("email").value.trim();
-    const password = $("password").value;
+  const button = $("generateBtn");
+  const player = $("videoPlayer");
 
-    if (!email || password.length < 6) {
-      authMessage(
-        "Enter a valid email and password of at least 6 characters."
+  button.disabled = true;
+  button.textContent = "Generating...";
+  $("status").textContent = "Connecting to the video service...";
+  player.hidden = true;
+  player.removeAttribute("src");
+
+  try {
+    const {data: sessionData, error: sessionError} =
+      await db().auth.getSession();
+
+    if (sessionError) throw sessionError;
+    if (!sessionData.session) throw new Error("Please log in again.");
+
+    const ratio = document.querySelector(
+      'input[name="ratio"]:checked'
+    ).value;
+
+    const response = await fetch(BACKEND_URL + "/api/generate-video", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + sessionData.session.access_token
+      },
+      body: JSON.stringify({
+        script: prompt,
+        aspectRatio: ratio,
+        duration: Number($("duration").value),
+        resolution: $("resolution").value
+      })
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(
+        result.message || result.error ||
+        ("Video service returned HTTP " + response.status)
       );
-      return;
     }
 
-    button.disabled = true;
-    button.textContent = "Creating account...";
-    authMessage("Creating your account...");
+    const videoUrl =
+      result.videoUrl ||
+      result.video_url ||
+      result.url ||
+      (result.data && (
+        result.data.videoUrl ||
+        result.data.video_url ||
+        result.data.url
+      )) ||
+      (result.result && (
+        result.result.videoUrl ||
+        result.result.video_url ||
+        result.result.url
+      ));
 
-    try {
-      const { data, error } = await getClient().auth
-        .signUp({ email, password });
-
-      if (error) throw error;
-
-      if (data.session && data.user) {
-        showUser(data.user);
-        authMessage("");
-        statusMessage("Account created. Welcome!");
-      } else {
-        authMessage(
-          "Check your email for verification, then log in."
-        );
-      }
-
-    } catch (error) {
-      console.error("Signup error:", error);
-      authMessage("Sign-up error: " + error.message);
-    } finally {
-      button.disabled = false;
-      button.textContent = "＋ Create Account";
+    if (videoUrl && typeof videoUrl === "string") {
+      player.src = videoUrl;
+      player.hidden = false;
+      player.load();
+      $("status").textContent = "Video received! Press play to watch.";
+    } else {
+      $("status").textContent =
+        result.message ||
+        result.status ||
+        "Request received, but no video URL was returned. Check the backend response and generation status.";
     }
+  } catch (error) {
+    $("status").textContent = "Generation error: " + error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = "✨ Generate AI Video";
   }
+}
 
-  async function logout() {
-    try {
-      const { error } = await getClient().auth.signOut();
-      if (error) throw error;
+$("authForm").addEventListener("submit", login);
+$("signupBtn").addEventListener("click", signup);
+$("logoutBtn").addEventListener("click", logout);
+$("claimBtn").addEventListener("click", claimCoins);
+$("generateBtn").addEventListener("click", generateVideo);
 
+async function init() {
+  try {
+    const {data, error} = await db().auth.getSession();
+    if (error) throw error;
+
+    if (data.session && data.session.user) {
+      showUser(data.session.user);
+    } else {
       showLoggedOut();
-      authMessage("You have logged out.");
-      statusMessage("");
-      coinMessage("");
-      $("script").value = "";
-      $("videoPlayer").hidden = true;
-      $("videoPlayer").removeAttribute("src");
-
-    } catch (error) {
-      statusMessage("Logout error: " + error.message);
     }
-  }
 
-  async function checkSession() {
-    try {
-      const { data, error } =
-        await getClient().auth.getSession();
-
-      if (error) throw error;
-
-      if (data.session && data.session.user) {
-        showUser(data.session.user);
+    db().auth.onAuthStateChange((_event, session) => {
+      if (session && session.user) {
+        showUser(session.user);
       } else {
         showLoggedOut();
       }
-
-    } catch (error) {
-      console.error("Session error:", error);
-      showLoggedOut();
-      authMessage(
-        "Could not connect to login service. Check your internet and refresh."
-      );
-    }
+    });
+  } catch (error) {
+    showLoggedOut();
+    $("authMessage").textContent =
+      "Connection error: " + error.message;
   }
+}
 
-  async function generateVideo() {
-    const prompt = $("script").value.trim();
-
-    if (!prompt) {
-      statusMessage("Please write your video prompt first.");
-      return;
-    }
-
-    const button = $("generateBtn");
-    const player = $("videoPlayer");
-
-    button.disabled = true;
-    button.textContent = "Sending request...";
-    statusMessage("Contacting AI video service...");
-
-    player.hidden = true;
-    player.removeAttribute("src");
-
-    try {
-      const { data, error } =
-        await getClient().auth.getSession();
-
-      if (error) throw error;
-
-      if (!data.session) {
-        throw new Error("Please log in again.");
-      }
-
-      const ratio = document.querySelector(
-        'input[name="ratio"]:checked'
-      ).value;
-
-      const duration = Number($("duration").value);
-      const resolution = $("resolution").value;
-
-      const response = await fetch(
-        BACKEND_URL + "/api/generate-video",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization":
-              "Bearer " + data.session.access_token
-          },
-          body: JSON.stringify({
-            script: prompt,
-            aspectRatio: ratio,
-            duration: duration,
-            resolution: resolution
-          })
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(
-          result.error || "Video generation failed."
-        );
-      }
-
-      const video = result.data || {};
-      const url =
-        video.video_url ||
-        video.videoUrl ||
-        video.url ||
-        video.video?.url ||
-        video.output?.url;
-
-      if (url) {
-        player.src = url;
-        player.hidden = false;
-        statusMessage("Video URL received.");
-      } else {
-        statusMessage(
-          "Request accepted. The backend may need to check the job status before the video is ready."
-        );
-      }
-
-    } catch (error) {
-      console.error("Generation error:", error);
-      statusMessage("Video error: " + error.message);
-    } finally {
-      button.disabled = false;
-      button.textContent = "✦ Generate AI Video";
-    }
-  }
-
-  $("authForm").addEventListener("submit", login);
-  $("signupBtn").addEventListener("click", signup);
-  $("logoutBtn").addEventListener("click", logout);
-  $("claimBtn").addEventListener("click", claimCoins);
-  $("generateBtn").addEventListener("click", generateVideo);
-
-  checkSession();
+init();
 })();
 </script>
 </body>
