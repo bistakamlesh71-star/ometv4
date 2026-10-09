@@ -559,13 +559,22 @@ async function generateVideo() {
     }
 
 
-    generatedVideoUrl =
-      result.videoUrl.startsWith("http")
+    const videoData = result.data;
 
-        ? result.videoUrl
+console.log("Magic Hour response:", videoData);
 
-        : `${BACKEND_URL}${result.videoUrl}`;
+generatedVideoUrl =
+  videoData?.video_url ||
+  videoData?.videoUrl ||
+  videoData?.url ||
+  videoData?.video?.url ||
+  "";
 
+if (!generatedVideoUrl) {
+  throw new Error(
+    "Video URL not found. API response check garnu parcha."
+  );
+}
 
     player.src =
       generatedVideoUrl;
