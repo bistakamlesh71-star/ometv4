@@ -57,7 +57,6 @@
 
     h1 { font-size: 21px; margin: 0; }
     header small { color: #c084fc; letter-spacing: 3px; }
-
     .hero { text-align: center; margin-bottom: 28px; }
 
     .hero h2 {
@@ -98,15 +97,8 @@
       font: inherit;
     }
 
-    select option {
-      background: #0d0a16;
-      color: white;
-    }
-
-    textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
+    select option { background: #0d0a16; color: white; }
+    textarea { min-height: 120px; resize: vertical; }
 
     button {
       width: 100%;
@@ -126,18 +118,15 @@
       border: 1px solid var(--border);
     }
 
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
+    button:disabled { opacity: .6; cursor: not-allowed; }
 
-    #authMessage, #status {
+    #authMessage, #status, #coinMessage {
       font-size: 13px;
       line-height: 1.7;
       overflow-wrap: anywhere;
     }
 
-    #generatorBox, #userInfo { display: none; }
+    #generatorBox, #userInfo, #coinsBox { display: none; }
 
     .userbar {
       display: flex;
@@ -148,6 +137,24 @@
     }
 
     .userbar button { width: auto; }
+
+    .coin-card {
+      text-align: center;
+      background:
+        radial-gradient(ellipse at top, #422064, transparent 70%),
+        rgba(20,16,32,.95);
+    }
+
+    .coin-icon { font-size: 38px; }
+
+    .coin-number {
+      color: #f0abfc;
+      font-size: 36px;
+      font-weight: 900;
+      margin: 8px 0;
+    }
+
+    .coin-subtitle { color: var(--muted); font-size: 13px; }
 
     .formats {
       display: grid;
@@ -246,11 +253,30 @@
     </button>
   </section>
 
+  <!-- Daily coins -->
+  <section id="coinsBox" class="card coin-card">
+    <div class="coin-icon">🎁</div>
+    <h2>Daily Rewards</h2>
+    <p class="muted">Claim your free KABIYA AI coins!</p>
+
+    <div class="coin-number">
+      🪙 <span id="coinBalance">0</span>
+    </div>
+    <div class="coin-subtitle">Your available app coins</div>
+
+    <button id="claimBtn" type="button">
+      🎁 Claim 100 Coins
+    </button>
+
+    <p id="coinMessage" role="status" aria-live="polite"></p>
+    <p class="coin-subtitle">
+      One claim every 24 hours. Coins are for KABIYA AI only.
+    </p>
+  </section>
+
   <section id="generatorBox" class="card">
     <h2>✍️ Create your video</h2>
-    <p class="muted">
-      Describe the video you want to generate.
-    </p>
+    <p class="muted">Describe the video you want to generate.</p>
 
     <label class="field-label" for="script">Your video prompt</label>
     <textarea id="script" maxlength="10000"
@@ -287,9 +313,9 @@
     </div>
 
     <div class="notice">
-      ⚠️ Video generation may use credits. Confirm the provider's
-      cost before generating. Quality and duration options depend
-      on the connected AI model.
+      ⚠️ Video generation may use provider credits.
+      App coins do not increase your AI provider balance.
+      Check the provider's cost before generating.
     </div>
 
     <button id="generateBtn" type="button">
@@ -302,7 +328,7 @@
 
   <footer>
     KABIYA AI Video Studio<br>
-    Generation depends on your AI provider, model and credit balance.
+    Video generation depends on your AI provider and its credit balance.
   </footer>
 </main>
 
@@ -316,7 +342,7 @@
     "https://vjpqbtwtxcnelsarvmii.supabase.co";
 
   const SUPABASE_KEY =
-    "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
+    "sb_publishable_Aoh425dW4LlhYp7ZTGQP3g_DadKML33";
 
   const BACKEND_URL = "https://ometv4.onrender.com";
 
@@ -330,17 +356,8 @@
     $("status").textContent = message;
   }
 
-  function showUser(user) {
-    $("authBox").style.display = "none";
-    $("userInfo").style.display = "flex";
-    $("generatorBox").style.display = "block";
-    $("userEmail").textContent = user.email || "Logged in";
-  }
-
-  function showLoggedOut() {
-    $("authBox").style.display = "block";
-    $("userInfo").style.display = "none";
-    $("generatorBox").style.display = "none";
+  function coinMessage(message) {
+    $("coinMessage").textContent = message;
   }
 
   function getClient() {
@@ -358,6 +375,98 @@
     }
 
     return client;
+  }
+
+  function showUser(user) {
+    $("authBox").style.display = "none";
+    $("userInfo").style.display = "flex";
+    $("coinsBox").style.display = "block";
+    $("generatorBox").style.display = "block";
+    $("userEmail").textContent = user.email || "Logged in";
+
+    loadCoins(user.id);
+  }
+
+  function showLoggedOut() {
+    $("authBox").style.display = "block";
+    $("userInfo").style.display = "none";
+    $("coinsBox").style.display = "none";
+    $("generatorBox").style.display = "none";
+  }
+
+  async function loadCoins(userId) {
+    coinMessage("Loading your coin balance...");
+
+    try {
+      const { data, error } = await getClient()
+        .from("profiles")
+        .select("coins")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      $("coinBalance").textContent =
+        data ? data.coins : 0;
+
+      coinMessage(
+        data
+          ? "Your coin balance is up to date."
+          : "Claim your first 100 coins below!"
+      );
+
+    } catch (error) {
+      console.error("Coin balance error:", error);
+      coinMessage(
+        "Could not load coins. Please refresh and try again."
+      );
+    }
+  }
+
+  async function claimCoins() {
+    const button = $("claimBtn");
+
+    button.disabled = true;
+    button.textContent = "Claiming...";
+    coinMessage("Checking your daily reward...");
+
+    try {
+      const { data: sessionData, error: sessionError } =
+        await getClient().auth.getSession();
+
+      if (sessionError) throw sessionError;
+
+      const user = sessionData.session?.user;
+
+      if (!user) {
+        throw new Error("Please log in first.");
+      }
+
+      const { data, error } = await getClient()
+        .rpc("claim_daily_coins");
+
+      if (error) throw error;
+
+      if (data && data.success) {
+        $("coinBalance").textContent = data.coins;
+        coinMessage("🎉 " + data.message);
+      } else {
+        if (data && data.coins !== undefined) {
+          $("coinBalance").textContent = data.coins;
+        }
+
+        coinMessage(
+          data?.message || "Unable to claim coins right now."
+        );
+      }
+
+    } catch (error) {
+      console.error("Claim coins error:", error);
+      coinMessage("Claim error: " + error.message);
+    } finally {
+      button.disabled = false;
+      button.textContent = "🎁 Claim 100 Coins";
+    }
   }
 
   async function login(event) {
@@ -381,7 +490,9 @@
         .signInWithPassword({ email, password });
 
       if (error) throw error;
-      if (!data.user) throw new Error("Please try logging in again.");
+      if (!data.user) {
+        throw new Error("Please try logging in again.");
+      }
 
       showUser(data.user);
       authMessage("");
@@ -427,6 +538,7 @@
           "Check your email for verification, then log in."
         );
       }
+
     } catch (error) {
       console.error("Signup error:", error);
       authMessage("Sign-up error: " + error.message);
@@ -444,9 +556,11 @@
       showLoggedOut();
       authMessage("You have logged out.");
       statusMessage("");
+      coinMessage("");
       $("script").value = "";
       $("videoPlayer").hidden = true;
       $("videoPlayer").removeAttribute("src");
+
     } catch (error) {
       statusMessage("Logout error: " + error.message);
     }
@@ -454,7 +568,9 @@
 
   async function checkSession() {
     try {
-      const { data, error } = await getClient().auth.getSession();
+      const { data, error } =
+        await getClient().auth.getSession();
+
       if (error) throw error;
 
       if (data.session && data.session.user) {
@@ -462,6 +578,7 @@
       } else {
         showLoggedOut();
       }
+
     } catch (error) {
       console.error("Session error:", error);
       showLoggedOut();
@@ -490,7 +607,9 @@
     player.removeAttribute("src");
 
     try {
-      const { data, error } = await getClient().auth.getSession();
+      const { data, error } =
+        await getClient().auth.getSession();
+
       if (error) throw error;
 
       if (!data.session) {
@@ -504,8 +623,6 @@
       const duration = Number($("duration").value);
       const resolution = $("resolution").value;
 
-      // This submits the selected settings to your backend.
-      // The provider must support the selected values.
       const response = await fetch(
         BACKEND_URL + "/api/generate-video",
         {
@@ -562,6 +679,7 @@
   $("authForm").addEventListener("submit", login);
   $("signupBtn").addEventListener("click", signup);
   $("logoutBtn").addEventListener("click", logout);
+  $("claimBtn").addEventListener("click", claimCoins);
   $("generateBtn").addEventListener("click", generateVideo);
 
   checkSession();
