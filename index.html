@@ -4,315 +4,232 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#090b16">
-<title>NEPAL X ESPORTS | Gaming Hub</title>
+<meta name="theme-color" content="#080b14">
+<title>NEPAL X ESPORTS</title>
 
 <style>
-:root {
-  --bg: #090b16;
-  --panel: #121629;
-  --purple: #8b5cf6;
-  --cyan: #22d3ee;
-  --text: #f4f5ff;
-  --muted: #a6abc4;
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+ margin:0;background:#080b14;color:#f5f7ff;
+ font-family:Arial,sans-serif
 }
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, sans-serif;
+header{
+ position:sticky;top:0;z-index:10;
+ display:flex;justify-content:space-between;
+ align-items:center;gap:12px;flex-wrap:wrap;
+ padding:16px 5%;background:#0c1020;
+ border-bottom:1px solid #252b42
 }
-header {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  background: #090b16ed;
-  border-bottom: 1px solid #262b43;
-  padding: 14px 5%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+.logo{font-size:19px;font-weight:900}
+.logo span{color:#22d3ee}
+nav{display:flex;gap:15px;flex-wrap:wrap}
+nav a{color:#d1d5e8;text-decoration:none;font-size:13px}
+nav a:hover{color:#22d3ee}
+button,.btn{
+ display:inline-block;padding:12px 17px;
+ background:linear-gradient(100deg,#8b5cf6,#4f46e5);
+ border:0;border-radius:9px;color:white;
+ font-weight:bold;text-decoration:none;cursor:pointer
 }
-.logo { font-weight: 900; font-size: 17px; }
-.logo span { color: var(--cyan); }
-nav { display: flex; gap: 16px; }
-nav a {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 13px;
+.hero{
+ padding:75px 6%;text-align:center;
+ background:radial-gradient(ellipse at top,#43228b77,transparent 70%)
 }
-nav a:hover { color: var(--cyan); }
-button, .btn {
-  background: linear-gradient(100deg,var(--purple),#5544ec);
-  border: 0;
-  color: white;
-  padding: 12px 17px;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
+.tag{
+ display:inline-block;padding:8px 13px;border-radius:25px;
+ border:1px solid #22d3ee;color:#22d3ee;font-size:12px
 }
-button:hover, .btn:hover { opacity: .88; }
-.hero {
-  padding: 75px 6% 65px;
-  text-align: center;
-  background:
-    radial-gradient(ellipse at 50% 0%,#5932a655,transparent 60%);
+h1{font-size:clamp(38px,8vw,66px);line-height:1.08}
+h1 span{color:#22d3ee}
+.hero p{max-width:550px;margin:0 auto 25px}
+p{line-height:1.7;color:#aeb6d0}
+section{padding:42px 6%}
+h2{font-size:28px;margin-bottom:8px}
+.grid{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:16px;margin-top:24px
 }
-.tag {
-  display: inline-block;
-  color: var(--cyan);
-  border: 1px solid #22d3ee66;
-  background: #22d3ee10;
-  border-radius: 30px;
-  padding: 8px 13px;
-  font-size: 12px;
+.card{
+ padding:21px;background:#12182a;
+ border:1px solid #29314b;border-radius:15px
 }
-h1 {
-  font-size: clamp(36px,8vw,66px);
-  line-height: 1.05;
-  margin: 22px 0 15px;
+.emoji{font-size:36px}
+.card h3{margin:12px 0 6px}
+.small{
+ display:inline-block;padding:6px 10px;
+ border-radius:20px;background:#34255d;color:#d8c9ff;
+ font-size:12px
 }
-h1 span {
-  background: linear-gradient(90deg,var(--cyan),#b69aff);
-  -webkit-background-clip: text;
-  color: transparent;
+form{display:grid;gap:14px}
+label{color:#bdc5dd;font-size:14px}
+.field{display:grid;gap:7px}
+input,select,textarea{
+ width:100%;padding:13px;border-radius:9px;
+ border:1px solid #343d59;background:#090e1d;
+ color:white;font-size:15px
 }
-.hero p {
-  color: var(--muted);
-  max-width: 550px;
-  margin: 0 auto 25px;
-  line-height: 1.7;
+#message{color:#67e8f9}
+.notice{font-size:12px;color:#facc15}
+footer{
+ padding:25px;text-align:center;
+ border-top:1px solid #252b42;color:#9ca3bf
 }
-section { padding: 45px 6%; }
-.section-title { font-size: 28px; margin: 0 0 8px; }
-.subtitle { color: var(--muted); margin-bottom: 25px; }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3,minmax(0,1fr));
-  gap: 16px;
-}
-.card {
-  background: var(--panel);
-  border: 1px solid #292e49;
-  border-radius: 16px;
-  padding: 20px;
-}
-.game-icon { font-size: 36px; margin-bottom: 12px; }
-.card h3 { margin: 5px 0 10px; }
-.card p {
-  color: var(--muted);
-  line-height: 1.6;
-  font-size: 14px;
-}
-.pill {
-  display: inline-block;
-  background: #8b5cf622;
-  color: #c4b5fd;
-  border-radius: 20px;
-  padding: 6px 10px;
-  font-size: 12px;
-  margin-bottom: 10px;
-}
-form { display: grid; gap: 13px; }
-input, select, textarea {
-  width: 100%;
-  padding: 13px;
-  border-radius: 9px;
-  border: 1px solid #343954;
-  background: #0b0e1d;
-  color: white;
-  font-size: 15px;
-}
-label { font-size: 13px; color: var(--muted); }
-.field { display: grid; gap: 7px; }
-.notice {
-  color: #fcd34d;
-  font-size: 12px;
-  line-height: 1.6;
-}
-#message { color: var(--cyan); line-height: 1.6; }
-footer {
-  border-top: 1px solid #262b43;
-  padding: 25px 6%;
-  text-align: center;
-  color: var(--muted);
-  font-size: 13px;
-}
-@media(max-width:650px) {
-  header { flex-wrap: wrap; }
-  nav { order: 3; width: 100%; justify-content: space-between; }
-  nav a { font-size: 12px; }
-  header .btn { padding: 10px 12px; font-size: 12px; }
-  .hero { padding: 55px 5% 45px; }
-  section { padding: 35px 5%; }
-  .grid { grid-template-columns: 1fr; }
+@media(max-width:650px){
+ header{padding:14px 4%}
+ nav{width:100%;justify-content:space-between;gap:8px}
+ nav a{font-size:12px}
+ .grid{grid-template-columns:1fr}
+ .hero{padding:55px 5%}
+ section{padding:32px 5%}
 }
 </style>
 </head>
 
 <body>
 <header>
-  <div class="logo">NEPAL X <span>ESPORTS</span></div>
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#games">Games</a>
-    <a href="#tournaments">Tournaments</a>
-    <a href="#teams">Teams</a>
-  </nav>
-  <a class="btn" href="#register">Join Now</a>
+ <div class="logo">NEPAL X <span>ESPORTS</span></div>
+ <nav>
+  <a href="#home">Home</a>
+  <a href="#games">Games</a>
+  <a href="#tournaments">Tournament</a>
+  <a href="#teams">Teams</a>
+ </nav>
+ <a class="btn" href="#join">Join Us</a>
 </header>
 
 <main>
-  <section class="hero" id="home">
-    <div class="tag">🇳🇵 NEPAL GAMING COMMUNITY</div>
-    <h1>PLAY TOGETHER.<br><span>RISE TOGETHER.</span></h1>
-    <p>
-      Welcome to NEPAL X ESPORTS Gaming Hub.
-      Discover tournaments, meet your team and
-      become part of our gaming community.
-    </p>
-    <a class="btn" href="#tournaments">Explore Tournaments</a>
-  </section>
+<section class="hero" id="home">
+ <div class="tag">🇳🇵 NEPAL GAMING COMMUNITY</div>
+ <h1>PLAY TOGETHER<br><span>RISE TOGETHER</span></h1>
+ <p>Welcome to NEPAL X ESPORTS. Join our gaming community,
+ discover tournaments and connect with players across Nepal.</p>
+ <a class="btn" href="#tournaments">Explore Tournaments</a>
+</section>
 
-  <section id="games">
-    <h2 class="section-title">🎮 Our Games</h2>
-    <p class="subtitle">Choose your battlefield.</p>
-    <div class="grid">
-      <article class="card">
-        <div class="game-icon">🔥</div>
-        <h3>Free Fire</h3>
-        <p>Squad up, practise your skills and join community events.</p>
-        <span class="pill">Mobile Gaming</span>
-      </article>
-      <article class="card">
-        <div class="game-icon">🎯</div>
-        <h3>PUBG Mobile</h3>
-        <p>Build teamwork and compete in friendly community matches.</p>
-        <span class="pill">Battle Royale</span>
-      </article>
-      <article class="card">
-        <div class="game-icon">⚡</div>
-        <h3>More Games</h3>
-        <p>More gaming categories can be added as the community grows.</p>
-        <span class="pill">Coming Soon</span>
-      </article>
-    </div>
-  </section>
+<section id="games">
+ <h2>🎮 Our Games</h2>
+ <p>Choose your game and join the community.</p>
+ <div class="grid">
+  <div class="card">
+   <div class="emoji">🔥</div>
+   <h3>Free Fire</h3>
+   <p>Squad matches, custom rooms and esports events.</p>
+   <span class="small">Mobile Gaming</span>
+  </div>
+  <div class="card">
+   <div class="emoji">🎯</div>
+   <h3>PUBG Mobile</h3>
+   <p>Team up with friends and take on new challenges.</p>
+   <span class="small">Battle Royale</span>
+  </div>
+  <div class="card">
+   <div class="emoji">⚡</div>
+   <h3>Community Games</h3>
+   <p>More games and events coming soon.</p>
+   <span class="small">Coming Soon</span>
+  </div>
+ </div>
+</section>
 
-  <section id="tournaments">
-    <h2 class="section-title">🏆 Tournaments</h2>
-    <p class="subtitle">Check event details before registering.</p>
-    <div class="grid">
-      <article class="card">
-        <span class="pill">Community Event</span>
-        <h3>Free Fire Squad Match</h3>
-        <p>Mode: Squad<br>Entry fee: To be announced<br>Schedule: To be announced</p>
-        <a class="btn" href="#register">Register Interest</a>
-      </article>
-      <article class="card">
-        <span class="pill">Coming Soon</span>
-        <h3>2v2 Challenge</h3>
-        <p>Find a teammate and get ready for a friendly competition.</p>
-        <a class="btn" href="#register">Register Interest</a>
-      </article>
-      <article class="card">
-        <span class="pill">Updates</span>
-        <h3>New Events</h3>
-        <p>Tournament dates, rules and prizes will be announced here.</p>
-        <a class="btn" href="#register">Get Involved</a>
-      </article>
-    </div>
-  </section>
+<section id="tournaments">
+ <h2>🏆 Tournaments</h2>
+ <p>Event details will be announced by the organizers.</p>
+ <div class="grid">
+  <div class="card">
+   <span class="small">Free Fire</span>
+   <h3>Squad Tournament</h3>
+   <p>Mode: Squad<br>Date: To be announced<br>
+   Entry fee: To be announced</p>
+   <a class="btn" href="#join">Register Interest</a>
+  </div>
+  <div class="card">
+   <span class="small">Challenge</span>
+   <h3>2v2 Match</h3>
+   <p>Find a teammate and prepare for a friendly match.</p>
+   <a class="btn" href="#join">Join</a>
+  </div>
+  <div class="card">
+   <span class="small">Updates</span>
+   <h3>Upcoming Events</h3>
+   <p>Check back for future community tournaments.</p>
+   <a class="btn" href="#join">Get Started</a>
+  </div>
+ </div>
+</section>
 
-  <section id="teams">
-    <h2 class="section-title">👥 Our Teams</h2>
-    <p class="subtitle">Team information can be updated by the website owner.</p>
-    <div class="grid">
-      <article class="card">
-        <div class="game-icon">🛡️</div>
-        <h3>NEPAL X ESPORTS ONE</h3>
-        <p>Team roster and leader details coming soon.</p>
-      </article>
-      <article class="card">
-        <div class="game-icon">⚔️</div>
-        <h3>NEPAL X ESPORTS TWO</h3>
-        <p>Team roster and leader details coming soon.</p>
-      </article>
-      <article class="card">
-        <div class="game-icon">🌟</div>
-        <h3>Join Our Community</h3>
-        <p>Send your interest using the registration form below.</p>
-        <a class="btn" href="#register">Join</a>
-      </article>
-    </div>
-  </section>
+<section id="teams">
+ <h2>👥 Our Teams</h2>
+ <p>Represent your team and grow together.</p>
+ <div class="grid">
+  <div class="card">
+   <div class="emoji">🛡️</div>
+   <h3>NEPAL X ESPORTS ONE</h3>
+   <p>Team roster coming soon.</p>
+  </div>
+  <div class="card">
+   <div class="emoji">⚔️</div>
+   <h3>NEPAL X ESPORTS TWO</h3>
+   <p>Team roster coming soon.</p>
+  </div>
+  <div class="card">
+   <div class="emoji">🌟</div>
+   <h3>New Players</h3>
+   <p>Interested in joining? Submit the form below.</p>
+   <a class="btn" href="#join">Join Team</a>
+  </div>
+ </div>
+</section>
 
-  <section id="register">
-    <h2 class="section-title">📝 Player Registration</h2>
-    <p class="subtitle">Enter your details to try the demo form.</p>
-    <div class="card">
-      <form id="joinForm">
-        <div class="field">
-          <label for="player">Player name</label>
-          <input id="player" maxlength="40" required
-                 placeholder="Enter your gaming name">
-        </div>
-        <div class="field">
-          <label for="game">Choose game</label>
-          <select id="game" required>
-            <option value="">Select a game</option>
-            <option>Free Fire</option>
-            <option>PUBG Mobile</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="team">Team name (optional)</label>
-          <input id="team" maxlength="40" placeholder="Your team name">
-        </div>
-        <button type="submit">Submit Demo Registration</button>
-        <p id="message" aria-live="polite"></p>
-        <p class="notice">
-          Demo only: this form does not send or save your registration
-          to the website owner. Do not enter passwords, OTPs or private
-          account details.
-        </p>
-      </form>
-    </div>
-  </section>
+<section id="join">
+ <h2>📝 Player Registration</h2>
+ <p>Enter your gaming name and preferred game.</p>
+ <div class="card">
+  <form id="joinForm">
+   <div class="field">
+    <label for="player">Gaming Name *</label>
+    <input id="player" maxlength="40" required
+    placeholder="Enter your gaming name">
+   </div>
+   <div class="field">
+    <label for="game">Select Game *</label>
+    <select id="game" required>
+     <option value="">Choose game</option>
+     <option>Free Fire</option>
+     <option>PUBG Mobile</option>
+     <option>Other</option>
+    </select>
+   </div>
+   <div class="field">
+    <label for="team">Team Name (optional)</label>
+    <input id="team" maxlength="40" placeholder="Your team name">
+   </div>
+   <button type="submit">Submit Registration</button>
+   <p id="message" aria-live="polite"></p>
+   <p class="notice">Demo form only: details are not saved or sent
+   to the organizer yet. Never enter your password or OTP.</p>
+  </form>
+ </div>
+</section>
 </main>
 
 <footer>
-  <p>© <span id="year"></span> NEPAL X ESPORTS</p>
-  <p>Built for the gaming community 🇳🇵</p>
+ <p>© <span id="year"></span> NEPAL X ESPORTS 🇳🇵</p>
+ Gaming Community Website
 </footer>
 
 <script>
 document.getElementById("year").textContent =
-  new Date().getFullYear();
+ new Date().getFullYear();
 
-document.getElementById("joinForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  const player = document.getElementById("player").value.trim();
-  const game = document.getElementById("game").value;
-
-  if (!player || !game) {
-    document.getElementById("message").textContent =
-      "Please complete the required fields.";
-    return;
-  }
-
-  document.getElementById("message").textContent =
-    "Demo successful, " + player +
-    "! This is only a preview. Your details have not been sent or saved.";
-
-  this.reset();
+document.getElementById("joinForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ const player=document.getElementById("player").value.trim();
+ const game=document.getElementById("game").value;
+ if(!player||!game)return;
+ document.getElementById("message").textContent=
+ "Welcome "+player+"! Demo registration complete. Your details have not been saved.";
+ this.reset();
 });
 </script>
 </body>
