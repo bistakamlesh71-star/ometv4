@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors");
 
@@ -11,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) => {
   res.json({
     status: "online",
-    message: "AI Video Backend is running"
+    message: "KABIYA AI Backend is running"
   });
 });
 
@@ -19,7 +20,9 @@ app.post("/api/generate-video", async (req, res) => {
   try {
     const {
       script,
-      aspectRatio = "9:16"
+      aspectRatio = "9:16",
+      duration = 1,
+      resolution = "480p"
     } = req.body;
 
     if (typeof script !== "string" || !script.trim()) {
@@ -39,11 +42,27 @@ app.post("/api/generate-video", async (req, res) => {
     }
 
     const allowedRatios = ["9:16", "16:9", "1:1"];
+    const allowedResolutions = ["480p", "720p", "1080p"];
+    const allowedDurations = [1, 2, 3];
 
     if (!allowedRatios.includes(aspectRatio)) {
       return res.status(400).json({
         success: false,
         error: "Invalid aspect ratio"
+      });
+    }
+
+    if (!allowedResolutions.includes(resolution)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid resolution"
+      });
+    }
+
+    if (!allowedDurations.includes(Number(duration))) {
+      return res.status(400).json({
+        success: false,
+        error: "Choose 1, 2, or 3 seconds"
       });
     }
 
@@ -56,11 +75,11 @@ app.post("/api/generate-video", async (req, res) => {
           "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          name: "AI Video Generator",
-          end_seconds: 3,
+          name: "KABIYA AI Video",
+          end_seconds: Number(duration),
           aspect_ratio: aspectRatio,
           model: "ltx-2.5",
-          resolution: "480p",
+          resolution,
           audio: false,
           style: {
             prompt: script.trim()
@@ -100,5 +119,5 @@ app.post("/api/generate-video", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`AI Video Backend is running on port ${PORT}`);
+  console.log(`KABIYA AI Backend running on port ${PORT}`);
 });
