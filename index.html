@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090711">
-  <title>NOVA AI | Video Studio</title>
+  <title>KABIYA AI | Video Studio</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -13,7 +13,6 @@
     :root {
       --bg: #090711;
       --panel: #141020;
-      --panel2: #1b142a;
       --purple: #a855f7;
       --pink: #ec4899;
       --text: #f8f5ff;
@@ -205,12 +204,6 @@
       margin-top: 10px;
     }
 
-    .two-columns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 11px;
-    }
-
     .format-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -361,7 +354,6 @@
       .card { padding: 16px; }
       .brand { font-size: 16px; }
       .online { font-size: 10px; }
-      .two-columns { grid-template-columns: 1fr; gap: 0; }
     }
   </style>
 </head>
@@ -373,7 +365,7 @@
       <div class="brand">
         <div class="brand-icon">✦</div>
         <div>
-          NOVA AI
+          KABIYA AI
           <small>VIDEO STUDIO</small>
         </div>
       </div>
@@ -390,7 +382,7 @@
     </section>
 
     <section id="authBox" class="card">
-      <h2 class="card-title">🔐 Welcome to NOVA AI</h2>
+      <h2 class="card-title">🔐 Welcome to KABIYA AI</h2>
       <p class="card-description">Create an account or log in to open your studio.</p>
 
       <form id="authForm">
@@ -428,36 +420,31 @@
           placeholder="Example: A tiny robot explores a glowing purple forest at night. Cinematic camera movement, magical lighting, detailed 3D animation..."
           maxlength="10000"></textarea>
 
-        <div class="two-columns">
-          <div>
-            <label class="field-label">Aspect ratio</label>
-            <div class="format-grid" id="formatGrid">
-              <label class="format-option active">
-                <input type="radio" name="aspectRatio" value="9:16" checked>
-                <strong>9:16</strong><span>Shorts</span>
-              </label>
-              <label class="format-option">
-                <input type="radio" name="aspectRatio" value="16:9">
-                <strong>16:9</strong><span>YouTube</span>
-              </label>
-              <label class="format-option">
-                <input type="radio" name="aspectRatio" value="1:1">
-                <strong>1:1</strong><span>Square</span>
-              </label>
-            </div>
-          </div>
-          <div>
-            <label class="field-label" for="styleSelect">Prompt helper</label>
-            <select id="styleSelect">
-              <option value="">Choose a style</option>
-              <option value="Cinematic 3D animation, expressive characters, detailed lighting.">3D Animation</option>
-              <option value="Anime-inspired art, dramatic composition, vibrant lighting.">Anime</option>
-              <option value="Photorealistic visuals, natural lighting, cinematic camera.">Realistic</option>
-              <option value="Fantasy atmosphere, magical particles, glowing environments.">Fantasy</option>
-              <option value="Cute cartoon style, colorful scenery, playful mood.">Cute Cartoon</option>
-            </select>
-          </div>
+        <label class="field-label">Aspect ratio</label>
+        <div class="format-grid" id="formatGrid">
+          <label class="format-option active">
+            <input type="radio" name="aspectRatio" value="9:16" checked>
+            <strong>9:16</strong><span>Shorts</span>
+          </label>
+          <label class="format-option">
+            <input type="radio" name="aspectRatio" value="16:9">
+            <strong>16:9</strong><span>YouTube</span>
+          </label>
+          <label class="format-option">
+            <input type="radio" name="aspectRatio" value="1:1">
+            <strong>1:1</strong><span>Square</span>
+          </label>
         </div>
+
+        <label class="field-label" for="styleSelect">Prompt helper</label>
+        <select id="styleSelect">
+          <option value="">Choose a style</option>
+          <option value="Cinematic 3D animation, expressive characters, detailed lighting.">3D Animation</option>
+          <option value="Anime-inspired art, dramatic composition, vibrant lighting.">Anime</option>
+          <option value="Photorealistic visuals, natural lighting, cinematic camera.">Realistic</option>
+          <option value="Fantasy atmosphere, magical particles, glowing environments.">Fantasy</option>
+          <option value="Cute cartoon style, colorful scenery, playful mood.">Cute Cartoon</option>
+        </select>
 
         <button class="primary-btn" id="generateBtn" type="button">
           ✦ Generate AI Video
@@ -495,13 +482,12 @@
     </section>
 
     <footer>
-      NOVA AI Video Studio<br>
+      KABIYA AI Video Studio<br>
       Generation availability depends on your connected AI provider and its limits.
     </footer>
   </main>
 
   <script>
-    // Existing Supabase project configuration
     const SUPABASE_URL =
       "https://vjpqbtwtxcnelsarvmii.supabase.co";
 
@@ -513,7 +499,6 @@
       SUPABASE_KEY
     );
 
-    // Existing Render backend
     const BACKEND_URL = "https://ometv4.onrender.com";
 
     let generatedVideoUrl = "";
@@ -535,7 +520,6 @@
 
     function showUser(user) {
       if (!user) return;
-
       $("authBox").style.display = "none";
       $("userInfo").style.display = "flex";
       $("generatorBox").style.display = "block";
@@ -570,7 +554,7 @@
         if (data.session && data.user) {
           showUser(data.user);
           setAuthMessage("");
-          setStatus("Account created. Welcome to NOVA AI!");
+          setStatus("Account created. Welcome to KABIYA AI!");
         } else {
           setAuthMessage(
             "Account request submitted. Check your email if verification is required, then log in."
@@ -680,7 +664,6 @@
         return;
       }
 
-      // Add the chosen style to the user's prompt.
       const finalPrompt = style
         ? promptText + "\nVisual style: " + style
         : promptText;
@@ -716,10 +699,8 @@
         }
 
         const videoData = result.data || {};
-
         console.log("AI provider response:", videoData);
 
-        // Supports common direct-video URL response shapes.
         generatedVideoUrl =
           videoData.video_url ||
           videoData.videoUrl ||
@@ -733,7 +714,6 @@
           $("preview").style.display = "block";
           setStatus("Video URL received. Your preview is ready.");
         } else {
-          // Some providers return a job ID first and finish rendering later.
           const jobId =
             videoData.id ||
             videoData.job_id ||
@@ -742,8 +722,30 @@
 
           if (jobId) {
             setStatus(
-              "The generation request was accepted, but the API returned a job ID instead of a video URL. A job-status check must be added to the backend before the finished video can appear."
+              "Your request was accepted. The provider returned a job ID, so backend status polling is needed before the finished video can appear."
             );
           } else {
             setStatus(
-           
+              "The request was received, but no direct video URL was returned. Check the provider response and API documentation."
+            );
+          }
+        }
+      } catch (error) {
+        setStatus("Video generation error: " + error.message);
+      } finally {
+        setBusy(button, false, "✦ Generate AI Video");
+      }
+    }
+
+    function downloadVideo() {
+      if (!generatedVideoUrl) {
+        setStatus("No video is ready to download yet.");
+        return;
+      }
+
+      const link = document.createElement("a");
+      link.href = generatedVideoUrl;
+      link.download = "kabiya-ai-video.mp4";
+      link.target = "_blank";
+      link.rel = "noopener";
+      document.body.appendChild(lin
