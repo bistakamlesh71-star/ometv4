@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#090711">
   <title>KABIYA AI | Video Studio</title>
 
@@ -12,12 +12,11 @@
   <style>
     :root {
       --bg: #090711;
-      --panel: #141020;
       --purple: #a855f7;
       --pink: #ec4899;
       --text: #f8f5ff;
       --muted: #aaa1bd;
-      --border: rgba(192, 132, 252, .19);
+      --border: rgba(192,132,252,.22);
     }
 
     * { box-sizing: border-box; }
@@ -26,259 +25,97 @@
       margin: 0;
       min-height: 100vh;
       color: var(--text);
-      font-family: Inter, system-ui, Arial, sans-serif;
-      background:
-        radial-gradient(ellipse at 50% 0%, #291344 0%, transparent 45%),
-        var(--bg);
+      font-family: system-ui, Arial, sans-serif;
+      background: radial-gradient(ellipse at top, #291344, transparent 55%), var(--bg);
     }
-
-    button, input, textarea, select { font: inherit; }
-    button { cursor: pointer; }
 
     .app {
       width: 100%;
-      max-width: 850px;
+      max-width: 720px;
       margin: auto;
-      padding: 20px 16px 45px;
+      padding: 20px 14px 40px;
     }
 
-    .topbar {
+    header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-bottom: 30px;
+      margin-bottom: 35px;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 900;
-      font-size: 19px;
-      letter-spacing: 1px;
-    }
-
-    .brand-icon {
+    .logo {
       display: grid;
       place-items: center;
-      width: 43px;
-      height: 43px;
-      border-radius: 14px;
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      font-size: 25px;
       background: linear-gradient(135deg, #9333ea, #ec4899);
-      box-shadow: 0 0 25px #a855f744;
-      font-size: 23px;
     }
 
-    .brand small {
-      display: block;
-      font-size: 10px;
-      letter-spacing: 3px;
-      color: #c084fc;
-      margin-top: 3px;
+    h1 { font-size: 21px; margin: 0; }
+    header small { color: #c084fc; letter-spacing: 3px; }
+
+    .hero { text-align: center; margin-bottom: 28px; }
+
+    .hero h2 {
+      font-size: clamp(32px, 8vw, 48px);
+      line-height: 1.12;
     }
 
-    .online {
-      font-size: 11px;
-      color: #d8b4fe;
-      background: #a855f71b;
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      padding: 8px 10px;
-      white-space: nowrap;
+    .gradient {
+      color: #e0a1ff;
     }
 
-    .hero { text-align: center; margin-bottom: 26px; }
-
-    .eyebrow {
-      display: inline-block;
-      color: #d8b4fe;
-      background: #a855f719;
-      border: 1px solid var(--border);
-      padding: 7px 12px;
-      border-radius: 30px;
-      font-size: 11px;
-      letter-spacing: 1px;
-    }
-
-    h1 {
-      font-size: clamp(32px, 8vw, 51px);
-      line-height: 1.1;
-      letter-spacing: -1.5px;
-      margin: 17px 0 12px;
-    }
-
-    .gradient-text {
-      background: linear-gradient(90deg, #c084fc, #f0abfc, #f9a8d4);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-      max-width: 510px;
-      margin: auto;
-    }
+    .muted { color: var(--muted); line-height: 1.7; }
 
     .card {
-      background: linear-gradient(145deg, #171124, #100d19);
+      padding: 22px;
       border: 1px solid var(--border);
       border-radius: 22px;
-      padding: 20px;
+      background: rgba(20,16,32,.95);
       margin-bottom: 18px;
-      box-shadow: 0 14px 45px #00000022;
-    }
-
-    .card-title {
-      font-size: 16px;
-      font-weight: 800;
-      margin: 0 0 7px;
-    }
-
-    .card-description {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.6;
-      margin: 0 0 18px;
     }
 
     .field-label {
       display: block;
-      font-size: 12px;
-      font-weight: 700;
+      margin: 18px 0 8px;
       color: #e9d5ff;
-      margin: 17px 0 9px;
+      font-size: 13px;
+      font-weight: 700;
     }
 
     input, textarea, select {
       width: 100%;
-      color: var(--text);
-      background: #0d0a16;
-      border: 1px solid #372748;
-      border-radius: 12px;
       padding: 14px;
-      outline: none;
-      transition: border .2s, box-shadow .2s;
+      color: white;
+      background: #0d0a16;
+      border: 1px solid #493254;
+      border-radius: 12px;
+      font: inherit;
     }
 
-    input:focus, textarea:focus, select:focus {
-      border-color: var(--purple);
-      box-shadow: 0 0 0 3px #a855f71b;
-    }
+    textarea { min-height: 120px; resize: vertical; }
 
-    textarea {
-      min-height: 155px;
-      resize: vertical;
-      line-height: 1.65;
-    }
-
-    input::placeholder, textarea::placeholder { color: #726783; }
-
-    .primary-btn {
+    button {
       width: 100%;
+      padding: 14px;
+      margin-top: 12px;
       border: 0;
       border-radius: 12px;
-      padding: 15px;
-      margin-top: 15px;
+      font: inherit;
       font-weight: 800;
       color: white;
-      background: linear-gradient(100deg, #9333ea, #c026d3, #db2777);
-      box-shadow: 0 7px 24px #a855f733;
-      transition: transform .2s, opacity .2s;
-    }
-
-    .primary-btn:active { transform: scale(.99); }
-    .primary-btn:disabled { opacity: .55; cursor: wait; }
-
-    .secondary-btn {
-      width: 100%;
-      padding: 12px;
-      border-radius: 11px;
-      border: 1px solid var(--border);
-      background: #21162f;
-      color: #eadcff;
-      font-weight: 700;
-      margin-top: 10px;
-    }
-
-    .format-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 9px;
-    }
-
-    .format-option {
-      background: #0d0a16;
-      border: 1px solid #372748;
-      border-radius: 12px;
-      color: #cfc2e1;
-      padding: 13px 5px;
-      text-align: center;
+      background: linear-gradient(100deg, #9333ea, #db2777);
       cursor: pointer;
     }
 
-    .format-option.active {
-      border-color: #c084fc;
-      background: #a855f71c;
-      color: white;
-      box-shadow: inset 0 0 0 1px #a855f733;
-    }
-
-    .format-option strong {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 5px;
-    }
-
-    .format-option span { font-size: 10px; }
-
-    .format-option input {
-      position: absolute;
-      opacity: 0;
-      width: 1px;
-      height: 1px;
-    }
-
-    #authBox { max-width: 520px; margin: 0 auto 20px; }
-    #generatorBox, #userInfo { display: none; }
-
-    .userbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      background: #171124;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px 14px;
-      margin-bottom: 18px;
-    }
-
-    .user-details { min-width: 0; }
-
-    .user-label {
-      color: var(--muted);
-      font-size: 10px;
-      margin-bottom: 5px;
-    }
-
-    #userEmail {
-      display: block;
-      overflow-wrap: anywhere;
-      font-size: 12px;
-    }
-
-    .logout {
-      flex-shrink: 0;
-      border: 1px solid #493254;
-      border-radius: 9px;
-      padding: 9px 12px;
-      color: #e9d5ff;
+    button.secondary {
       background: #25172f;
+      border: 1px solid var(--border);
     }
+
+    button:disabled { opacity: .6; }
 
     #authMessage, #status {
       font-size: 13px;
@@ -286,466 +123,377 @@
       overflow-wrap: anywhere;
     }
 
-    #authMessage { color: #e9d5ff; text-align: center; }
-    #status { color: #d8b4fe; text-align: center; }
+    #generatorBox, #userInfo { display: none; }
 
-    .preview {
-      display: none;
-      margin-top: 20px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
+    .userbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
-    .preview h3 { font-size: 14px; margin: 0 0 12px; }
+    .userbar button { width: auto; }
 
-    video {
-      display: block;
-      width: 100%;
-      max-height: 570px;
-      background: #000;
-      border-radius: 14px;
-    }
-
-    .video-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .video-actions button {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 6px;
-      color: #f3e8ff;
-      background: #24172f;
-      font-weight: 700;
-    }
-
-    .tips {
+    .formats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 22px;
+      gap: 8px;
     }
 
-    .tip {
+    .formats label {
+      padding: 12px 5px;
       text-align: center;
-      background: #130f1e;
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 15px 7px;
+      border-radius: 10px;
+      font-size: 13px;
     }
 
-    .tip-icon { font-size: 22px; }
-    .tip strong { display: block; font-size: 11px; margin: 8px 0 4px; }
-    .tip span { color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .formats input { width: auto; }
+
+    video {
+      width: 100%;
+      max-height: 550px;
+      margin-top: 12px;
+      background: black;
+      border-radius: 12px;
+    }
 
     footer {
       text-align: center;
       color: #796d8a;
-      font-size: 11px;
-      margin-top: 28px;
+      font-size: 12px;
       line-height: 1.8;
-    }
-
-    @media (max-width: 420px) {
-      .app { padding: 16px 12px 32px; }
-      .card { padding: 16px; }
-      .brand { font-size: 16px; }
-      .online { font-size: 10px; }
+      margin-top: 28px;
     }
   </style>
 </head>
 
 <body>
-  <main class="app">
+<main class="app">
 
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-icon">✦</div>
-        <div>
-          KABIYA AI
-          <small>VIDEO STUDIO</small>
-        </div>
-      </div>
-      <div class="online">✦ AI VIDEO STUDIO</div>
-    </header>
+  <header>
+    <div class="logo">✦</div>
+    <div>
+      <h1>KABIYA AI</h1>
+      <small>VIDEO STUDIO</small>
+    </div>
+  </header>
 
-    <section class="hero">
-      <div class="eyebrow">✧ YOUR IMAGINATION, ANIMATED</div>
-      <h1>Create videos with<br><span class="gradient-text">the power of AI.</span></h1>
-      <p class="subtitle">
-        Turn your ideas into videos. Write a prompt, choose your format,
-        and create your next story.
-      </p>
-    </section>
+  <section class="hero">
+    <p class="muted">✧ YOUR IMAGINATION, ANIMATED</p>
+    <h2>Create videos with<br><span class="gradient">the power of AI.</span></h2>
+    <p class="muted">Sign in to your studio and turn your ideas into videos.</p>
+  </section>
 
-    <section id="authBox" class="card">
-      <h2 class="card-title">🔐 Welcome to KABIYA AI</h2>
-      <p class="card-description">Create an account or log in to open your studio.</p>
+  <section id="authBox" class="card">
+    <h2>🔐 Welcome to KABIYA AI</h2>
+    <p class="muted">Create an account or log in.</p>
 
-      <form id="authForm">
-        <label class="field-label" for="email">Email address</label>
-        <input id="email" type="email" placeholder="you@example.com"
-          autocomplete="email" required>
+    <form id="authForm">
+      <label class="field-label" for="email">Email address</label>
+      <input id="email" type="email" autocomplete="email"
+        placeholder="you@example.com" required>
 
-        <label class="field-label" for="password">Password</label>
-        <input id="password" type="password" placeholder="At least 6 characters"
-          autocomplete="current-password" minlength="6" required>
+      <label class="field-label" for="password">Password</label>
+      <input id="password" type="password"
+        autocomplete="current-password"
+        minlength="6" placeholder="At least 6 characters" required>
 
-        <button class="primary-btn" id="loginBtn" type="button">🔑 Log In</button>
-        <button class="secondary-btn" id="signupBtn" type="button">＋ Create Account</button>
-      </form>
-      <p id="authMessage" role="status" aria-live="polite"></p>
-    </section>
+      <button id="loginBtn" type="submit">🔑 Log In</button>
+      <button id="signupBtn" class="secondary" type="button">
+        ＋ Create Account
+      </button>
+    </form>
 
-    <section id="userInfo" class="userbar">
-      <div class="user-details">
-        <div class="user-label">SIGNED IN AS</div>
-        <strong id="userEmail"></strong>
-      </div>
-      <button class="logout" id="logoutBtn" type="button">Log out</button>
-    </section>
+    <p id="authMessage" role="status" aria-live="polite"></p>
+  </section>
 
-    <section id="generatorBox">
-      <div class="card">
-        <h2 class="card-title">✍️ Create your video</h2>
-        <p class="card-description">
-          Describe the scene, characters, movement, and visual style you want.
-        </p>
+  <section id="userInfo" class="card userbar">
+    <span id="userEmail"></span>
+    <button id="logoutBtn" class="secondary" type="button">Log out</button>
+  </section>
 
-        <label class="field-label" for="script">Your video prompt</label>
-        <textarea id="script"
-          placeholder="Example: A tiny robot explores a glowing purple forest at night. Cinematic camera movement, magical lighting, detailed 3D animation..."
-          maxlength="10000"></textarea>
+  <section id="generatorBox" class="card">
+    <h2>✍️ Create your video</h2>
+    <p class="muted">Describe the video you want to generate.</p>
 
-        <label class="field-label">Aspect ratio</label>
-        <div class="format-grid" id="formatGrid">
-          <label class="format-option active">
-            <input type="radio" name="aspectRatio" value="9:16" checked>
-            <strong>9:16</strong><span>Shorts</span>
-          </label>
-          <label class="format-option">
-            <input type="radio" name="aspectRatio" value="16:9">
-            <strong>16:9</strong><span>YouTube</span>
-          </label>
-          <label class="format-option">
-            <input type="radio" name="aspectRatio" value="1:1">
-            <strong>1:1</strong><span>Square</span>
-          </label>
-        </div>
+    <label class="field-label" for="script">Your video prompt</label>
+    <textarea id="script" maxlength="10000"
+      placeholder="A tiny robot explores a glowing purple forest at night..."></textarea>
 
-        <label class="field-label" for="styleSelect">Prompt helper</label>
-        <select id="styleSelect">
-          <option value="">Choose a style</option>
-          <option value="Cinematic 3D animation, expressive characters, detailed lighting.">3D Animation</option>
-          <option value="Anime-inspired art, dramatic composition, vibrant lighting.">Anime</option>
-          <option value="Photorealistic visuals, natural lighting, cinematic camera.">Realistic</option>
-          <option value="Fantasy atmosphere, magical particles, glowing environments.">Fantasy</option>
-          <option value="Cute cartoon style, colorful scenery, playful mood.">Cute Cartoon</option>
-        </select>
+    <label class="field-label">Video format</label>
+    <div class="formats">
+      <label><input type="radio" name="ratio" value="9:16" checked> 9:16</label>
+      <label><input type="radio" name="ratio" value="16:9"> 16:9</label>
+      <label><input type="radio" name="ratio" value="1:1"> 1:1</label>
+    </div>
 
-        <button class="primary-btn" id="generateBtn" type="button">
-          ✦ Generate AI Video
-        </button>
+    <button id="generateBtn" type="button">✦ Generate AI Video</button>
+    <p id="status" role="status" aria-live="polite"></p>
+    <video id="videoPlayer" controls playsinline hidden></video>
+  </section>
 
-        <div id="status" role="status" aria-live="polite"></div>
+  <footer>
+    KABIYA AI Video Studio<br>
+    Generation availability depends on your connected AI provider and its limits.
+  </footer>
+</main>
 
-        <div class="preview" id="preview">
-          <h3>🎬 Video preview</h3>
-          <video id="videoPlayer" controls playsinline></video>
-          <div class="video-actions">
-            <button id="downloadBtn" type="button">⬇ Download</button>
-            <button id="shareBtn" type="button">↗ Share link</button>
-          </div>
-        </div>
-      </div>
+<script>
+(() => {
+  "use strict";
 
-      <div class="tips">
-        <div class="tip">
-          <div class="tip-icon">✍️</div>
-          <strong>Write a prompt</strong>
-          <span>Describe your idea</span>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">✦</div>
-          <strong>Generate</strong>
-          <span>Send it to the AI service</span>
-        </div>
-        <div class="tip">
-          <div class="tip-icon">⬇</div>
-          <strong>Save & share</strong>
-          <span>When the video is ready</span>
-        </div>
-      </div>
-    </section>
+  const $ = id => document.getElementById(id);
 
-    <footer>
-      KABIYA AI Video Studio<br>
-      Generation availability depends on your connected AI provider and its limits.
-    </footer>
-  </main>
+  // Existing Supabase project settings
+  const SUPABASE_URL =
+    "https://vjpqbtwtxcnelsarvmii.supabase.co";
 
-  <script>
-    const SUPABASE_URL =
-      "https://vjpqbtwtxcnelsarvmii.supabase.co";
+  const SUPABASE_KEY =
+    "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
 
-    const SUPABASE_KEY =
-      "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
+  // Existing Render backend
+  const BACKEND_URL = "https://ometv4.onrender.com";
 
-    const supabaseClient = supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+  let client = null;
 
-    const BACKEND_URL = "https://ometv4.onrender.com";
+  function authMessage(message) {
+    $("authMessage").textContent = message;
+  }
 
-    let generatedVideoUrl = "";
+  function statusMessage(message) {
+    $("status").textContent = message;
+  }
 
-    const $ = (id) => document.getElementById(id);
+  function showUser(user) {
+    $("authBox").style.display = "none";
+    $("userInfo").style.display = "flex";
+    $("generatorBox").style.display = "block";
+    $("userEmail").textContent = user.email || "Logged in";
+  }
 
-    function setAuthMessage(message) {
-      $("authMessage").textContent = message;
+  function showLoggedOut() {
+    $("authBox").style.display = "block";
+    $("userInfo").style.display = "none";
+    $("generatorBox").style.display = "none";
+  }
+
+  function getClient() {
+    if (!window.supabase) {
+      throw new Error("Supabase library did not load. Refresh the page.");
     }
 
-    function setStatus(message) {
-      $("status").textContent = message;
+    if (!client) {
+      client = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
     }
 
-    function setBusy(button, busy, text) {
-      button.disabled = busy;
-      button.textContent = text;
+    return client;
+  }
+
+  async function login(event) {
+    event.preventDefault();
+
+    const button = $("loginBtn");
+    const email = $("email").value.trim();
+    const password = $("password").value;
+
+    if (!email || !password) {
+      authMessage("Please enter your email and password.");
+      return;
     }
 
-    function showUser(user) {
-      if (!user) return;
-      $("authBox").style.display = "none";
-      $("userInfo").style.display = "flex";
-      $("generatorBox").style.display = "block";
-      $("userEmail").textContent = user.email || "Logged in";
-    }
+    button.disabled = true;
+    button.textContent = "Logging in...";
+    authMessage("Connecting to KABIYA AI...");
 
-    function showLoggedOut() {
-      $("authBox").style.display = "block";
-      $("userInfo").style.display = "none";
-      $("generatorBox").style.display = "none";
-    }
+    try {
+      const supabaseClient = getClient();
 
-    async function signUp() {
-      const email = $("email").value.trim();
-      const password = $("password").value;
-
-      if (!email || password.length < 6) {
-        setAuthMessage("Enter a valid email and a password of at least 6 characters.");
-        return;
-      }
-
-      setBusy($("signupBtn"), true, "Creating account...");
-
-      try {
-        const { data, error } = await supabaseClient.auth.signUp({
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
           email,
           password
         });
 
-        if (error) throw error;
+      if (error) throw error;
 
-        if (data.session && data.user) {
-          showUser(data.user);
-          setAuthMessage("");
-          setStatus("Account created. Welcome to KABIYA AI!");
-        } else {
-          setAuthMessage(
-            "Account request submitted. Check your email if verification is required, then log in."
-          );
-        }
-      } catch (error) {
-        setAuthMessage("Sign-up error: " + error.message);
-      } finally {
-        setBusy($("signupBtn"), false, "＋ Create Account");
+      if (!data.user) {
+        throw new Error("Login was not completed. Please try again.");
       }
+
+      showUser(data.user);
+      authMessage("");
+      statusMessage("Welcome back to KABIYA AI!");
+
+    } catch (error) {
+      console.error("Login error:", error);
+      authMessage("Login error: " + (error.message || "Please try again."));
+    } finally {
+      button.disabled = false;
+      button.textContent = "🔑 Log In";
+    }
+  }
+
+  async function signup() {
+    const button = $("signupBtn");
+    const email = $("email").value.trim();
+    const password = $("password").value;
+
+    if (!email || password.length < 6) {
+      authMessage("Enter a valid email and password of at least 6 characters.");
+      return;
     }
 
-    async function signIn() {
-      const email = $("email").value.trim();
-      const password = $("password").value;
+    button.disabled = true;
+    button.textContent = "Creating account...";
+    authMessage("Creating your account...");
 
-      if (!email || !password) {
-        setAuthMessage("Enter your email and password.");
-        return;
-      }
+    try {
+      const supabaseClient = getClient();
 
-      setBusy($("loginBtn"), true, "Logging in...");
+      const { data, error } =
+        await supabaseClient.auth.signUp({ email, password });
 
-      try {
-        const { data, error } =
-          await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-          });
+      if (error) throw error;
 
-        if (error) throw error;
-
+      if (data.session && data.user) {
         showUser(data.user);
-        setAuthMessage("");
-        setStatus("Welcome back! Write a prompt to get started.");
-      } catch (error) {
-        setAuthMessage("Login error: " + error.message);
-      } finally {
-        setBusy($("loginBtn"), false, "🔑 Log In");
+        authMessage("");
+        statusMessage("Account created. Welcome to KABIYA AI!");
+      } else {
+        authMessage(
+          "Account request submitted. Check your email for verification, then log in."
+        );
       }
+    } catch (error) {
+      console.error("Sign-up error:", error);
+      authMessage("Sign-up error: " + (error.message || "Please try again."));
+    } finally {
+      button.disabled = false;
+      button.textContent = "＋ Create Account";
     }
+  }
 
-    async function signOut() {
-      const { error } = await supabaseClient.auth.signOut();
-
-      if (error) {
-        setStatus("Logout error: " + error.message);
-        return;
-      }
+  async function logout() {
+    try {
+      const { error } = await getClient().auth.signOut();
+      if (error) throw error;
 
       showLoggedOut();
-      setAuthMessage("You have logged out.");
-      setStatus("");
+      authMessage("You have logged out.");
+      statusMessage("");
       $("script").value = "";
-      $("preview").style.display = "none";
+      $("videoPlayer").hidden = true;
       $("videoPlayer").removeAttribute("src");
-      generatedVideoUrl = "";
+    } catch (error) {
+      statusMessage("Logout error: " + error.message);
     }
+  }
 
-    async function checkUser() {
-      try {
-        const { data, error } = await supabaseClient.auth.getUser();
-        if (error) throw error;
+  async function checkSession() {
+    try {
+      const { data, error } = await getClient().auth.getSession();
+      if (error) throw error;
 
-        if (data.user) {
-          showUser(data.user);
-        } else {
-          showLoggedOut();
-        }
-      } catch (error) {
-        console.error("Session check failed:", error);
+      if (data.session && data.session.user) {
+        showUser(data.session.user);
+      } else {
         showLoggedOut();
       }
-    }
-
-    function getAspectRatio() {
-      const selected = document.querySelector(
-        'input[name="aspectRatio"]:checked'
+    } catch (error) {
+      console.error("Session check error:", error);
+      showLoggedOut();
+      authMessage(
+        "Could not connect to login service. Check your internet and refresh."
       );
-      return selected ? selected.value : "9:16";
+    }
+  }
+
+  async function generateVideo() {
+    const prompt = $("script").value.trim();
+
+    if (!prompt) {
+      statusMessage("Please write your video prompt first.");
+      return;
     }
 
-    function updateFormatStyles() {
-      document.querySelectorAll(".format-option").forEach((label) => {
-        const radio = label.querySelector("input");
-        label.classList.toggle("active", radio.checked);
-      });
-    }
+    const button = $("generateBtn");
+    button.disabled = true;
+    button.textContent = "Sending request...";
+    statusMessage("Contacting AI video service...");
 
-    async function generateVideo() {
-      const promptText = $("script").value.trim();
-      const style = $("styleSelect").value;
-      const aspectRatio = getAspectRatio();
-      const button = $("generateBtn");
+    try {
+      const supabaseClient = getClient();
+      const { data, error } = await supabaseClient.auth.getSession();
 
-      if (!promptText) {
-        setStatus("Please write a video prompt first.");
-        $("script").focus();
-        return;
+      if (error) throw error;
+
+      if (!data.session) {
+        throw new Error("Please log in again.");
       }
 
-      const { data: sessionData, error: sessionError } =
-        await supabaseClient.auth.getSession();
+      const ratio = document.querySelector(
+        'input[name="ratio"]:checked'
+      ).value;
 
-      if (sessionError || !sessionData.session) {
-        setStatus("Please log in before generating a video.");
-        return;
+      const response = await fetch(
+        BACKEND_URL + "/api/generate-video",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + data.session.access_token
+          },
+          body: JSON.stringify({
+            script: prompt,
+            aspectRatio: ratio
+          })
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Video generation failed.");
       }
 
-      const finalPrompt = style
-        ? promptText + "\nVisual style: " + style
-        : promptText;
+      const video = result.data || {};
+      const url =
+        video.video_url ||
+        video.videoUrl ||
+        video.url ||
+        video.video?.url ||
+        video.output?.url;
 
-      setBusy(button, true, "✦ Sending request...");
-      setStatus("Connecting to the AI video service...");
-      $("preview").style.display = "none";
-      generatedVideoUrl = "";
-
-      try {
-        const response = await fetch(
-          `${BACKEND_URL}/api/generate-video`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization":
-                `Bearer ${sessionData.session.access_token}`
-            },
-            body: JSON.stringify({
-              script: finalPrompt,
-              aspectRatio
-            })
-          }
+      if (url) {
+        $("videoPlayer").src = url;
+        $("videoPlayer").hidden = false;
+        statusMessage("Video URL received.");
+      } else {
+        statusMessage(
+          "The request was accepted, but no finished video URL was returned. The backend may need job-status polling."
         );
-
-        const result = await response.json();
-
-        if (!response.ok || !result.success) {
-          throw new Error(
-            result.error || "The AI video request failed."
-          );
-        }
-
-        const videoData = result.data || {};
-        console.log("AI provider response:", videoData);
-
-        generatedVideoUrl =
-          videoData.video_url ||
-          videoData.videoUrl ||
-          videoData.url ||
-          videoData.video?.url ||
-          videoData.output?.url ||
-          "";
-
-        if (generatedVideoUrl) {
-          $("videoPlayer").src = generatedVideoUrl;
-          $("preview").style.display = "block";
-          setStatus("Video URL received. Your preview is ready.");
-        } else {
-          const jobId =
-            videoData.id ||
-            videoData.job_id ||
-            videoData.jobId ||
-            "";
-
-          if (jobId) {
-            setStatus(
-              "Your request was accepted. The provider returned a job ID, so backend status polling is needed before the finished video can appear."
-            );
-          } else {
-            setStatus(
-              "The request was received, but no direct video URL was returned. Check the provider response and API documentation."
-            );
-          }
-        }
-      } catch (error) {
-        setStatus("Video generation error: " + error.message);
-      } finally {
-        setBusy(button, false, "✦ Generate AI Video");
       }
+    } catch (error) {
+      console.error("Generation error:", error);
+      statusMessage("Video error: " + (error.message || "Please try again."));
+    } finally {
+      button.disabled = false;
+      button.textContent = "✦ Generate AI Video";
     }
+  }
 
-    function downloadVideo() {
-      if (!generatedVideoUrl) {
-        setStatus("No video is ready to download yet.");
-        return;
-      }
+  $("authForm").addEventListener("submit", login);
+  $("signupBtn").addEventListener("click", signup);
+  $("logoutBtn").addEventListener("click", logout);
+  $("generateBtn").addEventListener("click", generateVideo);
 
-      const link = document.createElement("a");
-      link.href = generatedVideoUrl;
-      link.download = "kabiya-ai-video.mp4";
-      link.target = "_blank";
-      link.rel = "noopener";
-      document.body.appendChild(lin
+  checkSession();
+})();
+</script>
+</body>
+</html>
