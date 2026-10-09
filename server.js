@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors");
 
@@ -22,17 +23,28 @@ app.post("/api/generate-video", async (req, res) => {
       aspectRatio = "9:16"
     } = req.body;
 
-    if (!script) {
+    if (typeof script !== "string" || !script.trim()) {
       return res.status(400).json({
         success: false,
         error: "Script is required"
       });
     }
 
-    if (!process.env.MAGIC_HOUR_API_KEY) {
+    const apiKey = process.env.MAGIC_HOUR_API_KEY;
+
+    if (!apiKey) {
       return res.status(500).json({
         success: false,
         error: "MAGIC_HOUR_API_KEY is not configured"
+      });
+    }
+
+    const allowedRatios = ["9:16", "16:9", "1:1"];
+
+    if (!allowedRatios.includes(aspectRatio)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid aspect ratio"
       });
     }
 
@@ -40,20 +52,23 @@ app.post("/api/generate-video", async (req, res) => {
       "https://api.magichour.ai/v1/text-to-video",
       {
         method: "POST",
-
         headers: {
           "Content-Type": "application/json",
-          "Authorization":
-            `Bearer ${process.env.MAGIC_HOUR_API_KEY}`
+          "Authorization": `Bearer ${apiKey}`
         },
-
         body: JSON.stringify({
           name: "AI Video Generator",
           end_seconds: 3,
-aspect_ratio: aspectRatio,
-model: "ltx-2.5",
-resolution: "480p",
-audio: false,
+          aspect_ratio: aspectRatio,
+          model: "ltx-2.5",
+          resolution: "480p",
+          audio: false,
+          style: {
+            prompt: script.trim()
+          }
+        })
+      }
+    );
 
     const data = await response.json();
 
@@ -69,26 +84,22 @@ audio: false,
       });
     }
 
-    res.json({
+    return res.json({
       success: true,
-      message: "Video generation started",
-      data: data
+      message: "Video generation request submitted",
+      data
     });
 
   } catch (error) {
     console.error("Server Error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
-      error:
-        error.message ||
-        "Video generation failed"
+      error: error.message || "Video generation failed"
     });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(
-    `AI Video Backend is running on port ${PORT}`
-  );
+  console.log(`AI Video Backend is running on port ${PORT}`);
 });
