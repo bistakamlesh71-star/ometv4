@@ -26,7 +26,9 @@
       min-height: 100vh;
       color: var(--text);
       font-family: system-ui, Arial, sans-serif;
-      background: radial-gradient(ellipse at top, #291344, transparent 55%), var(--bg);
+      background:
+        radial-gradient(ellipse at top, #291344, transparent 55%),
+        var(--bg);
     }
 
     .app {
@@ -63,11 +65,12 @@
       line-height: 1.12;
     }
 
-    .gradient {
-      color: #e0a1ff;
-    }
+    .gradient { color: #e0a1ff; }
 
-    .muted { color: var(--muted); line-height: 1.7; }
+    .muted {
+      color: var(--muted);
+      line-height: 1.7;
+    }
 
     .card {
       padding: 22px;
@@ -95,7 +98,15 @@
       font: inherit;
     }
 
-    textarea { min-height: 120px; resize: vertical; }
+    select option {
+      background: #0d0a16;
+      color: white;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
 
     button {
       width: 100%;
@@ -115,7 +126,10 @@
       border: 1px solid var(--border);
     }
 
-    button:disabled { opacity: .6; }
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
 
     #authMessage, #status {
       font-size: 13px;
@@ -151,6 +165,17 @@
 
     .formats input { width: auto; }
 
+    .notice {
+      padding: 12px;
+      border-radius: 10px;
+      background: #21182b;
+      border: 1px solid var(--border);
+      color: #e9d5ff;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 15px;
+    }
+
     video {
       width: 100%;
       max-height: 550px;
@@ -182,8 +207,12 @@
 
   <section class="hero">
     <p class="muted">✧ YOUR IMAGINATION, ANIMATED</p>
-    <h2>Create videos with<br><span class="gradient">the power of AI.</span></h2>
-    <p class="muted">Sign in to your studio and turn your ideas into videos.</p>
+    <h2>Create videos with<br>
+      <span class="gradient">the power of AI.</span>
+    </h2>
+    <p class="muted">
+      Sign in to your studio and turn your ideas into videos.
+    </p>
   </section>
 
   <section id="authBox" class="card">
@@ -197,10 +226,11 @@
 
       <label class="field-label" for="password">Password</label>
       <input id="password" type="password"
-        autocomplete="current-password"
-        minlength="6" placeholder="At least 6 characters" required>
+        autocomplete="current-password" minlength="6"
+        placeholder="At least 6 characters" required>
 
       <button id="loginBtn" type="submit">🔑 Log In</button>
+
       <button id="signupBtn" class="secondary" type="button">
         ＋ Create Account
       </button>
@@ -211,32 +241,68 @@
 
   <section id="userInfo" class="card userbar">
     <span id="userEmail"></span>
-    <button id="logoutBtn" class="secondary" type="button">Log out</button>
+    <button id="logoutBtn" class="secondary" type="button">
+      Log out
+    </button>
   </section>
 
   <section id="generatorBox" class="card">
     <h2>✍️ Create your video</h2>
-    <p class="muted">Describe the video you want to generate.</p>
+    <p class="muted">
+      Describe the video you want to generate.
+    </p>
 
     <label class="field-label" for="script">Your video prompt</label>
     <textarea id="script" maxlength="10000"
-      placeholder="A tiny robot explores a glowing purple forest at night..."></textarea>
+      placeholder="A cinematic robot exploring a glowing purple forest at night..."></textarea>
+
+    <label class="field-label" for="duration">Video duration</label>
+    <select id="duration">
+      <option value="1">1 second</option>
+      <option value="2">2 seconds</option>
+      <option value="3" selected>3 seconds</option>
+    </select>
+
+    <label class="field-label" for="resolution">Video quality</label>
+    <select id="resolution">
+      <option value="480p" selected>480p - Low</option>
+      <option value="720p">720p - Medium</option>
+      <option value="1080p">1080p - High</option>
+    </select>
 
     <label class="field-label">Video format</label>
     <div class="formats">
-      <label><input type="radio" name="ratio" value="9:16" checked> 9:16</label>
-      <label><input type="radio" name="ratio" value="16:9"> 16:9</label>
-      <label><input type="radio" name="ratio" value="1:1"> 1:1</label>
+      <label>
+        <input type="radio" name="ratio" value="9:16" checked>
+        9:16
+      </label>
+      <label>
+        <input type="radio" name="ratio" value="16:9">
+        16:9
+      </label>
+      <label>
+        <input type="radio" name="ratio" value="1:1">
+        1:1
+      </label>
     </div>
 
-    <button id="generateBtn" type="button">✦ Generate AI Video</button>
+    <div class="notice">
+      ⚠️ Video generation may use credits. Confirm the provider's
+      cost before generating. Quality and duration options depend
+      on the connected AI model.
+    </div>
+
+    <button id="generateBtn" type="button">
+      ✦ Generate AI Video
+    </button>
+
     <p id="status" role="status" aria-live="polite"></p>
     <video id="videoPlayer" controls playsinline hidden></video>
   </section>
 
   <footer>
     KABIYA AI Video Studio<br>
-    Generation availability depends on your connected AI provider and its limits.
+    Generation depends on your AI provider, model and credit balance.
   </footer>
 </main>
 
@@ -246,14 +312,12 @@
 
   const $ = id => document.getElementById(id);
 
-  // Existing Supabase project settings
   const SUPABASE_URL =
     "https://vjpqbtwtxcnelsarvmii.supabase.co";
 
   const SUPABASE_KEY =
     "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
 
-  // Existing Render backend
   const BACKEND_URL = "https://ometv4.onrender.com";
 
   let client = null;
@@ -281,7 +345,9 @@
 
   function getClient() {
     if (!window.supabase) {
-      throw new Error("Supabase library did not load. Refresh the page.");
+      throw new Error(
+        "Supabase library did not load. Refresh the page."
+      );
     }
 
     if (!client) {
@@ -311,19 +377,11 @@
     authMessage("Connecting to KABIYA AI...");
 
     try {
-      const supabaseClient = getClient();
-
-      const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-          email,
-          password
-        });
+      const { data, error } = await getClient().auth
+        .signInWithPassword({ email, password });
 
       if (error) throw error;
-
-      if (!data.user) {
-        throw new Error("Login was not completed. Please try again.");
-      }
+      if (!data.user) throw new Error("Please try logging in again.");
 
       showUser(data.user);
       authMessage("");
@@ -331,7 +389,7 @@
 
     } catch (error) {
       console.error("Login error:", error);
-      authMessage("Login error: " + (error.message || "Please try again."));
+      authMessage("Login error: " + error.message);
     } finally {
       button.disabled = false;
       button.textContent = "🔑 Log In";
@@ -344,7 +402,9 @@
     const password = $("password").value;
 
     if (!email || password.length < 6) {
-      authMessage("Enter a valid email and password of at least 6 characters.");
+      authMessage(
+        "Enter a valid email and password of at least 6 characters."
+      );
       return;
     }
 
@@ -353,25 +413,23 @@
     authMessage("Creating your account...");
 
     try {
-      const supabaseClient = getClient();
-
-      const { data, error } =
-        await supabaseClient.auth.signUp({ email, password });
+      const { data, error } = await getClient().auth
+        .signUp({ email, password });
 
       if (error) throw error;
 
       if (data.session && data.user) {
         showUser(data.user);
         authMessage("");
-        statusMessage("Account created. Welcome to KABIYA AI!");
+        statusMessage("Account created. Welcome!");
       } else {
         authMessage(
-          "Account request submitted. Check your email for verification, then log in."
+          "Check your email for verification, then log in."
         );
       }
     } catch (error) {
-      console.error("Sign-up error:", error);
-      authMessage("Sign-up error: " + (error.message || "Please try again."));
+      console.error("Signup error:", error);
+      authMessage("Sign-up error: " + error.message);
     } finally {
       button.disabled = false;
       button.textContent = "＋ Create Account";
@@ -405,7 +463,7 @@
         showLoggedOut();
       }
     } catch (error) {
-      console.error("Session check error:", error);
+      console.error("Session error:", error);
       showLoggedOut();
       authMessage(
         "Could not connect to login service. Check your internet and refresh."
@@ -422,14 +480,17 @@
     }
 
     const button = $("generateBtn");
+    const player = $("videoPlayer");
+
     button.disabled = true;
     button.textContent = "Sending request...";
     statusMessage("Contacting AI video service...");
 
-    try {
-      const supabaseClient = getClient();
-      const { data, error } = await supabaseClient.auth.getSession();
+    player.hidden = true;
+    player.removeAttribute("src");
 
+    try {
+      const { data, error } = await getClient().auth.getSession();
       if (error) throw error;
 
       if (!data.session) {
@@ -440,17 +501,25 @@
         'input[name="ratio"]:checked'
       ).value;
 
+      const duration = Number($("duration").value);
+      const resolution = $("resolution").value;
+
+      // This submits the selected settings to your backend.
+      // The provider must support the selected values.
       const response = await fetch(
         BACKEND_URL + "/api/generate-video",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + data.session.access_token
+            "Authorization":
+              "Bearer " + data.session.access_token
           },
           body: JSON.stringify({
             script: prompt,
-            aspectRatio: ratio
+            aspectRatio: ratio,
+            duration: duration,
+            resolution: resolution
           })
         }
       );
@@ -458,7 +527,9 @@
       const result = await response.json();
 
       if (!response.ok || !result.success) {
-        throw new Error(result.error || "Video generation failed.");
+        throw new Error(
+          result.error || "Video generation failed."
+        );
       }
 
       const video = result.data || {};
@@ -470,17 +541,18 @@
         video.output?.url;
 
       if (url) {
-        $("videoPlayer").src = url;
-        $("videoPlayer").hidden = false;
+        player.src = url;
+        player.hidden = false;
         statusMessage("Video URL received.");
       } else {
         statusMessage(
-          "The request was accepted, but no finished video URL was returned. The backend may need job-status polling."
+          "Request accepted. The backend may need to check the job status before the video is ready."
         );
       }
+
     } catch (error) {
       console.error("Generation error:", error);
-      statusMessage("Video error: " + (error.message || "Please try again."));
+      statusMessage("Video error: " + error.message);
     } finally {
       button.disabled = false;
       button.textContent = "✦ Generate AI Video";
