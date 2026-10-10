@@ -228,32 +228,81 @@ if (button) {
   button.textContent = "Opening Google...";
 }
 
-const redirectUrl =
-  window.location.origin + window.location.pathname;
-
 const { data, error } =
   await supabaseClient.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: redirectUrl
+      redirectTo: window.location.origin +
+        window.location.pathname
     }
   });
 
 if (error) throw error;
 
-if (!data || !data.url) {
-  throw new Error("Google login URL aayena. Supabase settings check gara.");
+if (data && data.url) {
+  window.location.assign(data.url);
+} else {
+  throw new Error("Google login URL aayena.");
 }
-
-window.location.href = data.url;
 
 } catch (e) {
 console.error("Google Login Error:", e);
-alert("Google Login Error: " + (e.message || e));
+alert("Google Login Error: " + e.message);
 
 if (button) {
   button.disabled = false;
   button.textContent = "Continue with Google";
+}
+
+}
+}
+
+async function signOut(){
+if (!supabaseClient) return;
+
+const { error } = await supabaseClient.auth.signOut();
+
+if (error) {
+alert("Sign out failed: " + error.message);
+}
+}
+
+$("loginBtn").addEventListener("click", signIn);
+$("logoutBtn").addEventListener("click", signOut);
+
+/* TOURNAMENTS */
+function renderTournaments(){
+const list = $("tournamentList");
+const sel = $("tournament");
+const roomSel = $("roomTournament");
+
+if (!tournaments.length) {
+list.innerHTML = '<div class="card">No tournaments published yet.</div>';
+sel.innerHTML = '<option value="">No tournaments available</option>';
+roomSel.innerHTML = '<option value="">General room</option>';
+return;
+}
+
+list.innerHTML = tournaments.map(t => "<article class="card"> <div class="emoji">🏆</div> <h3>${escapeHtml(t.name)}</h3> <span class="small">${escapeHtml(t.game)}</span> <p>${escapeHtml(t.details || "Registration is open.")}</p> <p>📅 ${escapeHtml(dateText(t.starts_at))}</p> <a class="btn" href="#join" data-tid="${escapeHtml(t.id)}">Register</a> </article>").join("");
+
+sel.innerHTML = '<option value="">Choose a tournament</option>' +
+tournaments.map(t =>
+"<option value="${escapeHtml(t.id)}">${escapeHtml(t.name)} — ${escapeHtml(t.game)}</option>"
+).join("");
+
+roomSel.innerHTML = '<option value="">General room</option>' +
+tournaments.map(t =>
+"<option value="${escapeHtml(t.id)}">${escapeHtml(t.name)}</option>"
+).join("");
+
+list.querySelectorAll("[data-tid]").forEach(a => {
+a.addEventListener("click", () => {
+sel.value = a.dataset.tid;
+const t = tournaments.find(x => String(x.id) === a.dataset.tid);
+if (t) $("game").value = t.game;
+});
+});
+}
 }
 
 }
