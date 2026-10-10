@@ -53,15 +53,7 @@ form{display:grid;gap:14px}.field{display:grid;gap:7px}label{color:#bdc5dd;font-
  <div id="userPanel" class="card">
   <div id="userInfo">You are not signed in.</div>
   <form id="registrationForm" class="hidden" style="margin-top:18px">
-   <div class="field"><label for="playerName">In-game name</label><input id="playerName" maxlength="40" required placeholder="Your Free Fire name"></div>
-   <div class="field"><label for="game">Game</label><select id="game" required><option value="Free Fire">Free Fire</option><option value="PUBG Mobile">PUBG Mobile</option><option value="Mobile Legends">Mobile Legends</option></select></div>
-   <div class="field"><label for="tournament">Tournament</label><select id="tournament" required><option value="">Loading tournaments…</option></select></div>
-   <div class="field"><label for="teamName">Team name (optional)</label><input id="teamName" maxlength="60" placeholder="Your team name"></div>
-   <div class="field"><label for="playerContact">Contact / game UID (optional)</label><input id="playerContact" maxlength="80" placeholder="Game UID or contact"></div>
-   <button id="submitRegistration" type="submit">Submit Registration</button>
-  </form>
-  <div id="regMessage" class="message hidden" style="margin-top:12px"></div>
- </div>
+   <div class="field"><label for="playerContact">Game UID (optional)</label><input id="playerContact" maxlength="80" placeholder="Enter your game UID"></div>
  <div class="card" style="margin-top:18px"><h3>My registrations</h3><div id="myRegistrations" class="muted">Sign in to view your registrations.</div></div>
 </section>
 <section id="admin">
