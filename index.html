@@ -14,13 +14,16 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
 header{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 5%;background:#0c1020;border-bottom:1px solid #252b42}
 .logo{font-size:19px;font-weight:900;text-decoration:none;color:var(--cyan)}
-nav{display:flex;gap:15px;flex-wrap:wrap}
+nav{display:flex;gap:15px;flex-wrap:wrap;align-items:center}
 nav a{color:#d1d5e8;text-decoration:none;font-size:13px}
-button,.btn{display:inline-block;padding:12px 16px;background:linear-gradient(100deg,var(--purple),#4f46e5);border:0;border-radius:9px;color:white;font-weight:bold;text-decoration:none;cursor:pointer}
+nav a:hover{color:var(--cyan)}
+button,.btn{display:inline-block;padding:12px 16px;background:linear-gradient(100deg,var(--purple),#4f46e5);border:0;border-radius:9px;color:white;font-weight:bold;text-decoration:none;cursor:pointer;text-align:center}
 button:disabled{opacity:.55;cursor:not-allowed}
 .secondary{background:#202943;border:1px solid #394563}
 .success{background:#047857}
 .danger{background:#9f1239}
+.discord-btn{background:#5865F2;color:white}
+.discord-btn:hover{background:#4752c4}
 .hero{padding:70px 6%;text-align:center;background:radial-gradient(ellipse at top,#43228b77,transparent 70%)}
 .tag{display:inline-block;padding:8px 13px;border-radius:25px;border:1px solid var(--cyan);color:var(--cyan);font-size:12px}
 h1{font-size:clamp(38px,8vw,66px);line-height:1.08}
@@ -45,9 +48,10 @@ textarea{min-height:90px}
 .pending{color:#fde68a}.accepted{color:#6ee7b7}.rejected{color:#fda4af}
 .item{border-top:1px solid var(--line);padding:14px 0;overflow-wrap:anywhere}
 footer{padding:25px;text-align:center;border-top:1px solid #252b42;color:#9ca3bf}
+.footer-links{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px}
 @media(max-width:700px){
  header{padding:12px 4%}
- nav{width:100%;justify-content:space-between;gap:8px}
+ nav{width:100%;justify-content:flex-start;gap:12px}
  nav a{font-size:12px}
  .grid{grid-template-columns:1fr}
  .hero{padding:50px 5%}
@@ -66,6 +70,7 @@ footer{padding:25px;text-align:center;border-top:1px solid #252b42;color:#9ca3bf
 <a href="#join">Register</a>
 <a href="#rooms">Rooms</a>
 <a href="#admin">Admin</a>
+<a href="https://discord.gg/gfWsWrSu" target="_blank" rel="noopener noreferrer">Discord ↗</a>
 </nav>
 <div class="row">
 <button id="loginBtn" type="button">Continue with Google</button>
@@ -78,7 +83,10 @@ footer{padding:25px;text-align:center;border-top:1px solid #252b42;color:#9ca3bf
 <div class="tag">🇳🇵 NEPAL GAMING COMMUNITY</div>
 <h1>PLAY TOGETHER<br><span>RISE TOGETHER</span></h1>
 <p>Welcome to NEPAL X ESPORTS. Join the community, register for tournaments and compete with players across Nepal.</p>
+<div class="row" style="justify-content:center;margin-top:22px">
 <a class="btn" href="#tournaments">Explore Tournaments</a>
+<a class="btn discord-btn" href="https://discord.gg/gfWsWrSu" target="_blank" rel="noopener noreferrer">💬 JOIN OUR DISCORD ↗</a>
+</div>
 </section>
 
 <section id="games">
@@ -125,6 +133,7 @@ footer{padding:25px;text-align:center;border-top:1px solid #252b42;color:#9ca3bf
 <h2>🛡️ Admin Panel</h2>
 <div id="adminNotice" class="message">Sign in with your authorized admin account.</div>
 <div id="adminPanel" class="hidden">
+
 <div class="card" style="margin:16px 0">
 <h3>Create Tournament</h3>
 <form id="tournamentForm">
@@ -156,7 +165,12 @@ footer{padding:25px;text-align:center;border-top:1px solid #252b42;color:#9ca3bf
 </section>
 </main>
 
-<footer>© <span id="year"></span> NEPAL X ESPORTS · Play fair, rise together 🇳🇵</footer>
+<footer>
+© <span id="year"></span> NEPAL X ESPORTS · Play fair, rise together 🇳🇵
+<div class="footer-links">
+<a class="btn discord-btn" href="https://discord.gg/gfWsWrSu" target="_blank" rel="noopener noreferrer">Join Our Discord ↗</a>
+</div>
+</footer>
 
 <script>
 "use strict";
@@ -441,24 +455,4 @@ async function updateSession(){
     await loadMyRegistrations();
     await loadRooms();
   }else{
-    $("userInfo").textContent="You are not signed in.";
-    $("myRegistrations").textContent="Sign in to view registrations.";
-    $("roomDetails").textContent="Sign in to view room details.";
-    await checkAdmin();
-  }
-}
-async function startApp(){
-  if(!supabaseClient){
-    $("tournamentList").textContent="Supabase client failed to initialize. Check internet and reload.";
-    return;
-  }
-  supabaseClient.auth.onAuthStateChange(()=>{
-    setTimeout(()=>updateSession(),0);
-  });
-  await loadTournaments();
-  await updateSession();
-}
-startApp();
-</script>
-</body>
-</html>
+    $("userInfo").textConten
