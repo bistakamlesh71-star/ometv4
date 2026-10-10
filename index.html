@@ -442,17 +442,53 @@ async function loadAdminRegistrations(){
 $("reloadAdminBtn").addEventListener("click",loadAdminRegistrations);
 
 /* SESSION AND APP START */
-async function updateSession(){
-  const {data,error}=await supabaseClient.auth.getSession();
-  if(error)console.error(error);
-  currentUser=data?.session?.user||null;
-  $("loginBtn").classList.toggle("hidden",!!currentUser);
-  $("logoutBtn").classList.toggle("hidden",!currentUser);
-  $("registrationForm").classList.toggle("hidden",!currentUser);
-  if(currentUser){
-    $("userInfo").textContent="Signed in as "+(currentUser.email||currentUser.id);
+async function updateSession() {
+  if (!supabaseClient) {
+    $("userInfo").textContent = "Supabase connection failed.";
+    return;
+  }
+
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if (error) {
+    console.error("Session error:", error);
+    $("userInfo").textContent = "Login session load bhayena.";
+    return;
+  }
+
+  currentUser = data?.session?.user || null;
+
+  $("loginBtn").classList.toggle("hidden", !!currentUser);
+  $("logoutBtn").classList.toggle("hidden", !currentUser);
+  $("registrationForm").classList.toggle("hidden", !currentUser);
+
+  if (currentUser) {
+    $("userInfo").textContent =
+      "Signed in as " + (currentUser.email || currentUser.id);
+
     await checkAdmin();
     await loadMyRegistrations();
     await loadRooms();
-  }else{
-    $("userInfo").textConten
+  } else {
+    $("userInfo").textContent = "Google bata login garnuhos.";
+  }
+}
+
+if (supabaseClient) {
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user || null;
+
+    // Auth callback sakiepachi session update gara
+    queueMicrotask(() => {
+      updateSession().catch(console.error);
+    });
+  });
+
+  loadTournaments();
+  updateSession().catch(console.error);
+} else {
+  $("userInfo").textContent = "Supabase connection failed.";
+}
+</script>
+</body>
+</html>
