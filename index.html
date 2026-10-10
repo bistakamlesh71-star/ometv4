@@ -590,6 +590,371 @@ if (supabaseClient) {
     message.textContent = "Prize load bhayena. Supabase settings check garnuhos.";
   }
 })();
+ 
+<style>
+#nxe-edit-prize {
+  display: none;
+  background: #101010;
+  color: white;
+  border: 1px solid #ef303b;
+  border-radius: 14px;
+  padding: 16px;
+  margin: 20px 12px;
+}
+#nxe-edit-prize h2 { color: #ff303b; }
+#nxe-edit-prize label {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #ddd;
+}
+#nxe-edit-prize input {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 5px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #191919;
+  color: white;
+  font-size: 16px;
+}
+#nxe-save-prize {
+  width: 100%;
+  margin-top: 18px;
+  padding: 13px;
+  border: 0;
+  border-radius: 8px;
+  background: #ed2633;
+  color: white;
+  font-weight: bold;
+}
+#nxe-edit-message { color: #ccc; font-size: 13px; }
+</style>
+
+<section id="nxe-edit-prize">
+  <h2>⚙️ Admin — Edit Prize</h2>
+
+  <label>Tournament Name</label>
+  <input id="nxe-edit-name" type="text" />
+
+  <label>Prize Pool (Rs.)</label>
+  <input id="nxe-edit-pool" type="number" min="0" />
+
+  <label>Entry Fee (Rs.)</label>
+  <input id="nxe-edit-entry" type="number" min="0" />
+
+  <label>🥇 First Prize (Rs.)</label>
+  <input id="nxe-edit-first" type="number" min="0" />
+
+  <label>🥈 Second Prize (Rs.)</label>
+  <input id="nxe-edit-second" type="number" min="0" />
+
+  <label>🥉 Third Prize (Rs.)</label>
+  <input id="nxe-edit-third" type="number" min="0" />
+
+  <button id="nxe-save-prize" type="button">Save Changes</button>
+  <p id="nxe-edit-message">Admin check hudai chha...</p>
+</section>
+
+<script>
+(async function initNXEPrizeEditor() {
+  const panel = document.getElementById("nxe-edit-prize");
+  const message = document.getElementById("nxe-edit-message");
+  const saveButton = document.getElementById("nxe-save-prize");
+
+  try {
+    if (typeof supabaseClient === "undefined" || !supabaseClient) {
+      throw new Error("Supabase connection available chhaina.");
+    }
+
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError) throw authError;
+
+    const user = authData?.user;
+    if (!user) {
+      message.textContent = "Prize edit garna Google Login garnuhos.";
+      return;
+    }
+
+    const { data: admin, error: adminError } = await supabaseClient
+      .from("site_admins")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (adminError) throw adminError;
+
+    if (!admin) {
+      message.textContent = "Admin permission chhaina.";
+      return;
+    }
+
+    const { data: prize, error: prizeError } = await supabaseClient
+      .from("tournament_prizes")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (prizeError) throw prizeError;
+    if (!prize) throw new Error("Prize record bhetiyena.");
+
+    document.getElementById("nxe-edit-name").value =
+      prize.tournament_name || "";
+    document.getElementById("nxe-edit-pool").value =
+      prize.prize_pool ?? 0;
+    document.getElementById("nxe-edit-entry").value =
+      prize.entry_fee ?? 0;
+    document.getElementById("nxe-edit-first").value =
+      prize.first_prize ?? 0;
+    document.getElementById("nxe-edit-second").value =
+      prize.second_prize ?? 0;
+    document.getElementById("nxe-edit-third").value =
+      prize.third_prize ?? 0;
+
+    panel.style.display = "block";
+    message.textContent = "Admin verified. Prize edit garna milchha.";
+
+    saveButton.addEventListener("click", async () => {
+      const amountIds = [
+        "nxe-edit-pool",
+        "nxe-edit-entry",
+        "nxe-edit-first",
+        "nxe-edit-second",
+        "nxe-edit-third"
+      ];
+
+      const amounts = amountIds.map(id =>
+        document.getElementById(id).value.trim()
+      );
+
+      if (
+        !document.getElementById("nxe-edit-name").value.trim() ||
+        amounts.some(v => v === "" || !Number.isFinite(Number(v)) || Number(v) < 0)
+      ) {
+        message.textContent = "Sabai field thik sanga bharnuhos.";
+        return;
+      }
+
+      saveButton.disabled = true;
+      message.textContent = "Saving...";
+
+      try {
+        const { error } = await supabaseClient
+          .from("tournament_prizes")
+          .update({
+            tournament_name:
+              document.getElementById("nxe-edit-name").value.trim(),
+            prize_pool: Number(amounts[0]),
+            entry_fee: Number(amounts[1]),
+            first_prize: Number(amounts[2]),
+            second_prize: Number(amounts[3]),
+            third_prize: Number(amounts[4])
+          })
+          .eq("id", prize.id);
+
+        if (error) throw error;
+
+        message.textContent = "Saved! Page refresh garera check garnuhos.";
+      } catch (e) {
+        console.error("Prize save error:", e);
+        message.textContent = "Save bhayena: " + e.message;
+      } finally {
+        saveButton.disabled = false;
+      }
+    });
+  } catch (e) {
+    console.error("Prize editor error:", e);
+    message.textContent = "Error: " + e.message;
+  }
+})();
+ 
+<style>
+#nxe-edit-prize {
+  display: none;
+  background: #101010;
+  color: white;
+  border: 1px solid #ef303b;
+  border-radius: 14px;
+  padding: 16px;
+  margin: 20px 12px;
+}
+#nxe-edit-prize h2 { color: #ff303b; }
+#nxe-edit-prize label {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #ddd;
+}
+#nxe-edit-prize input {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 5px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #191919;
+  color: white;
+  font-size: 16px;
+}
+#nxe-save-prize {
+  width: 100%;
+  margin-top: 18px;
+  padding: 13px;
+  border: 0;
+  border-radius: 8px;
+  background: #ed2633;
+  color: white;
+  font-weight: bold;
+}
+#nxe-edit-message { color: #ccc; font-size: 13px; }
+</style>
+
+<section id="nxe-edit-prize">
+  <h2>⚙️ Admin — Edit Prize</h2>
+
+  <label>Tournament Name</label>
+  <input id="nxe-edit-name" type="text" />
+
+  <label>Prize Pool (Rs.)</label>
+  <input id="nxe-edit-pool" type="number" min="0" />
+
+  <label>Entry Fee (Rs.)</label>
+  <input id="nxe-edit-entry" type="number" min="0" />
+
+  <label>🥇 First Prize (Rs.)</label>
+  <input id="nxe-edit-first" type="number" min="0" />
+
+  <label>🥈 Second Prize (Rs.)</label>
+  <input id="nxe-edit-second" type="number" min="0" />
+
+  <label>🥉 Third Prize (Rs.)</label>
+  <input id="nxe-edit-third" type="number" min="0" />
+
+  <button id="nxe-save-prize" type="button">Save Changes</button>
+  <p id="nxe-edit-message">Admin check hudai chha...</p>
+</section>
+
+<script>
+(async function initNXEPrizeEditor() {
+  const panel = document.getElementById("nxe-edit-prize");
+  const message = document.getElementById("nxe-edit-message");
+  const saveButton = document.getElementById("nxe-save-prize");
+
+  try {
+    if (typeof supabaseClient === "undefined" || !supabaseClient) {
+      throw new Error("Supabase connection available chhaina.");
+    }
+
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError) throw authError;
+
+    const user = authData?.user;
+    if (!user) {
+      message.textContent = "Prize edit garna Google Login garnuhos.";
+      return;
+    }
+
+    const { data: admin, error: adminError } = await supabaseClient
+      .from("site_admins")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (adminError) throw adminError;
+
+    if (!admin) {
+      message.textContent = "Admin permission chhaina.";
+      return;
+    }
+
+    const { data: prize, error: prizeError } = await supabaseClient
+      .from("tournament_prizes")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (prizeError) throw prizeError;
+    if (!prize) throw new Error("Prize record bhetiyena.");
+
+    document.getElementById("nxe-edit-name").value =
+      prize.tournament_name || "";
+    document.getElementById("nxe-edit-pool").value =
+      prize.prize_pool ?? 0;
+    document.getElementById("nxe-edit-entry").value =
+      prize.entry_fee ?? 0;
+    document.getElementById("nxe-edit-first").value =
+      prize.first_prize ?? 0;
+    document.getElementById("nxe-edit-second").value =
+      prize.second_prize ?? 0;
+    document.getElementById("nxe-edit-third").value =
+      prize.third_prize ?? 0;
+
+    panel.style.display = "block";
+    message.textContent = "Admin verified. Prize edit garna milchha.";
+
+    saveButton.addEventListener("click", async () => {
+      const amountIds = [
+        "nxe-edit-pool",
+        "nxe-edit-entry",
+        "nxe-edit-first",
+        "nxe-edit-second",
+        "nxe-edit-third"
+      ];
+
+      const amounts = amountIds.map(id =>
+        document.getElementById(id).value.trim()
+      );
+
+      if (
+        !document.getElementById("nxe-edit-name").value.trim() ||
+        amounts.some(v => v === "" || !Number.isFinite(Number(v)) || Number(v) < 0)
+      ) {
+        message.textContent = "Sabai field thik sanga bharnuhos.";
+        return;
+      }
+
+      saveButton.disabled = true;
+      message.textContent = "Saving...";
+
+      try {
+        const { error } = await supabaseClient
+          .from("tournament_prizes")
+          .update({
+            tournament_name:
+              document.getElementById("nxe-edit-name").value.trim(),
+            prize_pool: Number(amounts[0]),
+            entry_fee: Number(amounts[1]),
+            first_prize: Number(amounts[2]),
+            second_prize: Number(amounts[3]),
+            third_prize: Number(amounts[4])
+          })
+          .eq("id", prize.id);
+
+        if (error) throw error;
+
+        message.textContent = "Saved! Page refresh garera check garnuhos.";
+      } catch (e) {
+        console.error("Prize save error:", e);
+        message.textContent = "Save bhayena: " + e.message;
+      } finally {
+        saveButton.disabled = false;
+      }
+    });
+  } catch (e) {
+    console.error("Prize editor error:", e);
+    message.textContent = "Error: " + e.message;
+  }
+})();
+</script>
+ 
+</script>
 </script>
  
 </html>
