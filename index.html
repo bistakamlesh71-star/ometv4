@@ -491,4 +491,105 @@ if (supabaseClient) {
 }
 </script>
 </body>
+ 
+<style>
+#nxe-prize {
+  background: #090909;
+  color: #fff;
+  border: 1px solid #ed202b;
+  border-radius: 14px;
+  padding: 18px;
+  margin: 20px 12px;
+  font-family: Arial, sans-serif;
+}
+#nxe-prize h2 { color: #ff303b; margin-top: 0; }
+.nxe-prize-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.nxe-prize-card {
+  background: #191919;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 12px;
+}
+.nxe-prize-card small { color: #bbb; }
+.nxe-prize-card strong {
+  display: block;
+  color: #ff303b;
+  font-size: 21px;
+  margin-top: 8px;
+}
+#nxe-prize-message { color: #ccc; font-size: 13px; }
+</style>
+
+<section id="nxe-prize">
+  <h2>🏆 NEPAL X ESPORTS</h2>
+  <p>Tournament Prize & Entry Fee</p>
+
+  <div class="nxe-prize-grid">
+    <div class="nxe-prize-card">
+      <small>Prize Pool</small>
+      <strong id="nxe-pool">Loading...</strong>
+    </div>
+    <div class="nxe-prize-card">
+      <small>Entry Fee</small>
+      <strong id="nxe-entry">Loading...</strong>
+    </div>
+    <div class="nxe-prize-card">
+      <small>🥇 First Prize</small>
+      <strong id="nxe-first">Loading...</strong>
+    </div>
+    <div class="nxe-prize-card">
+      <small>🥈 Second Prize</small>
+      <strong id="nxe-second">Loading...</strong>
+    </div>
+    <div class="nxe-prize-card">
+      <small>🥉 Third Prize</small>
+      <strong id="nxe-third">Loading...</strong>
+    </div>
+  </div>
+
+  <p id="nxe-prize-message">Prize details load hudai chha...</p>
+</section>
+
+<script>
+(async function loadNXEPrize() {
+  const message = document.getElementById("nxe-prize-message");
+
+  try {
+    if (typeof supabaseClient === "undefined" || !supabaseClient) {
+      throw new Error("Supabase connection available chhaina.");
+    }
+
+    const { data, error } = await supabaseClient
+      .from("tournament_prizes")
+      .select("tournament_name, prize_pool, entry_fee, first_prize, second_prize, third_prize")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) throw new Error("Prize details bhetiyena.");
+
+    document.getElementById("nxe-pool").textContent =
+      "Rs. " + Number(data.prize_pool).toLocaleString("en-IN");
+    document.getElementById("nxe-entry").textContent =
+      "Rs. " + Number(data.entry_fee).toLocaleString("en-IN");
+    document.getElementById("nxe-first").textContent =
+      "Rs. " + Number(data.first_prize).toLocaleString("en-IN");
+    document.getElementById("nxe-second").textContent =
+      "Rs. " + Number(data.second_prize).toLocaleString("en-IN");
+    document.getElementById("nxe-third").textContent =
+      "Rs. " + Number(data.third_prize).toLocaleString("en-IN");
+
+    message.textContent = data.tournament_name;
+  } catch (error) {
+    console.error("Prize load error:", error);
+    message.textContent = "Prize load bhayena. Supabase settings check garnuhos.";
+  }
+})();
+</script>
+ 
 </html>
