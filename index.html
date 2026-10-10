@@ -1,572 +1,383 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#090909">
-<title>NEPAL X ESPORTS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080D1D">
+<title>NEPAL X ESPORTS | Tournament Hub</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 :root {
-  --bg:#090909;
-  --panel:#151515;
-  --red:#ff3030;
-  --orange:#ff8a00;
-  --text:#ffffff;
-  --muted:#bdbdbd;
-  --line:#333333;
+  --bg:#080D1D;
+  --panel:#111A30;
+  --panel2:#172441;
+  --blue:#00D9FF;
+  --purple:#7B61FF;
+  --text:#F3F6FF;
+  --muted:#9BA9C8;
+  --line:#263554;
+  --green:#46F5A5;
 }
-* { box-sizing:border-box; }
-body {
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:var(--bg);
-  color:var(--text);
+*{box-sizing:border-box}
+body{
+  margin:0;background:
+  radial-gradient(ellipse at 15% 0%,#182653 0,transparent 38%),
+  radial-gradient(ellipse at 100% 40%,#24174c 0,transparent 32%),var(--bg);
+  color:var(--text);font-family:Arial,sans-serif;min-height:100vh;
 }
-header {
-  padding:20px 15px;
-  text-align:center;
-  background:linear-gradient(135deg,#180000,#350606,#111);
-  border-bottom:2px solid var(--red);
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+header{
+  position:sticky;top:0;z-index:5;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 16px;background:#080D1D;
+  border-bottom:1px solid var(--line);
 }
-.logo {
-  font-size:25px;
-  font-weight:900;
-  color:var(--red);
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{
+  width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  color:#080D1D;font-weight:1000;font-size:13px;
+  box-shadow:0 0 20px #00d9ff40;
 }
-header p { color:#ddd; margin-bottom:0; }
-nav {
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:8px;
-  padding:12px;
-  background:#111;
-  position:sticky;
-  top:0;
-  z-index:5;
+.brand h1{font-size:14px;margin:0;letter-spacing:1px}
+.brand small{color:var(--blue);font-size:10px;letter-spacing:2px}
+.header-btn,.btn{
+  border:0;border-radius:10px;padding:11px 14px;font-weight:800;
+  background:linear-gradient(100deg,var(--blue),#9D8BFF);color:#080D1D;
 }
-nav a {
-  color:white;
-  text-decoration:none;
-  padding:9px 11px;
-  border:1px solid #444;
-  border-radius:8px;
-  font-size:13px;
+.header-btn{font-size:12px;white-space:nowrap}
+main{max-width:900px;margin:auto;padding:18px 15px 100px}
+.hero{
+  position:relative;overflow:hidden;padding:25px 20px;border:1px solid #33466d;
+  border-radius:22px;background:linear-gradient(130deg,#122344,#151633 70%,#25174b);
+  box-shadow:0 0 35px #00d9ff0c;
 }
-nav a:hover { background:var(--red); }
-.container {
-  width:min(100% - 24px,900px);
-  margin:20px auto;
+.hero:after{
+  content:"NXE";position:absolute;right:-5px;bottom:-14px;
+  font-size:100px;font-weight:1000;color:#ffffff08;pointer-events:none;
 }
-.hero {
-  padding:30px 18px;
-  text-align:center;
-  border:1px solid #512020;
-  border-radius:15px;
-  background:linear-gradient(135deg,#270707,#111 65%);
+.eyebrow{color:var(--blue);font-size:11px;font-weight:bold;letter-spacing:3px}
+.hero h2{font-size:clamp(26px,7vw,43px);line-height:1.1;margin:12px 0}
+.gradient-text{background:linear-gradient(90deg,var(--blue),#a99aff);color:transparent;background-clip:text}
+.hero p{color:var(--muted);font-size:13px;line-height:1.7;max-width:440px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn.secondary{background:#ffffff08;color:var(--text);border:1px solid #475777}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0 25px}
+.stat{padding:14px 8px;text-align:center;background:#101a30;border:1px solid var(--line);border-radius:13px}
+.stat strong{display:block;font-size:20px;color:var(--blue)}
+.stat span{display:block;margin-top:5px;font-size:10px;color:var(--muted)}
+.section{margin-top:25px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.section h3{margin:0;font-size:17px}
+.section-head small{color:var(--muted);font-size:11px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:12px}
+.card{background:linear-gradient(145deg,#121d35,#0d1428);border:1px solid var(--line);border-radius:16px;padding:16px}
+.card h4{margin:10px 0;font-size:16px}
+.card p{color:var(--muted);font-size:12px;line-height:1.6}
+.tag{display:inline-block;border-radius:6px;padding:5px 8px;background:#00d9ff12;color:var(--blue);font-size:10px;font-weight:bold}
+.tag.purple{background:#7b61ff1b;color:#b7aaff}
+.tag.green{background:#46f5a516;color:var(--green)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;color:var(--muted);font-size:11px}
+.full{width:100%;margin-top:8px}
+.form{display:grid;gap:12px}
+.field{display:grid;gap:6px}
+.field label{font-size:12px;color:#C6D2EE}
+.field input,.field select,.field textarea{
+  width:100%;padding:12px;border-radius:9px;border:1px solid #334363;
+  background:#080f20;color:white;min-width:0;
 }
-.hero h1 { font-size:30px; margin:8px 0; }
-.hero span { color:var(--orange); }
-button, .btn {
-  display:inline-block;
-  background:var(--red);
-  color:white;
-  padding:12px 15px;
-  border:0;
-  border-radius:8px;
-  font-weight:bold;
-  cursor:pointer;
-  text-decoration:none;
-  margin:4px 0;
+.field textarea{min-height:80px;resize:vertical}
+.notice{padding:13px;border:1px solid var(--line);border-radius:12px;background:#111a30;margin-bottom:10px}
+.notice strong{font-size:13px}
+.notice p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:0}
+.empty{color:var(--muted);font-size:12px;padding:18px;text-align:center;border:1px dashed var(--line);border-radius:12px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--blue)}
+.profile{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.avatar{width:48px;height:48px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#080D1D;font-weight:900}
+.muted{color:var(--muted)}
+.hidden{display:none!important}
+footer{text-align:center;color:#8290AF;font-size:11px;padding:25px 0}
+nav{
+  position:fixed;z-index:8;bottom:0;left:0;right:0;
+  display:flex;justify-content:space-around;gap:2px;padding:10px 4px calc(10px + env(safe-area-inset-bottom));
+  background:#080D1DF5;border-top:1px solid var(--line);backdrop-filter:blur(15px);
 }
-button:hover,.btn:hover { background:#c91616; }
-button:disabled { opacity:.5; cursor:not-allowed; }
-.secondary { background:#292929; border:1px solid #555; }
-section {
-  margin:20px 0;
-  padding:18px;
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:13px;
-}
-h2 {
-  color:var(--orange);
-  margin-top:0;
-}
-input,select,textarea {
-  width:100%;
-  padding:12px;
-  margin:6px 0 12px;
-  color:white;
-  background:#090909;
-  border:1px solid #444;
-  border-radius:8px;
-}
-label { color:#ddd; font-size:14px; }
-.card {
-  background:#202020;
-  border:1px solid #383838;
-  padding:14px;
-  border-radius:10px;
-  margin:10px 0;
-}
-.card h3 { color:var(--orange); margin-top:0; }
-.muted { color:var(--muted); font-size:14px; }
-.status { color:#65ef93; font-weight:bold; }
-.hidden { display:none !important; }
-.notice {
-  padding:12px;
-  background:#241818;
-  border-radius:8px;
-  color:#ffd0d0;
-  overflow-wrap:anywhere;
-}
-footer {
-  text-align:center;
-  padding:25px 12px;
-  color:#aaa;
-  border-top:1px solid #333;
-}
+nav button{flex:1;border:0;background:none;color:var(--muted);font-size:10px;padding:5px 0}
+nav button span{display:block;font-size:19px;margin-bottom:5px}
+nav button.active{color:var(--blue)}
+.toast{position:fixed;z-index:20;left:15px;right:15px;bottom:90px;padding:13px;border-radius:10px;background:#172441;border:1px solid var(--blue);font-size:13px;display:none}
+@media(min-width:650px){main{padding-top:25px}.hero{padding:35px}.stats{gap:14px}}
 </style>
 </head>
-
 <body>
 <header>
-  <div class="logo">🔥 NEPAL X ESPORTS</div>
-  <p>Free Fire Tournament • Nepal Gaming Community</p>
+  <div class="brand">
+    <div class="logo">NXE</div>
+    <div><h1>NEPAL X ESPORTS</h1><small>TOURNAMENT HUB</small></div>
+  </div>
+  <button class="header-btn" id="loginTop" onclick="login()">Google Login ↗</button>
 </header>
 
-<nav>
-  <a href="#home">Home</a>
-  <a href="#tournaments">Tournaments</a>
-  <a href="#register">Register</a>
-  <a href="#rooms">Room Details</a>
-  <a href="#account">Google Login</a>
-  <a href="#admin">Admin</a>
-</nav>
+<main>
+<section id="homePage">
+  <div class="hero">
+    <div class="eyebrow">🇳🇵 NEPAL GAMING COMMUNITY</div>
+    <h2>PLAY. FIGHT.<br><span class="gradient-text">BECOME A LEGEND.</span></h2>
+    <p>Join Free Fire tournaments, register your squad, track match results and compete with Nepal's gaming community.</p>
+    <div class="actions">
+      <button class="btn" onclick="showPage('tournamentsPage')">🏆 Join Tournament</button>
+      <button class="btn secondary" onclick="showPage('resultsPage')">View Results ↗</button>
+    </div>
+  </div>
 
-<main class="container">
+  <div class="stats">
+    <div class="stat"><strong id="tCount">2</strong><span>TOURNAMENTS</span></div>
+    <div class="stat"><strong id="rCount">0</strong><span>MY REGISTRATIONS</span></div>
+    <div class="stat"><strong>24/7</strong><span>ESPORTS HUB</span></div>
+  </div>
 
-<section class="hero" id="home">
-  <h1>WELCOME TO <span>NXE</span></h1>
-  <p>Play Together. Fight Together. Win Together.</p>
-  <p class="muted">Join NEPAL X ESPORTS Free Fire tournaments.</p>
-  <a class="btn" href="#tournaments">View Tournaments</a>
-  <a class="btn secondary" href="#register">Register Now</a>
-</section>
-
-<section id="account">
-  <h2>Google Account</h2>
-  <p id="loginStatus" class="muted">Login to register for tournaments.</p>
-  <button id="googleBtn" onclick="googleLogin()">Continue with Google</button>
-  <button id="logoutBtn" class="secondary hidden" onclick="logout()">Sign Out</button>
-</section>
-
-<section id="tournaments">
-  <h2>🏆 Tournaments</h2>
-  <p class="muted">Available tournament details.</p>
-  <div id="tournamentList">Loading tournaments...</div>
-  <button class="secondary" onclick="loadTournaments()">Refresh</button>
-</section>
-
-<section id="register">
-  <h2>🎮 Tournament Registration</h2>
-  <p class="muted">Google login garnu, ani form submit garnu.</p>
-
-  <form id="registrationForm">
-    <label>Tournament</label>
-    <select id="tournamentSelect" required>
-      <option value="">Select tournament</option>
-    </select>
-
-    <label>Player Name</label>
-    <input id="playerName" maxlength="60" required placeholder="Your in-game name">
-
-    <label>Free Fire UID</label>
-    <input id="ffUid" maxlength="30" required placeholder="Your FF UID">
-
-    <label>Contact Number (optional)</label>
-    <input id="phone" maxlength="20" placeholder="Your contact number">
-
-    <button type="submit">Submit Registration</button>
-  </form>
-  <p id="registrationMessage" class="muted"></p>
-</section>
-
-<section id="rooms">
-  <h2>🔑 Room Details</h2>
-  <p class="muted">Room details are visible to signed-in users.</p>
-  <div id="roomList">Login to check available room details.</div>
-  <button class="secondary" onclick="loadRooms()">Refresh Rooms</button>
-</section>
-
-<section id="admin">
-  <h2>🛡️ Admin Panel</h2>
-  <p class="muted">
-    Only an account added to the Supabase admin_users table can manage tournaments and rooms.
-  </p>
-  <p id="adminStatus" class="muted">Checking admin access...</p>
-
-  <div id="adminTools" class="hidden">
-    <h3>Create Tournament</h3>
-    <form id="tournamentForm">
-      <label>Tournament Name</label>
-      <input id="eventTitle" required maxlength="100" placeholder="e.g. NXE Weekly Cup">
-
-      <label>Entry Fee</label>
-      <input id="entryFee" required maxlength="40" value="Free">
-
-      <label>Prize Pool</label>
-      <input id="prizePool" required maxlength="60" placeholder="e.g. Rs. 500">
-
-      <label>Date and Time</label>
-      <input id="eventDate" required maxlength="80" placeholder="e.g. 25 October, 7 PM">
-
-      <button type="submit">Create Tournament</button>
-    </form>
-
-    <h3>Add Room Details</h3>
-    <form id="roomForm">
-      <label>Tournament</label>
-      <select id="roomTournament" required>
-        <option value="">Select tournament</option>
-      </select>
-
-      <label>Room ID</label>
-      <input id="roomId" required maxlength="80">
-
-      <label>Room Password</label>
-      <input id="roomPassword" required maxlength="80">
-
-      <label>Room Time</label>
-      <input id="roomTime" required maxlength="80" placeholder="e.g. 7:00 PM">
-
-      <button type="submit">Publish Room Details</button>
-    </form>
+  <div class="section">
+    <div class="section-head"><h3>🔥 Featured Tournaments</h3><small>COMPETE NOW</small></div>
+    <div id="featured" class="grid"></div>
+  </div>
+  <div class="section">
+    <div class="section-head"><h3>📢 Latest Notices</h3><small>UPDATES</small></div>
+    <div id="homeNotices"></div>
   </div>
 </section>
 
-<section>
-  <h2>📢 Join Our Community</h2>
-  <p>Discord link yaha add gara.</p>
-  <a class="btn secondary" href="https://discord.com/" target="_blank" rel="noopener">
-    Open Discord
-  </a>
+<section id="tournamentsPage" class="hidden">
+  <div class="section-head"><h3>🏆 Tournaments</h3><span class="tag">FREE FIRE</span></div>
+  <p class="muted" style="font-size:12px">Choose a tournament and register your squad.</p>
+  <div id="allTournaments" class="grid"></div>
+  <div class="section">
+    <div class="section-head"><h3>📝 Squad Registration</h3></div>
+    <div class="card">
+      <form id="registerForm" class="form">
+        <div class="field"><label>Tournament</label><select id="regTournament" required></select></div>
+        <div class="field"><label>Captain / Player Name</label><input id="playerName" maxlength="40" required placeholder="Your gaming name"></div>
+        <div class="field"><label>Free Fire UID</label><input id="ffUid" inputmode="numeric" maxlength="25" required placeholder="Enter your FF UID"></div>
+        <div class="field"><label>Team Name</label><input id="teamName" maxlength="40" required placeholder="Your squad name"></div>
+        <div class="field"><label>Mode</label><select id="teamMode"><option>Squad</option><option>Duo</option><option>Solo</option></select></div>
+        <button class="btn" type="submit">Submit Registration</button>
+      </form>
+      <p class="muted" style="font-size:11px">Demo mode saves registrations only on this device. Online registration needs database setup.</p>
+    </div>
+  </div>
 </section>
 
+<section id="resultsPage" class="hidden">
+  <div class="section-head"><h3>📊 Match Results</h3><span class="tag purple">LEADERBOARD</span></div>
+  <div class="card">
+    <div class="table-wrap"><table>
+      <thead><tr><th>RANK</th><th>TEAM</th><th>POINTS</th><th>BOOYAH</th></tr></thead>
+      <tbody id="resultsBody"></tbody>
+    </table></div>
+    <div id="resultsEmpty" class="empty hidden">Results will appear here when the organizer publishes them.</div>
+  </div>
+</section>
+
+<section id="noticesPage" class="hidden">
+  <div class="section-head"><h3>📢 Notices & Announcements</h3></div>
+  <div id="allNotices"></div>
+</section>
+
+<section id="profilePage" class="hidden">
+  <div class="section-head"><h3>👤 Player Profile</h3></div>
+  <div class="card">
+    <div class="profile">
+      <div class="avatar" id="avatar">NXE</div>
+      <div><strong id="profileName">Guest Player</strong><p class="muted" id="profileEmail" style="font-size:12px;margin:5px 0">Not logged in</p></div>
+    </div>
+    <button class="btn full" id="profileLogin" onclick="login()">Continue with Google</button>
+    <button class="btn secondary full hidden" id="logoutBtn" onclick="logout()">Sign Out</button>
+    <div class="section"><h3 style="font-size:14px">My Registrations</h3><div id="myRegistrations"></div></div>
+  </div>
+</section>
+
+<section id="adminPage" class="hidden">
+  <div class="section-head"><h3>🛡️ Admin Panel</h3><span class="tag purple">ORGANIZER</span></div>
+  <div class="card">
+    <p class="muted">Admin access must be configured securely in Supabase. This demo does not grant administrator privileges.</p>
+    <div class="field"><label>New Tournament Name</label><input id="adminTitle" placeholder="Tournament name"></div>
+    <div class="field" style="margin-top:12px"><label>Prize Pool (Rs.)</label><input id="adminPrize" type="number" min="0" placeholder="500"></div>
+    <div class="field" style="margin-top:12px"><label>Match Date</label><input id="adminDate" type="date"></div>
+    <button class="btn full" onclick="createTournament()">Add Demo Tournament</button>
+    <p class="muted" style="font-size:11px">Demo changes stay on this device only; they are not published to other players.</p>
+    <hr style="border-color:var(--line);margin:20px 0">
+    <h3 style="font-size:14px">Post Demo Notice</h3>
+    <div class="field" style="margin-top:12px"><label>Notice title</label><input id="noticeTitle" placeholder="Registration open"></div>
+    <div class="field" style="margin-top:12px"><label>Message</label><textarea id="noticeMessage" placeholder="Write announcement..."></textarea></div>
+    <button class="btn full" onclick="createNotice()">Post Demo Notice</button>
+  </div>
+</section>
+
+<footer>NEPAL X ESPORTS © 2026<br>MADE FOR THE GAMING COMMUNITY 🇳🇵</footer>
 </main>
 
-<footer>
-  <strong>NEPAL X ESPORTS</strong>
-  <p>Made for the Nepal Free Fire community 🇳🇵</p>
-</footer>
+<nav>
+  <button class="active" data-page="homePage" onclick="showPage('homePage',this)"><span>⌂</span>Home</button>
+  <button data-page="tournamentsPage" onclick="showPage('tournamentsPage',this)"><span>🏆</span>Tournaments</button>
+  <button data-page="resultsPage" onclick="showPage('resultsPage',this)"><span>📊</span>Results</button>
+  <button data-page="noticesPage" onclick="showPage('noticesPage',this)"><span>📢</span>Notices</button>
+  <button data-page="profilePage" onclick="showPage('profilePage',this)"><span>👤</span>Profile</button>
+</nav>
+<div class="toast" id="toast"></div>
 
 <script>
-const SUPABASE_URL = "https://rocuvqyunrixaddggrwo.supabase.co";
-const SUPABASE_KEY = "sb_publishable_Apnd7DlitzKEE0okv9KC3A_HLQlOS_V";
+// SUPABASE SETUP:
+// Add your own project URL and publishable/anon key here.
+// Never put a service_role key or database password in this file.
+const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY";
 
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+let db = null;
+let user = null;
+let tournaments = [
+  {id:"demo1",title:"NXE Battle Arena",mode:"Squad",prize:500,date:"To be announced",status:"Registration Open"},
+  {id:"demo2",title:"Free Fire Clash",mode:"Duo",prize:300,date:"To be announced",status:"Coming Soon"}
+];
+let notices = [
+  {title:"Welcome to NEPAL X ESPORTS",message:"Welcome gamers! Tournament dates and registration updates will be announced here."},
+  {title:"Tournament Rules",message:"Use your correct Free Fire UID and team details. Follow organizer instructions during matches."}
+];
+let results = [];
+let registrations = [];
+let activePage = "homePage";
 
-let currentUser = null;
-let isAdmin = false;
-let tournaments = [];
+try {
+  if (window.supabase && SUPABASE_URL.startsWith("https://") &&
+      SUPABASE_ANON_KEY !== "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY") {
+    db = window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  }
+} catch(e) { console.error(e); }
 
-function showMessage(id, message) {
-  document.getElementById(id).textContent = message;
+function toast(message) {
+  const el=document.getElementById("toast");
+  el.textContent=message;el.style.display="block";
+  setTimeout(()=>el.style.display="none",3200);
 }
-
-async function googleLogin() {
-  const { error } = await supabaseClient.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: window.location.origin
-    }
-  });
-
-  if (error) alert("Google login error: " + error.message);
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
-
+function showPage(id,button) {
+  activePage=id;
+  document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+  if(button && button.dataset.page) button.classList.add("active");
+  if(id==="profilePage") renderProfile();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function tournamentCard(t) {
+  return `<article class="card">
+    <span class="tag">${safe(t.status||"Registration Open")}</span>
+    <h4>⚡ ${safe(t.title)}</h4>
+    <p>Free Fire • ${safe(t.mode||"Squad")} mode</p>
+    <div class="meta"><span>🏆 Rs. ${safe(t.prize)}</span><span>📅 ${safe(t.date||"TBA")}</span></div>
+    <button class="btn full" onclick="selectTournament('${safe(t.id)}')">Register Now ↗</button>
+  </article>`;
+}
+function selectTournament(id) {
+  showPage("tournamentsPage");
+  document.getElementById("regTournament").value=id;
+  document.getElementById("registerForm").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function renderTournaments() {
+  document.getElementById("featured").innerHTML=tournaments.slice(0,2).map(tournamentCard).join("")||'<div class="empty">No tournaments yet.</div>';
+  document.getElementById("allTournaments").innerHTML=tournaments.map(tournamentCard).join("")||'<div class="empty">No tournaments available.</div>';
+  document.getElementById("regTournament").innerHTML=tournaments.map(t=>`<option value="${safe(t.id)}">${safe(t.title)}</option>`).join("");
+  document.getElementById("tCount").textContent=tournaments.length;
+}
+function renderNotices() {
+  const html=notices.map(n=>`<article class="notice"><strong>📣 ${safe(n.title)}</strong><p>${safe(n.message)}</p></article>`).join("")||'<div class="empty">No announcements yet.</div>';
+  document.getElementById("homeNotices").innerHTML=notices.slice(0,2).map(n=>`<article class="notice"><strong>📣 ${safe(n.title)}</strong><p>${safe(n.message)}</p></article>`).join("");
+  document.getElementById("allNotices").innerHTML=html;
+}
+function renderResults() {
+  document.getElementById("resultsBody").innerHTML=results.map((r,i)=>`<tr><td>${i+1}</td><td>${safe(r.team)}</td><td>${safe(r.points)}</td><td>${safe(r.booyah)}</td></tr>`).join("");
+  document.getElementById("resultsEmpty").classList.toggle("hidden",results.length>0);
+}
+function renderProfile() {
+  document.getElementById("profileName").textContent=user?.user_metadata?.full_name||user?.user_metadata?.name||"Guest Player";
+  document.getElementById("profileEmail").textContent=user?.email||"Not logged in";
+  document.getElementById("avatar").textContent=(user?.email||"NXE").slice(0,2).toUpperCase();
+  document.getElementById("loginTop").textContent=user?"My Account":"Google Login ↗";
+  document.getElementById("profileLogin").classList.toggle("hidden",!!user);
+  document.getElementById("logoutBtn").classList.toggle("hidden",!user);
+  const mine=registrations.filter(r=>user&&r.userId===user.id);
+  document.getElementById("myRegistrations").innerHTML=mine.length?mine.map(r=>`<div class="notice"><strong>${safe(r.team)}</strong><p>${safe(r.player)} • UID: ${safe(r.uid)}</p></div>`).join(""):'<div class="empty">Your registrations will appear here on this device.</div>';
+  document.getElementById("rCount").textContent=mine.length;
+}
+async function login() {
+  if(!db){toast("Pahila Supabase URL ra publishable/anon key set gara.");return;}
+  const redirect=window.location.origin+window.location.pathname;
+  const {error}=await db.auth.signInWithOAuth({provider:"google",options:{redirectTo:redirect}});
+  if(error)toast("Login error: "+error.message);
+}
 async function logout() {
-  const { error } = await supabaseClient.auth.signOut();
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  currentUser = null;
-  isAdmin = false;
-  await updateAccount();
+  if(db){const {error}=await db.auth.signOut();if(error){toast(error.message);return;}}
+  user=null;renderProfile();toast("Signed out.");
 }
-
-async function updateAccount() {
-  const { data } = await supabaseClient.auth.getSession();
-  currentUser = data.session?.user || null;
-
-  document.getElementById("googleBtn").classList.toggle("hidden", !!currentUser);
-  document.getElementById("logoutBtn").classList.toggle("hidden", !currentUser);
-
-  if (currentUser) {
-    showMessage(
-      "loginStatus",
-      "Logged in: " + (currentUser.email || "Google user")
-    );
-  } else {
-    showMessage("loginStatus", "Login to register for tournaments.");
-  }
-
-  await checkAdmin();
-  await loadRooms();
-}
-
-async function checkAdmin() {
-  const status = document.getElementById("adminStatus");
-  const tools = document.getElementById("adminTools");
-
-  isAdmin = false;
-  tools.classList.add("hidden");
-
-  if (!currentUser) {
-    status.textContent = "Admin access ko lagi pahila Google login gara.";
-    return;
-  }
-
-  const { data, error } = await supabaseClient
-    .from("admin_users")
-    .select("user_id")
-    .eq("user_id", currentUser.id)
-    .maybeSingle();
-
-  if (error) {
-    status.textContent = "Admin check failed. Supabase tables/RLS check gara.";
-    console.error(error);
-    return;
-  }
-
-  isAdmin = !!data;
-
-  if (isAdmin) {
-    status.textContent = "Admin access enabled.";
-    tools.classList.remove("hidden");
-  } else {
-    status.textContent = "Yo Google account admin list ma chaina.";
-  }
-}
-
-async function loadTournaments() {
-  const list = document.getElementById("tournamentList");
-  const select = document.getElementById("tournamentSelect");
-  const roomSelect = document.getElementById("roomTournament");
-
-  list.textContent = "Loading tournaments...";
-
-  const { data, error } = await supabaseClient
-    .from("tournaments")
-    .select("*")
-    .order("id", { ascending: false });
-
-  if (error) {
-    list.textContent = "Tournament load bhayena. Supabase table/RLS setup gara.";
-    console.error(error);
-    return;
-  }
-
-  tournaments = data || [];
-  list.innerHTML = "";
-
-  select.innerHTML = '<option value="">Select tournament</option>';
-  roomSelect.innerHTML = '<option value="">Select tournament</option>';
-
-  if (!tournaments.length) {
-    list.textContent = "Ahile tournament chaina.";
-    return;
-  }
-
-  tournaments.forEach(t => {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    const title = document.createElement("h3");
-    title.textContent = t.title || "Free Fire Tournament";
-
-    const details = document.createElement("p");
-    details.textContent =
-      "Entry: " + (t.entry_fee || "Not set") +
-      " | Prize: " + (t.prize_pool || "Not set");
-
-    const date = document.createElement("p");
-    date.textContent = "Date: " + (t.event_date || "To be announced");
-
-    const status = document.createElement("p");
-    status.className = "status";
-    status.textContent = t.status || "Open";
-
-    card.append(title, details, date, status);
-    list.appendChild(card);
-
-    const option = document.createElement("option");
-    option.value = t.id;
-    option.textContent = t.title;
-    select.appendChild(option);
-
-    const roomOption = document.createElement("option");
-    roomOption.value = t.id;
-    roomOption.textContent = t.title;
-    roomSelect.appendChild(roomOption);
-  });
-}
-
-document.getElementById("registrationForm").addEventListener("submit", async e => {
+document.getElementById("registerForm").addEventListener("submit",async e=>{
   e.preventDefault();
-
-  if (!currentUser) {
-    showMessage("registrationMessage", "Pahila Google Continue garnu.");
-    return;
-  }
-
-  const tournamentId = document.getElementById("tournamentSelect").value;
-  const playerName = document.getElementById("playerName").value.trim();
-  const ffUid = document.getElementById("ffUid").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-
-  if (!tournamentId || !playerName || !ffUid) {
-    showMessage("registrationMessage", "Sabai required field bharnu.");
-    return;
-  }
-
-  const { error } = await supabaseClient.from("registrations").insert({
-    tournament_id: Number(tournamentId),
-    user_id: currentUser.id,
-    player_name: playerName,
-    ff_uid: ffUid,
-    phone: phone || null
-  });
-
-  if (error) {
-    showMessage("registrationMessage", "Registration error: " + error.message);
-    return;
-  }
-
-  showMessage("registrationMessage", "Registration successful! 🇳🇵");
-  e.target.reset();
-});
-
-async function loadRooms() {
-  const list = document.getElementById("roomList");
-  list.innerHTML = "";
-
-  if (!currentUser) {
-    list.textContent = "Room details herna Google login gara.";
-    return;
-  }
-
-  const { data, error } = await supabaseClient
-    .from("rooms")
-    .select("id, tournament_id, room_id, room_password, room_time, tournaments(title)")
-    .order("id", { ascending: false });
-
-  if (error) {
-    list.textContent = "Room load bhayena. Supabase table/RLS setup check gara.";
-    console.error(error);
-    return;
-  }
-
-  if (!data || !data.length) {
-    list.textContent = "Ahile room details publish bhayeko chaina.";
-    return;
-  }
-
-  data.forEach(r => {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    const title = document.createElement("h3");
-    title.textContent = r.tournaments?.title || "Tournament Room";
-
-    const roomId = document.createElement("p");
-    roomId.textContent = "Room ID: " + r.room_id;
-
-    const password = document.createElement("p");
-    password.textContent = "Password: " + r.room_password;
-
-    const time = document.createElement("p");
-    time.textContent = "Time: " + r.room_time;
-
-    card.append(title, roomId, password, time);
-    list.appendChild(card);
-  });
-}
-
-document.getElementById("tournamentForm").addEventListener("submit", async e => {
-  e.preventDefault();
-
-  if (!isAdmin) {
-    alert("Admin access chaina.");
-    return;
-  }
-
-  const record = {
-    title: document.getElementById("eventTitle").value.trim(),
-    game: "Free Fire",
-    entry_fee: document.getElementById("entryFee").value.trim(),
-    prize_pool: document.getElementById("prizePool").value.trim(),
-    event_date: document.getElementById("eventDate").value.trim(),
-    status: "Open"
+  const t=tournaments.find(x=>x.id===document.getElementById("regTournament").value);
+  if(!t){toast("Tournament select gara.");return;}
+  if(db&&!user){toast("Online registration ko lagi pahila Google Login gara.");return;}
+  const record={
+    tournament:t.title,player:document.getElementById("playerName").value.trim(),
+    uid:document.getElementById("ffUid").value.trim(),
+    team:document.getElementById("teamName").value.trim(),
+    mode:document.getElementById("teamMode").value,
+    userId:user?.id||null
   };
-
-  const { error } = await supabaseClient.from("tournaments").insert(record);
-
-  if (error) {
-    alert("Tournament create error: " + error.message);
-    return;
+  if(!record.player||!record.uid||!record.team){toast("Sabai details bhara.");return;}
+  if(db){
+    // Online inserts require a matching registrations table and RLS policies.
+    const {error}=await db.from("registrations").insert({
+      user_id:user.id,tournament_name:record.tournament,
+      player_name:record.player,ff_uid:record.uid,
+      team_name:record.team,team_mode:record.mode
+    });
+    if(error){toast("Database setup baki chha: "+error.message);return;}
   }
-
-  alert("Tournament created!");
-  e.target.reset();
-  await loadTournaments();
+  registrations.push(record);
+  try{localStorage.setItem("nxe_demo_registrations",JSON.stringify(registrations));}catch(e){}
+  renderProfile();e.target.reset();toast("Registration submitted!");
 });
-
-document.getElementById("roomForm").addEventListener("submit", async e => {
-  e.preventDefault();
-
-  if (!isAdmin) {
-    alert("Admin access chaina.");
-    return;
+function createTournament() {
+  const title=document.getElementById("adminTitle").value.trim();
+  if(!title){toast("Tournament name halnu.");return;}
+  tournaments.push({id:"local"+Date.now(),title,mode:"Squad",
+    prize:Math.max(0,Number(document.getElementById("adminPrize").value)||0),
+    date:document.getElementById("adminDate").value||"To be announced",status:"Registration Open"});
+  renderTournaments();toast("Demo tournament added on this device.");
+}
+function createNotice() {
+  const title=document.getElementById("noticeTitle").value.trim();
+  const message=document.getElementById("noticeMessage").value.trim();
+  if(!title||!message){toast("Notice title ra message dubai bhara.");return;}
+  notices.unshift({title,message});renderNotices();toast("Demo notice added on this device.");
+}
+async function start() {
+  try {
+    registrations=JSON.parse(localStorage.getItem("nxe_demo_registrations")||"[]");
+  } catch(e) { registrations=[]; }
+  if(db) {
+    const {data,error}=await db.auth.getSession();
+    if(!error) user=data.session?.user||null;
+    db.auth.onAuthStateChange((_event,session)=>{
+      user=session?.user||null;renderProfile();
+    });
   }
-
-  const record = {
-    tournament_id: Number(document.getElementById("roomTournament").value),
-    room_id: document.getElementById("roomId").value.trim(),
-    room_password: document.getElementById("roomPassword").value.trim(),
-    room_time: document.getElementById("roomTime").value.trim()
-  };
-
-  const { error } = await supabaseClient.from("rooms").insert(record);
-
-  if (error) {
-    alert("Room publish error: " + error.message);
-    return;
-  }
-
-  alert("Room details published!");
-  e.target.reset();
-  await loadRooms();
-});
-
-supabaseClient.auth.onAuthStateChange(() => {
-  setTimeout(() => updateAccount(), 0);
-});
-
-(async function startSite() {
-  await updateAccount();
-  await loadTournaments();
-})();
+  renderTournaments();renderNotices();renderResults();renderProfile();
+}
+start();
 </script>
 </body>
 </html>
