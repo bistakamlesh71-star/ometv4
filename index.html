@@ -1,383 +1,186 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ne">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080D1D">
-<title>NEPAL X ESPORTS | Tournament Hub</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nepali Adda Tournament</title>
 <style>
-:root {
-  --bg:#080D1D;
-  --panel:#111A30;
-  --panel2:#172441;
-  --blue:#00D9FF;
-  --purple:#7B61FF;
-  --text:#F3F6FF;
-  --muted:#9BA9C8;
-  --line:#263554;
-  --green:#46F5A5;
-}
 *{box-sizing:border-box}
-body{
-  margin:0;background:
-  radial-gradient(ellipse at 15% 0%,#182653 0,transparent 38%),
-  radial-gradient(ellipse at 100% 40%,#24174c 0,transparent 32%),var(--bg);
-  color:var(--text);font-family:Arial,sans-serif;min-height:100vh;
-}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
-header{
-  position:sticky;top:0;z-index:5;
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:14px 16px;background:#080D1D;
-  border-bottom:1px solid var(--line);
-}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}
-.logo{
-  width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
-  background:linear-gradient(135deg,var(--blue),var(--purple));
-  color:#080D1D;font-weight:1000;font-size:13px;
-  box-shadow:0 0 20px #00d9ff40;
-}
-.brand h1{font-size:14px;margin:0;letter-spacing:1px}
-.brand small{color:var(--blue);font-size:10px;letter-spacing:2px}
-.header-btn,.btn{
-  border:0;border-radius:10px;padding:11px 14px;font-weight:800;
-  background:linear-gradient(100deg,var(--blue),#9D8BFF);color:#080D1D;
-}
-.header-btn{font-size:12px;white-space:nowrap}
-main{max-width:900px;margin:auto;padding:18px 15px 100px}
-.hero{
-  position:relative;overflow:hidden;padding:25px 20px;border:1px solid #33466d;
-  border-radius:22px;background:linear-gradient(130deg,#122344,#151633 70%,#25174b);
-  box-shadow:0 0 35px #00d9ff0c;
-}
-.hero:after{
-  content:"NXE";position:absolute;right:-5px;bottom:-14px;
-  font-size:100px;font-weight:1000;color:#ffffff08;pointer-events:none;
-}
-.eyebrow{color:var(--blue);font-size:11px;font-weight:bold;letter-spacing:3px}
-.hero h2{font-size:clamp(26px,7vw,43px);line-height:1.1;margin:12px 0}
-.gradient-text{background:linear-gradient(90deg,var(--blue),#a99aff);color:transparent;background-clip:text}
-.hero p{color:var(--muted);font-size:13px;line-height:1.7;max-width:440px}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-.btn.secondary{background:#ffffff08;color:var(--text);border:1px solid #475777}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0 25px}
-.stat{padding:14px 8px;text-align:center;background:#101a30;border:1px solid var(--line);border-radius:13px}
-.stat strong{display:block;font-size:20px;color:var(--blue)}
-.stat span{display:block;margin-top:5px;font-size:10px;color:var(--muted)}
-.section{margin-top:25px}
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
-.section h3{margin:0;font-size:17px}
-.section-head small{color:var(--muted);font-size:11px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:12px}
-.card{background:linear-gradient(145deg,#121d35,#0d1428);border:1px solid var(--line);border-radius:16px;padding:16px}
-.card h4{margin:10px 0;font-size:16px}
-.card p{color:var(--muted);font-size:12px;line-height:1.6}
-.tag{display:inline-block;border-radius:6px;padding:5px 8px;background:#00d9ff12;color:var(--blue);font-size:10px;font-weight:bold}
-.tag.purple{background:#7b61ff1b;color:#b7aaff}
-.tag.green{background:#46f5a516;color:var(--green)}
-.meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;color:var(--muted);font-size:11px}
-.full{width:100%;margin-top:8px}
-.form{display:grid;gap:12px}
-.field{display:grid;gap:6px}
-.field label{font-size:12px;color:#C6D2EE}
-.field input,.field select,.field textarea{
-  width:100%;padding:12px;border-radius:9px;border:1px solid #334363;
-  background:#080f20;color:white;min-width:0;
-}
-.field textarea{min-height:80px;resize:vertical}
-.notice{padding:13px;border:1px solid var(--line);border-radius:12px;background:#111a30;margin-bottom:10px}
-.notice strong{font-size:13px}
-.notice p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:0}
-.empty{color:var(--muted);font-size:12px;padding:18px;text-align:center;border:1px dashed var(--line);border-radius:12px}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
-th{color:var(--blue)}
-.profile{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-.avatar{width:48px;height:48px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#080D1D;font-weight:900}
-.muted{color:var(--muted)}
+body{margin:0;background:#15002f;color:white;font-family:Arial,sans-serif}
+header{padding:17px;background:#08051c;font-size:21px;font-weight:bold}
+main{padding:16px;max-width:650px;margin:auto}
+.card{background:#09051d;padding:18px;border-radius:15px;margin:14px 0}
+button{border:0;padding:13px;border-radius:8px;font-weight:bold;cursor:pointer}
+input{width:100%;padding:13px;margin:8px 0;background:#242b42;color:white;border:1px solid #555;border-radius:8px}
+.purple{background:#6840d6;color:white;width:100%;margin-top:10px}
+.google{background:white;color:#222;width:100%;margin:12px 0}
+.red{background:#f21b20;color:white}
+.green{background:#208e62;color:white}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.tile{background:#260744;padding:17px 8px;border-radius:12px;text-align:center}
+.muted{color:#aaa}
+nav{display:flex;gap:7px;flex-wrap:wrap}
+nav button{background:#30204a;color:white;flex:1}
 .hidden{display:none!important}
-footer{text-align:center;color:#8290AF;font-size:11px;padding:25px 0}
-nav{
-  position:fixed;z-index:8;bottom:0;left:0;right:0;
-  display:flex;justify-content:space-around;gap:2px;padding:10px 4px calc(10px + env(safe-area-inset-bottom));
-  background:#080D1DF5;border-top:1px solid var(--line);backdrop-filter:blur(15px);
-}
-nav button{flex:1;border:0;background:none;color:var(--muted);font-size:10px;padding:5px 0}
-nav button span{display:block;font-size:19px;margin-bottom:5px}
-nav button.active{color:var(--blue)}
-.toast{position:fixed;z-index:20;left:15px;right:15px;bottom:90px;padding:13px;border-radius:10px;background:#172441;border:1px solid var(--blue);font-size:13px;display:none}
-@media(min-width:650px){main{padding-top:25px}.hero{padding:35px}.stats{gap:14px}}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">
-    <div class="logo">NXE</div>
-    <div><h1>NEPAL X ESPORTS</h1><small>TOURNAMENT HUB</small></div>
-  </div>
-  <button class="header-btn" id="loginTop" onclick="login()">Google Login ↗</button>
-</header>
+
+<header>🎮 NEPALI ADDA <span style="float:right">🪙 <span id="coins">0</span></span></header>
 
 <main>
-<section id="homePage">
-  <div class="hero">
-    <div class="eyebrow">🇳🇵 NEPAL GAMING COMMUNITY</div>
-    <h2>PLAY. FIGHT.<br><span class="gradient-text">BECOME A LEGEND.</span></h2>
-    <p>Join Free Fire tournaments, register your squad, track match results and compete with Nepal's gaming community.</p>
-    <div class="actions">
-      <button class="btn" onclick="showPage('tournamentsPage')">🏆 Join Tournament</button>
-      <button class="btn secondary" onclick="showPage('resultsPage')">View Results ↗</button>
-    </div>
-  </div>
+<section id="login" class="card">
+<h2>Welcome to Nepali Adda</h2>
+<p class="muted">Login to join tournaments</p>
 
-  <div class="stats">
-    <div class="stat"><strong id="tCount">2</strong><span>TOURNAMENTS</span></div>
-    <div class="stat"><strong id="rCount">0</strong><span>MY REGISTRATIONS</span></div>
-    <div class="stat"><strong>24/7</strong><span>ESPORTS HUB</span></div>
-  </div>
+<button class="google" onclick="googleLogin()">
+🌐 Continue with Google
+</button>
 
-  <div class="section">
-    <div class="section-head"><h3>🔥 Featured Tournaments</h3><small>COMPETE NOW</small></div>
-    <div id="featured" class="grid"></div>
-  </div>
-  <div class="section">
-    <div class="section-head"><h3>📢 Latest Notices</h3><small>UPDATES</small></div>
-    <div id="homeNotices"></div>
-  </div>
+<hr>
+<p>Or continue with email</p>
+<input id="email" type="email" placeholder="Email address">
+<input id="password" type="password" placeholder="Password">
+<button class="purple" onclick="emailLogin()">Login</button>
+<button class="purple" onclick="register()">Create Account</button>
+<p id="message" class="muted"></p>
 </section>
 
-<section id="tournamentsPage" class="hidden">
-  <div class="section-head"><h3>🏆 Tournaments</h3><span class="tag">FREE FIRE</span></div>
-  <p class="muted" style="font-size:12px">Choose a tournament and register your squad.</p>
-  <div id="allTournaments" class="grid"></div>
-  <div class="section">
-    <div class="section-head"><h3>📝 Squad Registration</h3></div>
-    <div class="card">
-      <form id="registerForm" class="form">
-        <div class="field"><label>Tournament</label><select id="regTournament" required></select></div>
-        <div class="field"><label>Captain / Player Name</label><input id="playerName" maxlength="40" required placeholder="Your gaming name"></div>
-        <div class="field"><label>Free Fire UID</label><input id="ffUid" inputmode="numeric" maxlength="25" required placeholder="Enter your FF UID"></div>
-        <div class="field"><label>Team Name</label><input id="teamName" maxlength="40" required placeholder="Your squad name"></div>
-        <div class="field"><label>Mode</label><select id="teamMode"><option>Squad</option><option>Duo</option><option>Solo</option></select></div>
-        <button class="btn" type="submit">Submit Registration</button>
-      </form>
-      <p class="muted" style="font-size:11px">Demo mode saves registrations only on this device. Online registration needs database setup.</p>
-    </div>
-  </div>
-</section>
+<section id="dashboard" class="hidden">
+<div class="card">
+<h2 id="welcome">Welcome!</h2>
+<p>🪙 Coin Wallet: <b id="wallet">0</b> Coins</p>
+<small>Demo points only · 1 virtual point = 1 demo coin</small>
+</div>
 
-<section id="resultsPage" class="hidden">
-  <div class="section-head"><h3>📊 Match Results</h3><span class="tag purple">LEADERBOARD</span></div>
-  <div class="card">
-    <div class="table-wrap"><table>
-      <thead><tr><th>RANK</th><th>TEAM</th><th>POINTS</th><th>BOOYAH</th></tr></thead>
-      <tbody id="resultsBody"></tbody>
-    </table></div>
-    <div id="resultsEmpty" class="empty hidden">Results will appear here when the organizer publishes them.</div>
-  </div>
-</section>
+<div class="grid">
+<div class="tile"><h2>🎮</h2>Ongoing Matches</div>
+<div class="tile"><h2>🏆</h2>Winning Coins</div>
+<div class="tile"><h2>📅</h2>Upcoming</div>
+<div class="tile"><h2>👤</h2>Account</div>
+</div>
 
-<section id="noticesPage" class="hidden">
-  <div class="section-head"><h3>📢 Notices & Announcements</h3></div>
-  <div id="allNotices"></div>
-</section>
+<div class="card">
+<h3>🎯 Clash Squad</h3>
+<p>Join a demo contest</p>
+<button class="purple" onclick="showMatches()">View Matches</button>
+<div id="matches" class="hidden">
+<hr>
+<p>CS-1001 · Team: 1v1 · Entry: 10 demo coins</p>
+<button class="red" onclick="acceptMatch(10)">Accept Match</button>
+<hr>
+<p>CS-1002 · Team: 1v4 · Entry: 20 demo coins</p>
+<button class="red" onclick="acceptMatch(20)">Accept Match</button>
+</div>
+</div>
 
-<section id="profilePage" class="hidden">
-  <div class="section-head"><h3>👤 Player Profile</h3></div>
-  <div class="card">
-    <div class="profile">
-      <div class="avatar" id="avatar">NXE</div>
-      <div><strong id="profileName">Guest Player</strong><p class="muted" id="profileEmail" style="font-size:12px;margin:5px 0">Not logged in</p></div>
-    </div>
-    <button class="btn full" id="profileLogin" onclick="login()">Continue with Google</button>
-    <button class="btn secondary full hidden" id="logoutBtn" onclick="logout()">Sign Out</button>
-    <div class="section"><h3 style="font-size:14px">My Registrations</h3><div id="myRegistrations"></div></div>
-  </div>
-</section>
+<div class="card">
+<h3>💳 Top Up / Add Money</h3>
+<p class="muted">Real payments are not enabled in this demo.</p>
+<button class="green" onclick="alert('Demo wallet only. No real payment was made.')">Open Top Up</button>
+</div>
 
-<section id="adminPage" class="hidden">
-  <div class="section-head"><h3>🛡️ Admin Panel</h3><span class="tag purple">ORGANIZER</span></div>
-  <div class="card">
-    <p class="muted">Admin access must be configured securely in Supabase. This demo does not grant administrator privileges.</p>
-    <div class="field"><label>New Tournament Name</label><input id="adminTitle" placeholder="Tournament name"></div>
-    <div class="field" style="margin-top:12px"><label>Prize Pool (Rs.)</label><input id="adminPrize" type="number" min="0" placeholder="500"></div>
-    <div class="field" style="margin-top:12px"><label>Match Date</label><input id="adminDate" type="date"></div>
-    <button class="btn full" onclick="createTournament()">Add Demo Tournament</button>
-    <p class="muted" style="font-size:11px">Demo changes stay on this device only; they are not published to other players.</p>
-    <hr style="border-color:var(--line);margin:20px 0">
-    <h3 style="font-size:14px">Post Demo Notice</h3>
-    <div class="field" style="margin-top:12px"><label>Notice title</label><input id="noticeTitle" placeholder="Registration open"></div>
-    <div class="field" style="margin-top:12px"><label>Message</label><textarea id="noticeMessage" placeholder="Write announcement..."></textarea></div>
-    <button class="btn full" onclick="createNotice()">Post Demo Notice</button>
-  </div>
-</section>
+<div class="card">
+<h3>📋 My Matches</h3>
+<p id="myMatches">No matches joined yet.</p>
+</div>
 
-<footer>NEPAL X ESPORTS © 2026<br>MADE FOR THE GAMING COMMUNITY 🇳🇵</footer>
+<div class="card">
+<h3>👤 Account</h3>
+<p id="profile"></p>
+<button class="red" onclick="logout()">Logout</button>
+</div>
+</section>
 </main>
 
-<nav>
-  <button class="active" data-page="homePage" onclick="showPage('homePage',this)"><span>⌂</span>Home</button>
-  <button data-page="tournamentsPage" onclick="showPage('tournamentsPage',this)"><span>🏆</span>Tournaments</button>
-  <button data-page="resultsPage" onclick="showPage('resultsPage',this)"><span>📊</span>Results</button>
-  <button data-page="noticesPage" onclick="showPage('noticesPage',this)"><span>📢</span>Notices</button>
-  <button data-page="profilePage" onclick="showPage('profilePage',this)"><span>👤</span>Profile</button>
-</nav>
-<div class="toast" id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <script>
-// SUPABASE SETUP:
-// Add your own project URL and publishable/anon key here.
-// Never put a service_role key or database password in this file.
-const SUPABASE_URL = "https://vjpqbtwtxcnelsarvmii.supabase.co/rest/v1/";
-const SUPABASE_ANON_KEY = "sb_publishable_Aoh425dW4LbhYp7ZTGQP3g_DadKML33";
+// Replace with your Firebase Web App configuration.
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  appId: "YOUR_APP_ID"
+};
 
-let db = null;
-let user = null;
-let tournaments = [
-  {id:"demo1",title:"NXE Battle Arena",mode:"Squad",prize:500,date:"To be announced",status:"Registration Open"},
-  {id:"demo2",title:"Free Fire Clash",mode:"Duo",prize:300,date:"To be announced",status:"Coming Soon"}
-];
-let notices = [
-  {title:"Welcome to NEPAL X ESPORTS",message:"Welcome gamers! Tournament dates and registration updates will be announced here."},
-  {title:"Tournament Rules",message:"Use your correct Free Fire UID and team details. Follow organizer instructions during matches."}
-];
-let results = [];
-let registrations = [];
-let activePage = "homePage";
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
 
-try {
-  if (window.supabase && SUPABASE_URL.startsWith("https://") &&
-      SUPABASE_ANON_KEY !== "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY") {
-    db = window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+let demoCoins = 0;
+let joined = [];
+
+function showMessage(text){
+  document.getElementById("message").textContent = text;
+}
+
+function googleLogin(){
+  auth.signInWithPopup(provider).catch(error=>{
+    showMessage(error.message);
+  });
+}
+
+function emailLogin(){
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value;
+  if(!email || !password) return showMessage("Enter email and password.");
+  auth.signInWithEmailAndPassword(email,password)
+    .catch(error=>showMessage(error.message));
+}
+
+function register(){
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value;
+  if(!email || password.length<6)
+    return showMessage("Enter email and a password of at least 6 characters.");
+  auth.createUserWithEmailAndPassword(email,password)
+    .catch(error=>showMessage(error.message));
+}
+
+auth.onAuthStateChanged(user=>{
+  document.getElementById("login").classList.toggle("hidden",!!user);
+  document.getElementById("dashboard").classList.toggle("hidden",!user);
+
+  if(user){
+    document.getElementById("welcome").textContent="Welcome, "+(user.displayName||"Player");
+    document.getElementById("profile").textContent=
+      (user.displayName||"Player")+" · "+user.email;
   }
-} catch(e) { console.error(e); }
-
-function toast(message) {
-  const el=document.getElementById("toast");
-  el.textContent=message;el.style.display="block";
-  setTimeout(()=>el.style.display="none",3200);
-}
-function safe(value) {
-  return String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-function showPage(id,button) {
-  activePage=id;
-  document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
-  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
-  if(button && button.dataset.page) button.classList.add("active");
-  if(id==="profilePage") renderProfile();
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-function tournamentCard(t) {
-  return `<article class="card">
-    <span class="tag">${safe(t.status||"Registration Open")}</span>
-    <h4>⚡ ${safe(t.title)}</h4>
-    <p>Free Fire • ${safe(t.mode||"Squad")} mode</p>
-    <div class="meta"><span>🏆 Rs. ${safe(t.prize)}</span><span>📅 ${safe(t.date||"TBA")}</span></div>
-    <button class="btn full" onclick="selectTournament('${safe(t.id)}')">Register Now ↗</button>
-  </article>`;
-}
-function selectTournament(id) {
-  showPage("tournamentsPage");
-  document.getElementById("regTournament").value=id;
-  document.getElementById("registerForm").scrollIntoView({behavior:"smooth",block:"start"});
-}
-function renderTournaments() {
-  document.getElementById("featured").innerHTML=tournaments.slice(0,2).map(tournamentCard).join("")||'<div class="empty">No tournaments yet.</div>';
-  document.getElementById("allTournaments").innerHTML=tournaments.map(tournamentCard).join("")||'<div class="empty">No tournaments available.</div>';
-  document.getElementById("regTournament").innerHTML=tournaments.map(t=>`<option value="${safe(t.id)}">${safe(t.title)}</option>`).join("");
-  document.getElementById("tCount").textContent=tournaments.length;
-}
-function renderNotices() {
-  const html=notices.map(n=>`<article class="notice"><strong>📣 ${safe(n.title)}</strong><p>${safe(n.message)}</p></article>`).join("")||'<div class="empty">No announcements yet.</div>';
-  document.getElementById("homeNotices").innerHTML=notices.slice(0,2).map(n=>`<article class="notice"><strong>📣 ${safe(n.title)}</strong><p>${safe(n.message)}</p></article>`).join("");
-  document.getElementById("allNotices").innerHTML=html;
-}
-function renderResults() {
-  document.getElementById("resultsBody").innerHTML=results.map((r,i)=>`<tr><td>${i+1}</td><td>${safe(r.team)}</td><td>${safe(r.points)}</td><td>${safe(r.booyah)}</td></tr>`).join("");
-  document.getElementById("resultsEmpty").classList.toggle("hidden",results.length>0);
-}
-function renderProfile() {
-  document.getElementById("profileName").textContent=user?.user_metadata?.full_name||user?.user_metadata?.name||"Guest Player";
-  document.getElementById("profileEmail").textContent=user?.email||"Not logged in";
-  document.getElementById("avatar").textContent=(user?.email||"NXE").slice(0,2).toUpperCase();
-  document.getElementById("loginTop").textContent=user?"My Account":"Google Login ↗";
-  document.getElementById("profileLogin").classList.toggle("hidden",!!user);
-  document.getElementById("logoutBtn").classList.toggle("hidden",!user);
-  const mine=registrations.filter(r=>user&&r.userId===user.id);
-  document.getElementById("myRegistrations").innerHTML=mine.length?mine.map(r=>`<div class="notice"><strong>${safe(r.team)}</strong><p>${safe(r.player)} • UID: ${safe(r.uid)}</p></div>`).join(""):'<div class="empty">Your registrations will appear here on this device.</div>';
-  document.getElementById("rCount").textContent=mine.length;
-}
-async function login() {
-  if(!db){toast("Pahila Supabase URL ra publishable/anon key set gara.");return;}
-  const redirect=window.location.origin+window.location.pathname;
-  const {error}=await db.auth.signInWithOAuth({provider:"google",options:{redirectTo:redirect}});
-  if(error)toast("Login error: "+error.message);
-}
-async function logout() {
-  if(db){const {error}=await db.auth.signOut();if(error){toast(error.message);return;}}
-  user=null;renderProfile();toast("Signed out.");
-}
-document.getElementById("registerForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const t=tournaments.find(x=>x.id===document.getElementById("regTournament").value);
-  if(!t){toast("Tournament select gara.");return;}
-  if(db&&!user){toast("Online registration ko lagi pahila Google Login gara.");return;}
-  const record={
-    tournament:t.title,player:document.getElementById("playerName").value.trim(),
-    uid:document.getElementById("ffUid").value.trim(),
-    team:document.getElementById("teamName").value.trim(),
-    mode:document.getElementById("teamMode").value,
-    userId:user?.id||null
-  };
-  if(!record.player||!record.uid||!record.team){toast("Sabai details bhara.");return;}
-  if(db){
-    // Online inserts require a matching registrations table and RLS policies.
-    const {error}=await db.from("registrations").insert({
-      user_id:user.id,tournament_name:record.tournament,
-      player_name:record.player,ff_uid:record.uid,
-      team_name:record.team,team_mode:record.mode
-    });
-    if(error){toast("Database setup baki chha: "+error.message);return;}
-  }
-  registrations.push(record);
-  try{localStorage.setItem("nxe_demo_registrations",JSON.stringify(registrations));}catch(e){}
-  renderProfile();e.target.reset();toast("Registration submitted!");
 });
-function createTournament() {
-  const title=document.getElementById("adminTitle").value.trim();
-  if(!title){toast("Tournament name halnu.");return;}
-  tournaments.push({id:"local"+Date.now(),title,mode:"Squad",
-    prize:Math.max(0,Number(document.getElementById("adminPrize").value)||0),
-    date:document.getElementById("adminDate").value||"To be announced",status:"Registration Open"});
-  renderTournaments();toast("Demo tournament added on this device.");
+
+function showMatches(){
+  document.getElementById("matches").classList.toggle("hidden");
 }
-function createNotice() {
-  const title=document.getElementById("noticeTitle").value.trim();
-  const message=document.getElementById("noticeMessage").value.trim();
-  if(!title||!message){toast("Notice title ra message dubai bhara.");return;}
-  notices.unshift({title,message});renderNotices();toast("Demo notice added on this device.");
-}
-async function start() {
-  try {
-    registrations=JSON.parse(localStorage.getItem("nxe_demo_registrations")||"[]");
-  } catch(e) { registrations=[]; }
-  if(db) {
-    const {data,error}=await db.auth.getSession();
-    if(!error) user=data.session?.user||null;
-    db.auth.onAuthStateChange((_event,session)=>{
-      user=session?.user||null;renderProfile();
-    });
+
+function acceptMatch(cost){
+  if(joined.some(m=>m.cost===cost && m.id===
+    (cost===10?"CS-1001":"CS-1002"))){
+    alert("You already joined this demo match.");
+    return;
   }
-  renderTournaments();renderNotices();renderResults();renderProfile();
+  if(demoCoins<cost){
+    alert("Not enough demo coins. Real-money top-up is disabled.");
+    return;
+  }
+  demoCoins-=cost;
+  const id=cost===10?"CS-1001":"CS-1002";
+  joined.push({id,cost});
+  updateWallet();
+  document.getElementById("myMatches").textContent=
+    joined.map(m=>m.id+" · Joined (demo)").join(" | ");
 }
-start();
+
+function updateWallet(){
+  document.getElementById("coins").textContent=demoCoins;
+  document.getElementById("wallet").textContent=demoCoins;
+}
+
+function logout(){
+  auth.signOut();
+}
 </script>
 </body>
 </html>
