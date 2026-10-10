@@ -214,54 +214,50 @@ try{
   console.error(e);
   msg("adminNotice","Supabase initialization error: "+e.message);
 }
-
 /* GOOGLE LOGIN */
 async function signIn(){
-  if(!supabaseClient){
-    alert("Supabase start bhayena. Internet check garera refresh gara.");
-    return;
-  }
-  const button=$("loginBtn");
-  button.disabled=true;
-  button.textContent="Opening Google...";
-  try{
-    const {data,error}=await supabaseClient.auth.signInWithOAuth({
-      provider:"google",
-      options:{
-        redirectTo:window.location.origin+window.location.pathname
-      }
-    });
-    if(error)throw error;
-    if(data && data.url){
-      window.location.assign(data.url);
-    }else{
-      throw new Error("Google login URL aayena. Supabase Google provider settings check gara.");
-    }
-  }catch(e){
-    console.error(e);
-    alert("Google Login Error: "+e.message);
-    button.disabled=false;
-    button.textContent="Continue with Google";
-  }
-}
-async function signOut(){
-  if(!supabaseClient)return;
-  const {error}=await supabaseClient.auth.signOut();
-  if(error)alert("Sign out failed: "+error.message);
-}
-$("loginBtn").addEventListener("click",signIn);
-$("logoutBtn").addEventListener("click",signOut);
+const button = $("loginBtn");
 
-/* TOURNAMENTS */
-function renderTournaments(){
-  const list=$("tournamentList");
-  const sel=$("tournament");
-  const roomSel=$("roomTournament");
-  if(!tournaments.length){
-    list.innerHTML='<div class="card">No tournaments published yet.</div>';
-    sel.innerHTML='<option value="">No tournaments available</option>';
-    roomSel.innerHTML='<option value="">General room</option>';
-    return;
+try {
+if (!supabaseClient) {
+throw new Error("Supabase start bhayena. Page refresh gara.");
+}
+
+if (button) {
+  button.disabled = true;
+  button.textContent = "Opening Google...";
+}
+
+const redirectUrl =
+  window.location.origin + window.location.pathname;
+
+const { data, error } =
+  await supabaseClient.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: redirectUrl
+    }
+  });
+
+if (error) throw error;
+
+if (!data || !data.url) {
+  throw new Error("Google login URL aayena. Supabase settings check gara.");
+}
+
+window.location.href = data.url;
+
+} catch (e) {
+console.error("Google Login Error:", e);
+alert("Google Login Error: " + (e.message || e));
+
+if (button) {
+  button.disabled = false;
+  button.textContent = "Continue with Google";
+}
+
+}
+}
   }
   list.innerHTML=tournaments.map(t=>`
     <article class="card">
