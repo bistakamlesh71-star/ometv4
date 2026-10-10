@@ -1,300 +1,133 @@
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#080b18">
-<title>Battle Arena</title>
-<style>
-:root{--bg:#080b18;--panel:#12172b;--purple:#a855f7;--cyan:#22d3ee;--text:#f4f5ff;--muted:#9ca6c5}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at top,#211447,var(--bg) 60%);color:var(--text);font-family:Arial,sans-serif;padding-bottom:85px;min-height:100vh}
-header{padding:20px 16px;display:flex;justify-content:space-between;align-items:center;max-width:900px;margin:auto}
-.logo{font-size:21px;font-weight:900;letter-spacing:1px}.logo span{color:var(--cyan)}
-.muted{color:var(--muted);font-size:13px;line-height:1.5}
-main{max-width:850px;padding:0 14px;margin:auto}
-h1{font-size:27px}h2{font-size:19px;margin:22px 0 12px}
-.hero{padding:23px;border-radius:22px;background:linear-gradient(120deg,#4c1d95,#172554 70%,#083344);border:1px solid #6d45bc;box-shadow:0 0 28px #8b5cf633}
-.tag{display:inline-block;background:#22d3ee20;color:var(--cyan);border:1px solid #22d3ee66;border-radius:30px;padding:6px 10px;font-size:10px;font-weight:bold}
-button{cursor:pointer;border:0;border-radius:11px;padding:12px 14px;font-weight:bold;color:white;background:linear-gradient(100deg,#9333ea,#4f46e5)}
-button:disabled{opacity:.6;cursor:default}
-.secondary{background:#222943;border:1px solid #414a69}
-.google{background:#fff;color:#222;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 0}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.stat,.card{background:var(--panel);border:1px solid #252d49;border-radius:17px;padding:15px;margin-bottom:12px}
-.stat strong{display:block;font-size:23px;margin:8px 0}
-.stat span,.small{font-size:12px;color:var(--muted)}
-.page{display:none}.page.active{display:block}
-.card-top,.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.card h3{margin:10px 0;font-size:16px}
-.pill{font-size:10px;color:#67e8f9;background:#164e6380;padding:6px 8px;border-radius:20px}
-.details{display:flex;gap:14px;flex-wrap:wrap;margin:12px 0;color:var(--muted);font-size:12px}
-.full{width:100%}
-input,select{width:100%;background:#0b1021;border:1px solid #353d5a;border-radius:10px;padding:12px;color:white;margin:6px 0 13px}
-label{font-size:12px;color:#cbd5e1}
-nav{position:fixed;bottom:0;left:0;right:0;background:#0d1020f5;border-top:1px solid #272d48;display:flex;justify-content:space-around;padding:9px 2px calc(9px + env(safe-area-inset-bottom));z-index:5}
-nav button{background:transparent;color:#9ca6c5;padding:8px 4px;font-size:10px;flex:1}
-nav button.active{background:#31215a;color:#e9d5ff}
-nav .ico{display:block;font-size:18px;margin-bottom:4px}
-.avatar{width:68px;height:68px;border-radius:50%;object-fit:cover;background:#292044}
-.empty{text-align:center;padding:22px;color:var(--muted)}
-.player{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #252d49}
-.rank{width:35px;height:35px;display:grid;place-items:center;background:#27203f;border-radius:10px;color:#c4b5fd;font-weight:bold}
-#notice{display:none;margin:0 14px 12px;padding:12px;border-radius:10px;background:#302044;color:#e9d5ff;font-size:13px;overflow-wrap:anywhere}
-@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-</style>
-</head>
-<body>
-<header>
- <div class="logo">⚡ BATTLE <span>ARENA</span><div class="muted">YOUR PRACTICE. YOUR GLORY.</div></div>
- <div id="headerUser" class="small">Guest player</div>
-</header>
-<div id="notice" role="status"></div>
-
-<main>
-<section id="home" class="page active">
- <div class="hero">
-  <span class="tag">✦ FREE PRACTICE ZONE</span>
-  <h1>READY TO<br>DOMINATE?</h1>
-  <p class="muted">Join practice tournaments, track your matches and climb the leaderboard.</p>
-  <button onclick="showPage('tournaments')">Explore Tournaments →</button>
- </div>
- <h2>Your Arena</h2>
- <div class="grid">
-  <div class="stat">🎯<strong id="total">0</strong><span>Joined Matches</span></div>
-  <div class="stat">🏆<strong id="wins">0</strong><span>Practice Wins</span></div>
- </div>
- <h2>🔥 Featured Tournaments</h2><div id="featured"></div>
-</section>
-
-<section id="tournaments" class="page">
- <h1>Tournaments</h1><p class="muted">Free practice matches.</p>
- <div id="tournamentList"></div>
-</section>
-
-<section id="matches" class="page">
- <h1>My Matches</h1><p class="muted">Your joined practice tournaments.</p>
- <div id="myMatches"></div>
-</section>
-
-<section id="leaderboard" class="page">
- <h1>🏆 Leaderboard</h1><p class="muted">Demo rankings on this device.</p>
- <div class="card" id="leaderList"></div>
-</section>
-
-<section id="profile" class="page">
- <h1>Player Profile</h1>
- <div class="card">
-  <div style="text-align:center">
-   <img id="avatar" class="avatar" alt="Google profile photo" src="https://www.gstatic.com/images/branding/product/2x/avatar_square_blue_512dp.png">
-   <h2 id="profileName">Guest Player</h2>
-   <div class="muted" id="profileEmail">Not signed in</div>
-  </div>
-  <button id="googleBtn" class="google" onclick="googleLogin()"><span style="font-size:20px;color:#4285f4">G</span> Continue with Google</button>
-  <button id="logoutBtn" class="secondary full" style="display:none" onclick="logout()">Sign Out</button>
-  <p class="muted">Google sign-in uses Firebase Authentication. Your Google password is never requested by this app.</p>
-  <hr>
-  <label>Player nickname</label><input id="nickname" maxlength="24" placeholder="Enter gamer name">
-  <label>Favorite game mode</label>
-  <select id="mode"><option>Clash Squad 1v1</option><option>Squad Practice 4v4</option><option>Battle Royale Practice</option></select>
-  <button class="full" onclick="saveProfile()">Save Profile</button>
-  <hr>
-  <div class="row"><span class="muted">Matches joined</span><strong id="profileMatches">0</strong></div>
-  <div class="row" style="margin-top:12px"><span class="muted">Practice wins</span><strong id="profileWins">0</strong></div>
-  <button class="secondary full" style="margin-top:20px" onclick="showPage('admin')">⚙️ Demo Admin</button>
- </div>
-</section>
-
-<section id="admin" class="page">
- <h1>⚙️ Demo Admin</h1>
- <p class="muted">Local demo only. This screen is not protected and is not suitable for managing public tournaments.</p>
- <div class="card">
-  <label>Tournament name</label><input id="newName" placeholder="e.g. Neon Clash">
-  <label>Game mode</label>
-  <select id="newMode"><option>Clash Squad 1v1</option><option>Squad Practice 4v4</option><option>Battle Royale Practice</option></select>
-  <label>Practice slots</label><input id="newSlots" type="number" min="2" max="100" value="16">
-  <label>Practice date</label><input id="newDate" type="date">
-  <button class="full" onclick="addTournament()">＋ Add Tournament</button>
- </div>
- <h2>Manage Tournaments</h2><div id="manageList"></div>
- <button class="secondary full" onclick="resetDemo()">Reset Demo Data</button>
-</section>
-</main>
-
-<nav>
- <button class="active" data-page="home" onclick="showPage('home')"><span class="ico">⌂</span>Home</button>
- <button data-page="tournaments" onclick="showPage('tournaments')"><span class="ico">⚔️</span>Matches</button>
- <button data-page="matches" onclick="showPage('matches')"><span class="ico">🎯</span>My Matches</button>
- <button data-page="leaderboard" onclick="showPage('leaderboard')"><span class="ico">🏆</span>Ranks</button>
- <button data-page="profile" onclick="showPage('profile')"><span class="ico">👤</span>Profile</button>
-</nav>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import {
- getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
- onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
-/* Replace these placeholders with your Firebase web app config. */
-const firebaseConfig = {
- apiKey: "YOUR_FIREBASE_API_KEY",
- authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
- projectId: "YOUR_PROJECT_ID",
- storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
- messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
- appId: "YOUR_FIREBASE_APP_ID"
-};
-
-let auth=null, googleProvider=null, firebaseReady=false, currentUser=null;
-
-function notify(message){
- const el=document.getElementById("notice");
- el.textContent=message;el.style.display="block";
-}
-function hideNotice(){
- document.getElementById("notice").style.display="none";
-}
-function configIsReady(){
- return firebaseConfig.apiKey!=="YOUR_FIREBASE_API_KEY" &&
- firebaseConfig.projectId!=="YOUR_PROJECT_ID" &&
- firebaseConfig.appId!=="YOUR_FIREBASE_APP_ID";
-}
-if(configIsReady()){
- try{
-  const app=initializeApp(firebaseConfig);
-  auth=getAuth(app);
-  googleProvider=new GoogleAuthProvider();
-  googleProvider.setCustomParameters({prompt:"select_account"});
-  firebaseReady=true;
-  onAuthStateChanged(auth,user=>{
-   currentUser=user;
-   renderAuth(user);
-  });
-  getRedirectResult(auth).then(result=>{
-   if(result?.user)notify("Google sign-in successful!");
-  }).catch(error=>{
-   notify("Google sign-in error: "+error.code+" — "+error.message);
-  });
- }catch(error){
-  notify("Firebase setup error: "+error.message);
- }
-}else{
- notify("Setup needed: add your Firebase web config in the code.");
-}
-
-window.googleLogin=async function(){
- hideNotice();
- if(!firebaseReady){notify("First replace the Firebase config placeholders.");return}
- try{
-  await signInWithRedirect(auth,googleProvider);
- }catch(error){
-  notify("Sign-in error: "+error.code+" — "+error.message);
- }
-};
-window.logout=async function(){
- if(!auth)return;
- try{await signOut(auth);notify("You have signed out.");}
- catch(error){notify("Sign-out error: "+error.message);}
-};
-function renderAuth(user){
- const btn=document.getElementById("googleBtn");
- const out=document.getElementById("logoutBtn");
- if(user){
-  document.getElementById("headerUser").textContent=user.displayName||"Signed in";
-  document.getElementById("profileName").textContent=user.displayName||"Google user";
-  document.getElementById("profileEmail").textContent=user.email||"";
-  document.getElementById("avatar").src=user.photoURL||"https://www.gstatic.com/images/branding/product/2x/avatar_square_blue_512dp.png";
-  btn.style.display="none";out.style.display="block";
-  if(!state.nickname || state.nickname==="PlayerOne")state.nickname=user.displayName||"PlayerOne";
-  save();render();
- }else{
-  document.getElementById("headerUser").textContent="Guest player";
-  document.getElementById("profileName").textContent="Guest Player";
-  document.getElementById("profileEmail").textContent="Not signed in";
-  document.getElementById("avatar").src="https://www.gstatic.com/images/branding/product/2x/avatar_square_blue_512dp.png";
-  btn.style.display="flex";out.style.display="none";
- }
-}
-</script>
-
-<script>
-const KEY="battleArenaGoogleDemoV1";
-const initial=[
- {id:1,name:"Neon Clash 1v1",mode:"Clash Squad 1v1",slots:16,date:"",joined:3},
- {id:2,name:"Squad Rush 4v4",mode:"Squad Practice 4v4",slots:32,date:"",joined:11},
- {id:3,name:"Arena Rookie Cup",mode:"Battle Royale Practice",slots:24,date:"",joined:8}
-];
-function load(){
- try{return JSON.parse(localStorage.getItem(KEY))||null}catch(e){return null}
-}
-let state=load()||{tournaments:initial.map(t=>({...t})),matches:[],nickname:"PlayerOne",mode:"Clash Squad 1v1",wins:0};
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-window.showPage=function(id){
- document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
- document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
- render();window.scrollTo({top:0,behavior:"smooth"});
-};
-function tournamentCard(t,joined=false){
- const full=t.joined>=t.slots&&!joined;
- return `<div class="card">
- <div class="card-top"><span class="tag">FREE PRACTICE</span><span class="pill">${full?"FULL":"OPEN"}</span></div>
- <h3>⚡ ${esc(t.name)}</h3><div class="muted">${esc(t.mode)}</div>
- <div class="details"><span>👥 ${t.joined}/${t.slots} players</span><span>📅 ${esc(t.date||"Schedule TBA")}</span></div>
- ${joined?'<button class="secondary full" disabled>✓ Joined</button>':full?'<button class="secondary full" disabled>Slots Full</button>':`<button class="full" onclick="joinMatch(${t.id})">Join Practice</button>`}
- </div>`;
-}
-window.joinMatch=function(id){
- if(state.matches.includes(id)){alert("You already joined this practice match.");return}
- const t=state.tournaments.find(x=>x.id===id);if(!t)return;
- if(t.joined>=t.slots){alert("This practice tournament is full.");return}
- state.matches.push(id);t.joined++;save();render();
- alert("Practice match joined successfully!");
-};
-function render(){
- const active=state.tournaments.filter(t=>!state.matches.includes(t.id));
- document.getElementById("featured").innerHTML=active.slice(0,2).map(t=>tournamentCard(t)).join("")||'<div class="empty">No tournaments available.</div>';
- document.getElementById("tournamentList").innerHTML=state.tournaments.map(t=>tournamentCard(t,state.matches.includes(t.id))).join("")||'<div class="empty">No tournaments yet.</div>';
- const mine=state.tournaments.filter(t=>state.matches.includes(t.id));
- document.getElementById("myMatches").innerHTML=mine.map(t=>tournamentCard(t,true)).join("")||'<div class="card empty">🎮<p>You have not joined any practice matches yet.</p><button onclick="showPage(\'tournaments\')">Find Matches</button></div>';
- document.getElementById("total").textContent=state.matches.length;
- document.getElementById("wins").textContent=state.wins;
- document.getElementById("profileMatches").textContent=state.matches.length;
- document.getElementById("profileWins").textContent=state.wins;
- document.getElementById("nickname").value=state.nickname;
- document.getElementById("mode").value=state.mode;
- const players=[
-  {name:state.nickname||"PlayerOne",score:state.wins*10+state.matches.length*5},
-  {name:"NeonFox",score:95},{name:"ShadowX",score:80},{name:"PixelStorm",score:65}
- ].sort((a,b)=>b.score-a.score);
- document.getElementById("leaderList").innerHTML=players.map((p,i)=>`<div class="player"><div class="rank">${i+1}</div><div style="flex:1"><strong>${esc(p.name)}</strong><div class="small">${i===0?"Top player":"Practice player"}</div></div><strong>${p.score} pts</strong></div>`).join("");
- document.getElementById("manageList").innerHTML=state.tournaments.map(t=>`<div class="card"><div class="row"><div><strong>${esc(t.name)}</strong><div class="small">${t.joined}/${t.slots} joined</div></div><button class="secondary" onclick="deleteTournament(${t.id})">Delete</button></div></div>`).join("")||'<div class="empty">No tournaments.</div>';
-}
-window.saveProfile=function(){
- state.nickname=document.getElementById("nickname").value.trim()||"PlayerOne";
- state.mode=document.getElementById("mode").value;save();render();alert("Profile saved!");
-};
-window.addTournament=function(){
- const name=document.getElementById("newName").value.trim();
- const slots=Number(document.getElementById("newSlots").value);
- if(!name){alert("Please enter a tournament name.");return}
- if(!Number.isInteger(slots)||slots<2||slots>100){alert("Slots must be between 2 and 100.");return}
- state.tournaments.unshift({id:Date.now(),name,mode:document.getElementById("newMode").value,slots,date:document.getElementById("newDate").value,joined:0});
- save();document.getElementById("newName").value="";render();alert("Practice tournament added!");
-};
-window.deleteTournament=function(id){
- if(!confirm("Delete this practice tournament?"))return;
- state.tournaments=state.tournaments.filter(t=>t.id!==id);
- state.matches=state.matches.filter(mid=>mid!==id);save();render();
-};
-window.resetDemo=function(){
- if(!confirm("Reset all local demo data?"))return;
- state={tournaments:initial.map(t=>({...t})),matches:[],nickname:"PlayerOne",mode:"Clash Squad 1v1",wins:0};
- save();render();alert("Demo reset.");
-};
-save();render();
-</script>
-</body>
-</html>
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1">  
+<meta name="theme-color" content="#080b14">  
+<title>NEPAL X ESPORTS</title>  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  
+<style>  
+:root{--bg:#080b14;--panel:#12182a;--line:#29314b;--text:#f5f7ff;--muted:#aeb6d0;--cyan:#22d3ee;--purple:#8b5cf6}  
+*{box-sizing:border-box}  
+html{scroll-behavior:smooth}  
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}  
+header{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 5%;background:#0c1020;border-bottom:1px solid #252b42}  
+.logo{font-size:19px;font-weight:900;text-decoration:none;color:var(--cyan)}  
+nav{display:flex;gap:15px;flex-wrap:wrap;align-items:center}  
+nav a{color:#d1d5e8;text-decoration:none;font-size:13px}  
+nav a:hover{color:var(--cyan)}  
+button,.btn{display:inline-block;padding:12px 16px;background:linear-gradient(100deg,var(--purple),#4f46e5);border:0;border-radius:9px;color:white;font-weight:bold;text-decoration:none;cursor:pointer;text-align:center}  
+button:disabled{opacity:.55;cursor:not-allowed}  
+.secondary{background:#202943;border:1px solid #394563}  
+.success{background:#047857}  
+.danger{background:#9f1239}  
+.discord-btn{background:#5865F2;color:white}  
+.discord-btn:hover{background:#4752c4}  
+.hero{padding:70px 6%;text-align:center;background:radial-gradient(ellipse at top,#43228b77,transparent 70%)}  
+.tag{display:inline-block;padding:8px 13px;border-radius:25px;border:1px solid var(--cyan);color:var(--cyan);font-size:12px}  
+h1{font-size:clamp(38px,8vw,66px);line-height:1.08}  
+h1 span{color:var(--cyan)}  
+h2{font-size:28px}  
+p{line-height:1.7;color:var(--muted)}  
+section{padding:40px 6%}  
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}  
+.card{padding:20px;background:var(--panel);border:1px solid var(--line);border-radius:15px;min-width:0}  
+.emoji{font-size:36px}  
+.small{display:inline-block;padding:6px 10px;border-radius:20px;background:#34255d;color:#d8c9ff;font-size:12px}  
+form{display:grid;gap:14px}  
+.field{display:grid;gap:7px}  
+label{color:#bdc5dd;font-size:14px}  
+input,select,textarea{width:100%;padding:13px;border-radius:9px;border:1px solid #343d59;background:#090e1d;color:white;font-size:15px}  
+textarea{min-height:90px}  
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}  
+.muted{color:var(--muted);font-size:13px}  
+.message{padding:10px 12px;border-radius:8px;background:#101b2e;color:#67e8f9;overflow-wrap:anywhere}  
+.hidden{display:none!important}  
+.status{display:inline-block;padding:5px 8px;border-radius:15px;background:#26324c;font-size:12px}  
+.pending{color:#fde68a}.accepted{color:#6ee7b7}.rejected{color:#fda4af}  
+.item{border-top:1px solid var(--line);padding:14px 0;overflow-wrap:anywhere}  
+footer{padding:25px;text-align:center;border-top:1px solid #252b42;color:#9ca3bf}  
+.footer-links{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px}  
+@media(max-width:700px){  
+ header{padding:12px 4%}  
+ nav{width:100%;justify-content:flex-start;gap:12px}  
+ nav a{font-size:12px}  
+ .grid{grid-template-columns:1fr}  
+ .hero{padding:50px 5%}  
+ section{padding:30px 5%}  
+ .logo{font-size:16px}  
+}  
+</style>  
+</head>  
+<body>  
+<header>  
+<a class="logo" href="#home">NEPAL X ESPORTS</a>  
+<nav>  
+<a href="#home">Home</a>  
+<a href="#games">Games</a>  
+<a href="#tournaments">Tournaments</a>  
+<a href="#join">Register</a>  
+<a href="#rooms">Rooms</a>  
+<a href="#admin">Admin</a>  
+<a href="https://discord.gg/gfWsWrSu" target="_blank" rel="noopener noreferrer">Discord ↗</a>  
+</nav>  
+<div class="row">  
+<button id="loginBtn" type="button">Continue with Google</button>  
+<button id="logoutBtn" class="secondary hidden" type="button">Sign out</button>  
+</div>  
+</header>  <main>  
+<section class="hero" id="home">  
+<div class="tag">🇳🇵 NEPAL GAMING COMMUNITY</div>  
+<h1>PLAY TOGETHER<br><span>RISE TOGETHER</span></h1>  
+<p>Welcome to NEPAL X ESPORTS. Join the community, register for tournaments and compete with players across Nepal.</p>  
+<div class="row" style="justify-content:center;margin-top:22px">  
+<a class="btn" href="#tournaments">Explore Tournaments</a>  
+<a class="btn discord-btn" href="https://discord.gg/gfWsWrSu" target="_blank" rel="noopener noreferrer">💬 JOIN OUR DISCORD ↗</a>  
+</div>  
+</section>  <section id="games">  
+<h2>🎮 Our Games</h2>  
+<div class="grid">  
+<article class="card"><div class="emoji">🔥</div><h3>Free Fire</h3><p>Squad up, practice and compete.</p><span class="small">Battle Royale</span></article>  
+<article class="card"><div class="emoji">🎯</div><h3>PUBG Mobile</h3><p>Teamwork, tactics and competitive matches.</p><span class="small">Battle Royale</span></article>  
+<article class="card"><div class="emoji">⚔️</div><h3>Mobile Legends</h3><p>Build your team and play together.</p><span class="small">MOBA</span></article>  
+</div>  
+</section>  <section id="tournaments">  
+<h2>🏆 Tournaments</h2>  
+<p>Published tournaments appear here.</p>  
+<div id="tournamentList" class="grid"><div class="card">Loading tournaments...</div></div>  
+</section>  <section id="join">  
+<h2>📝 Tournament Registration</h2>  
+<div class="card">  
+<div id="userInfo">You are not signed in.</div>  
+<form id="registrationForm" class="hidden">  
+<div class="field"><label for="playerName">In-game name</label><input id="playerName" maxlength="40" required></div>  
+<div class="field"><label for="game">Game</label>  
+<select id="game"><option>Free Fire</option><option>PUBG Mobile</option><option>Mobile Legends</option></select></div>  
+<div class="field"><label for="tournament">Tournament</label><select id="tournament" required><option value="">Choose tournament</option></select></div>  
+<div class="field"><label for="teamName">Team name (optional)</label><input id="teamName" maxlength="60"></div>  
+<div class="field"><label for="playerContact">Game UID (optional)</label><input id="playerContact" maxlength="80"></div>  
+<button id="submitRegistration" type="submit">Submit Registration</button>  
+</form>  
+<div id="regMessage" class="message hidden"></div>  
+</div>  
+<div class="card" style="margin-top:18px"><h3>My Registrations</h3><div id="myRegistrations">Sign in to view registrations.</div></div>  
+</section>  <section id="rooms">  
+<h2>🔑 Room ID & Password</h2>  
+<p>Room details are shown to signed-in users, subject to Supabase database policies.</p>  
+<button id="refreshRoomBtn" class="secondary" type="button">Refresh Room Details</button>  
+<div id="roomDetails" class="card" style="margin-top:14px">Sign in to view room details.</div>  
+</section>  <section id="admin">  
+<h2>🛡️ Admin Panel</h2>  
+<div id="adminNotice" class="message">Sign in with your authorized admin account.</div>  
+<div id="adminPanel" class="hidden">  <div class="card" style="margin:16px 0">  
+<h3>Create Tournament</h3>  
+<form id="tournamentForm">  
+<div class="field"><label for="tName">Tournament name</label><input id="tName" required maxlength="100"></div>  
+<div class="field"><label for="tGame">Game</label><select id="tGame"><option>Free Fire</option><option>PUBG Mobile</option><option>Mobile Legends</option></select></div>  
+<div class="field"><label for="tDate">Date and time</label><input id="tDate" type="datetime-local" required></div>  
+<div class="field"><label for="tDetails">Details</label><textarea id="tDetails" maxlength="1000"></textarea></div>  
+<button id="publishTournamentBtn" type="submit">Publish Tournament</button>  
+</form>  
+<div id="adminMessage" class="message hidden"></div>  
+</div>  <div class="card" style="margin:16px 0">  
+<h3>Publish Room ID & Password</h3>  
+<form id="roomForm"> yeii ho code
