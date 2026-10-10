@@ -1,448 +1,207 @@
-‎
-‎<!DOCTYPE html>
-‎<html lang="en">
-‎<head>
-‎<meta charset="UTF-8">
-‎<meta name="viewport" content="width=device-width, initial-scale=1">
-‎<meta name="theme-color" content="#080b14">
-‎<title>NEPAL X ESPORTS</title>
-‎<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-‎<style>
-‎:root{--bg:#080b14;--panel:#12182a;--line:#29314b;--text:#f5f7ff;--muted:#aeb6d0;--cyan:#22d3ee;--purple:#8b5cf6}
-‎*{box-sizing:border-box}
-‎html{scroll-behavior:smooth}
-‎body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-‎header{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 5%;background:#0c1020;border-bottom:1px solid #252b42}
-‎.logo{font-size:19px;font-weight:900;text-decoration:none;color:var(--cyan)}
-‎nav{display:flex;gap:15px;flex-wrap:wrap;align-items:center}
-‎nav a{color:#d1d5e8;text-decoration:none;font-size:13px}
-‎nav a:hover{color:var(--cyan)}
-‎button,.btn{display:inline-block;padding:12px 16px;background:linear-gradient(100deg,var(--purple),#4f46e5);border:0;border-radius:9px;color:white;font-weight:bold;text-decoration:none;cursor:pointer;text-align:center}
-‎button:disabled{opacity:.55;cursor:not-allowed}
-‎.secondary{background:#202943;border:1px solid #394563}
-‎.success{background:#047857}
-‎.danger{background:#9f1239}
-‎.discord-btn{background:#5865F2;color:white}
-‎.discord-btn:hover{background:#4752c4}
-‎.hero{padding:70px 6%;text-align:center;background:radial-gradient(ellipse at top,#43228b77,transparent 70%)}
-‎.tag{display:inline-block;padding:8px 13px;border-radius:25px;border:1px solid var(--cyan);color:var(--cyan);font-size:12px}
-‎h1{font-size:clamp(38px,8vw,66px);line-height:1.08}
-‎h1 span{color:var(--cyan)}
-‎h2{font-size:28px}
-‎p{line-height:1.7;color:var(--muted)}
-‎section{padding:40px 6%}
-‎.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}
-‎.card{padding:20px;background:var(--panel);border:1px solid var(--line);border-radius:15px;min-width:0}
-‎.emoji{font-size:36px}
-‎.small{display:inline-block;padding:6px 10px;border-radius:20px;background:#34255d;color:#d8c9ff;font-size:12px}
-‎form{display:grid;gap:14px}
-‎.field{display:grid;gap:7px}
-‎label{color:#bdc5dd;font-size:14px}
-‎input,select,textarea{width:100%;padding:13px;border-radius:9px;border:1px solid #343d59;background:#090e1d;color:white;font-size:15px}
-‎textarea{min-height:90px}
-‎.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-‎.muted{color:var(--muted);font-size:13px}
-‎.message{padding:10px 12px;border-radius:8px;background:#101b2e;color:#67e8f9;overflow-wrap:anywhere}
-‎.hidden{display:none!important}
-‎.status{display:inline-block;padding:5px 8px;border-radius:15px;background:#26324c;font-size:12px}
-‎.pending{color:#fde68a}.accepted{color:#6ee7b7}.rejected{color:#fda4af}
-‎.item{border-top:1px solid var(--line);padding:14px 0;overflow-wrap:anywhere}
-‎footer{padding:25px;text-align:center;border-top:1px solid #252b42;color:#9ca3bf}
-‎.footer-links{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px}
-‎@media(max-width:700px){
-‎header{padding:12px 4%}
-‎nav{width:100%;justify-content:flex-start;gap:12px}
-‎nav a{font-size:12px}
-‎.grid{grid-template-columns:1fr}
-‎.hero{padding:50px 5%}
-‎section{padding:30px 5%}
-‎.logo{font-size:16px}
-‎}
-‎</style>
-‎</head>
-‎<body>
-‎<header>
-‎<a class="logo" href="#home">NEPAL X ESPORTS</a>
-‎<nav>
-‎<a href="#home">Home</a>
-‎<a href="#games">Games</a>
-‎<a href="#tournaments">Tournaments</a>
-‎<a href="#join">Register</a>
-‎<a href="#rooms">Rooms</a>
-‎<a href="#admin">Admin</a>
-‎<a href="https://discord.gg/gfWsWrSu" target="_blank" rel="noopener noreferrer">Discord ↗</a>
-‎</nav>
-‎<div class="row">
-‎<button id="loginBtn" type="button">Continue with Google</button>
-‎<button id="logoutBtn" class="secondary hidden" type="button">Sign out</button>
-‎</div>
-‎</header>
-‎
-‎<main>
-‎<section class="hero" id="home">
-‎<div class="tag">🇳🇵 NEPAL GAMING COMMUNITY</div>
-‎<h1>PLAY TOGETHER<br><span>RISE TOGETHER</span></h1>
-‎<p>Welcome to NEPAL X ESPORTS. Join the community, register for tournaments and compete with players across Nepal.</p>
-‎<div class="row" style="justify-content:center;margin-top:22px">
-‎<a class="btn" href="#tournaments">Explore Tournaments</a>
-‎<a class="btn discord-btn" href="https://discord.gg/gfWsWrSu" target="_blank" rel="noopener noreferrer">💬 JOIN OUR DISCORD ↗</a>
-‎</div>
-‎</section>
-‎
-‎<section id="games">
-‎<h2>🎮 Our Games</h2>
-‎<div class="grid">
-‎<article class="card"><div class="emoji">🔥</div><h3>Free Fire</h3><p>Squad up, practice and compete.</p><span class="small">Battle Royale</span></article>
-‎<article class="card"><div class="emoji">🎯</div><h3>PUBG Mobile</h3><p>Teamwork, tactics and competitive matches.</p><span class="small">Battle Royale</span></article>
-‎<article class="card"><div class="emoji">⚔️</div><h3>Mobile Legends</h3><p>Build your team and play together.</p><span class="small">MOBA</span></article>
-‎</div>
-‎</section>
-‎
-‎<section id="tournaments">
-‎<h2>🏆 Tournaments</h2>
-‎<p>Published tournaments appear here.</p>
-‎<div id="tournamentList" class="grid"><div class="card">Loading tournaments...</div></div>
-‎</section>
-‎
-‎<section id="join">
-‎<h2>📝 Tournament Registration</h2>
-‎<div class="card">
-‎<div id="userInfo">You are not signed in.</div>
-‎<form id="registrationForm" class="hidden">
-‎<div class="field"><label for="playerName">In-game name</label><input id="playerName" maxlength="40" required></div>
-‎<div class="field"><label for="game">Game</label>
-‎<select id="game"><option>Free Fire</option><option>PUBG Mobile</option><option>Mobile Legends</option></select></div>
-‎<div class="field"><label for="tournament">Tournament</label><select id="tournament" required><option value="">Choose tournament</option></select></div>
-‎<div class="field"><label for="teamName">Team name (optional)</label><input id="teamName" maxlength="60"></div>
-‎<div class="field"><label for="playerContact">Game UID (optional)</label><input id="playerContact" maxlength="80"></div>
-‎<button id="submitRegistration" type="submit">Submit Registration</button>
-‎</form>
-‎<div id="regMessage" class="message hidden"></div>
-‎</div>
-‎<div class="card" style="margin-top:18px"><h3>My Registrations</h3><div id="myRegistrations">Sign in to view registrations.</div></div>
-‎</section>
-‎
-‎<section id="rooms">
-‎<h2>🔑 Room ID & Password</h2>
-‎<p>Room details are shown to signed-in users, subject to Supabase database policies.</p>
-‎<button id="refreshRoomBtn" class="secondary" type="button">Refresh Room Details</button>
-‎<div id="roomDetails" class="card" style="margin-top:14px">Sign in to view room details.</div>
-‎</section>
-‎
-‎<section id="admin">
-‎<h2>🛡️ Admin Panel</h2>
-‎<div id="adminNotice" class="message">Sign in with your authorized admin account.</div>
-‎<div id="adminPanel" class="hidden">
-‎
-‎<div class="card" style="margin:16px 0">
-‎<h3>Create Tournament</h3>
-‎<form id="tournamentForm">
-‎<div class="field"><label for="tName">Tournament name</label><input id="tName" required maxlength="100"></div>
-‎<div class="field"><label for="tGame">Game</label><select id="tGame"><option>Free Fire</option><option>PUBG Mobile</option><option>Mobile Legends</option></select></div>
-‎<div class="field"><label for="tDate">Date and time</label><input id="tDate" type="datetime-local" required></div>
-‎<div class="field"><label for="tDetails">Details</label><textarea id="tDetails" maxlength="1000"></textarea></div>
-‎<button id="publishTournamentBtn" type="submit">Publish Tournament</button>
-‎</form>
-‎<div id="adminMessage" class="message hidden"></div>
-‎</div>
-‎
-‎<div class="card" style="margin:16px 0">
-‎<h3>Publish Room ID & Password</h3>
-‎<form id="roomForm">
-‎<div class="field"><label for="roomTournament">Tournament</label><select id="roomTournament"><option value="">General room</option></select></div>
-‎<div class="field"><label for="roomId">Room ID</label><input id="roomId" required maxlength="100"></div>
-‎<div class="field"><label for="roomPassword">Room Password</label><input id="roomPassword" required maxlength="100"></div>
-‎<div class="field"><label for="roomNote">Note</label><input id="roomNote" maxlength="300"></div>
-‎<button id="publishRoomBtn" type="submit">Publish Room</button>
-‎</form>
-‎<div id="roomMessage" class="message hidden"></div>
-‎</div>
-‎
-‎<h3>Registration Requests</h3>
-‎<button id="reloadAdminBtn" class="secondary" type="button">Reload Requests</button>
-‎<div id="adminRegistrations" class="card">No requests loaded.</div>
-‎</div>
-‎</section>
-‎</main>
-‎
-‎<footer>
-‎© <span id="year"></span> NEPAL X ESPORTS · Play fair, rise together 🇳🇵
-‎<div class="footer-links">
-‎<a class="btn discord-btn" href="https://discord.gg/gfWsWrSu" target="_blank" rel="noopener noreferrer">Join Our Discord ↗</a>
-‎</div>
-‎</footer>
-‎
-‎<script>
-‎"use strict";
-‎
-‎const SUPABASE_URL = "https://rocuvqyunrixaddggrwo.supabase.co";
-‎const SUPABASE_ANON_KEY = "sb_publishable_Apnd7DlitzKEE0okv9KC3A_HLQlOS_V";
-‎const $ = id => document.getElementById(id);
-‎$("year").textContent = new Date().getFullYear();
-‎
-‎let supabaseClient = null;
-‎let currentUser = null;
-‎let isAdmin = false;
-‎let tournaments = [];
-‎
-‎function msg(id,text){
-‎  const el=$(id);
-‎  el.textContent=text;
-‎  el.classList.remove("hidden");
-‎}
-‎function escapeHtml(value){
-‎  return String(value??"").replace(/[&<>"']/g,c=>({
-‎    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-‎  })[c]);
-‎}
-‎function dateText(value){
-‎  if(!value)return "Date to be announced";
-‎  const d=new Date(value);
-‎  return Number.isNaN(d.getTime())?"Date to be announced":d.toLocaleString();
-‎}
-‎function statusClass(s){
-‎  return ["pending","accepted","rejected"].includes(s)?s:"pending";
-‎}
-‎
-‎/* Supabase initialization */
-‎try{
-‎  if(!window.supabase || typeof window.supabase.createClient!=="function"){
-‎    throw new Error("Supabase library load bhayena. Internet check gara.");
-‎  }
-‎  supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-‎}catch(e){
-‎  console.error(e);
-‎  msg("adminNotice","Supabase initialization error: "+e.message);
-‎}
-‎
-‎/* GOOGLE LOGIN */
-‎async function signIn(){
-‎  if(!supabaseClient){
-‎    alert("Supabase start bhayena. Internet check garera refresh gara.");
-‎    return;
-‎  }
-‎  const button=$("loginBtn");
-‎  button.disabled=true;
-‎  button.textContent="Opening Google...";
-‎  try{
-‎    const {data,error}=await supabaseClient.auth.signInWithOAuth({
-‎      provider:"google",
-‎      options:{
-‎        redirectTo:window.location.origin+window.location.pathname
-‎      }
-‎    });
-‎    if(error)throw error;
-‎    if(data && data.url){
-‎      window.location.assign(data.url);
-‎    }else{
-‎      throw new Error("Google login URL aayena. Supabase Google provider settings check gara.");
-‎    }
-‎  }catch(e){
-‎    console.error(e);
-‎    alert("Google Login Error: "+e.message);
-‎    button.disabled=false;
-‎    button.textContent="Continue with Google";
-‎  }
-‎}
-‎async function signOut(){
-‎  if(!supabaseClient)return;
-‎  const {error}=await supabaseClient.auth.signOut();
-‎  if(error)alert("Sign out failed: "+error.message);
-‎}
-‎$("loginBtn").addEventListener("click",signIn);
-‎$("logoutBtn").addEventListener("click",signOut);
-‎
-‎/* TOURNAMENTS */
-‎function renderTournaments(){
-‎  const list=$("tournamentList");
-‎  const sel=$("tournament");
-‎  const roomSel=$("roomTournament");
-‎  if(!tournaments.length){
-‎    list.innerHTML='<div class="card">No tournaments published yet.</div>';
-‎    sel.innerHTML='<option value="">No tournaments available</option>';
-‎    roomSel.innerHTML='<option value="">General room</option>';
-‎    return;
-‎  }
-‎  list.innerHTML=tournaments.map(t=>`
-‎    <article class="card">
-‎      <div class="emoji">🏆</div>
-‎      <h3>${escapeHtml(t.name)}</h3>
-‎      <span class="small">${escapeHtml(t.game)}</span>
-‎      <p>${escapeHtml(t.details||"Registration is open.")}</p>
-‎      <p>📅 ${escapeHtml(dateText(t.starts_at))}</p>
-‎      <a class="btn" href="#join" data-tid="${escapeHtml(t.id)}">Register</a>
-‎    </article>`).join("");
-‎  sel.innerHTML='<option value="">Choose a tournament</option>'+
-‎    tournaments.map(t=>`<option value="${escapeHtml(t.id)}">${escapeHtml(t.name)} — ${escapeHtml(t.game)}</option>`).join("");
-‎  roomSel.innerHTML='<option value="">General room</option>'+
-‎    tournaments.map(t=>`<option value="${escapeHtml(t.id)}">${escapeHtml(t.name)}</option>`).join("");
-‎  list.querySelectorAll("[data-tid]").forEach(a=>a.addEventListener("click",()=>{
-‎    sel.value=a.dataset.tid;
-‎    const t=tournaments.find(x=>String(x.id)===a.dataset.tid);
-‎    if(t)$("game").value=t.game;
-‎  }));
-‎}
-‎async function loadTournaments(){
-‎  const {data,error}=await supabaseClient.from("tournaments")
-‎    .select("id,name,game,starts_at,details")
-‎    .eq("is_published",true).order("starts_at",{ascending:true});
-‎  if(error){
-‎    $("tournamentList").textContent="Tournament load error: "+error.message;
-‎    return;
-‎  }
-‎  tournaments=data||[];
-‎  renderTournaments();
-‎}
-‎
-‎/* MY REGISTRATIONS */
-‎async function loadMyRegistrations(){
-‎  const target=$("myRegistrations");
-‎  if(!currentUser){target.textContent="Sign in to view registrations.";return;}
-‎  const {data,error}=await supabaseClient.from("registrations")
-‎    .select("id,player_name,game,team_name,status,created_at,tournaments(name)")
-‎    .eq("user_id",currentUser.id).order("created_at",{ascending:false});
-‎  if(error){target.textContent="Could not load: "+error.message;return;}
-‎  if(!data?.length){target.textContent="No registrations yet.";return;}
-‎  target.innerHTML=data.map(r=>`
-‎    <div class="item"><strong>${escapeHtml(r.player_name)}</strong> · ${escapeHtml(r.game)}
-‎    <br>Tournament: ${escapeHtml(r.tournaments?.name||"Tournament")}
-‎    <br>${r.team_name?"Team: "+escapeHtml(r.team_name)+"<br>":""}
-‎    <span class="status ${statusClass(r.status)}">${escapeHtml(r.status||"pending")}</span>
-‎    <div class="muted">${escapeHtml(dateText(r.created_at))}</div></div>`).join("");
-‎}
-‎
-‎/* ADMIN CHECK */
-‎async function checkAdmin(){
-‎  if(!currentUser){
-‎    isAdmin=false;
-‎    $("adminPanel").classList.add("hidden");
-‎    $("adminNotice").textContent="Sign in with your authorized admin account.";
-‎    return;
-‎  }
-‎  const {data,error}=await supabaseClient.rpc("is_admin");
-‎  isAdmin=!error && data===true;
-‎  $("adminPanel").classList.toggle("hidden",!isAdmin);
-‎  $("adminNotice").textContent=isAdmin?"Admin access confirmed.":
-‎    error?"Admin check failed. Configure the is_admin() function in Supabase.":
-‎    "This Google account is not authorized as admin.";
-‎  if(isAdmin)await loadAdminRegistrations();
-‎}
-‎
-‎/* ROOM DETAILS */
-‎async function loadRooms(){
-‎  const target=$("roomDetails");
-‎  if(!currentUser){target.textContent="Sign in to view room details.";return;}
-‎  const {data,error}=await supabaseClient.from("room_details")
-‎    .select("id,room_id,room_password,note,created_at,tournament_id")
-‎    .order("created_at",{ascending:false});
-‎  if(error){target.textContent="Room load error: "+error.message;return;}
-‎  if(!data?.length){target.textContent="No room details published yet.";return;}
-‎  target.innerHTML=data.map(r=>{
-‎    const t=tournaments.find(x=>String(x.id)===String(r.tournament_id));
-‎    return `<div class="item"><strong>${escapeHtml(t?.name||"General room")}</strong>
-‎      <p>Room ID: <strong>${escapeHtml(r.room_id)}</strong><br>
-‎      Room Password: <strong>${escapeHtml(r.room_password)}</strong></p>
-‎      ${r.note?"<p>"+escapeHtml(r.note)+"</p>":""}
-‎      <div class="muted">${escapeHtml(dateText(r.created_at))}</div></div>`;
-‎  }).join("");
-‎}
-‎$("refreshRoomBtn").addEventListener("click",loadRooms);
-‎
-‎/* REGISTER */
-‎$("registrationForm").addEventListener("submit",async e=>{
-‎  e.preventDefault();
-‎  if(!currentUser){msg("regMessage","Pahila Google sign in gara.");return;}
-‎  const b=$("submitRegistration");
-‎  b.disabled=true;
-‎  try{
-‎    const payload={
-‎      user_id:currentUser.id,
-‎      player_name:$("playerName").value.trim(),
-‎      game:$("game").value,
-‎      tournament_id:$("tournament").value,
-‎      team_name:$("teamName").value.trim()||null,
-‎      player_contact:$("playerContact").value.trim()||null,
-‎      status:"pending"
-‎    };
-‎    if(!payload.tournament_id)throw new Error("Tournament choose gara.");
-‎    const {error}=await supabaseClient.from("registrations").insert(payload);
-‎    if(error)throw error;
-‎    msg("regMessage","Registration submitted! Admin approval ko lagi wait gara.");
-‎    $("registrationForm").reset();
-‎    await loadMyRegistrations();
-‎  }catch(e){msg("regMessage","Registration failed: "+e.message);}
-‎  finally{b.disabled=false;}
-‎});
-‎
-‎/* CREATE TOURNAMENT */
-‎$("tournamentForm").addEventListener("submit",async e=>{
-‎  e.preventDefault();
-‎  if(!isAdmin){msg("adminMessage","Admin permission chaincha.");return;}
-‎  const b=$("publishTournamentBtn");b.disabled=true;
-‎  try{
-‎    const {error}=await supabaseClient.from("tournaments").insert({
-‎      name:$("tName").value.trim(),
-‎      game:$("tGame").value,
-‎      starts_at:new Date($("tDate").value).toISOString(),
-‎      details:$("tDetails").value.trim()||null,
-‎      is_published:true
-‎    });
-‎    if(error)throw error;
-‎    msg("adminMessage","Tournament published!");
-‎    $("tournamentForm").reset();
-‎    await loadTournaments();
-‎  }catch(e){msg("adminMessage","Publish failed: "+e.message);}
-‎  finally{b.disabled=false;}
-‎});
-‎
-‎/* PUBLISH ROOM */
-‎$("roomForm").addEventListener("submit",async e=>{
-‎  e.preventDefault();
-‎  if(!isAdmin){msg("roomMessage","Admin permission chaincha.");return;}
-‎  const b=$("publishRoomBtn");b.disabled=true;
-‎  try{
-‎    const {error}=await supabaseClient.from("room_details").insert({
-‎      room_id:$("roomId").value.trim(),
-‎      room_password:$("roomPassword").value.trim(),
-‎      note:$("roomNote").value.trim()||null,
-‎      tournament_id:$("roomTournament").value||null
-‎    });
-‎    if(error)throw error;
-‎    msg("roomMessage","Room details published.");
-‎    $("roomForm").reset();
-‎    await loadRooms();
-‎  }catch(e){msg("roomMessage","Publish failed: "+e.message);}
-‎  finally{b.disabled=false;}
-‎});
-‎
-‎/* ADMIN REGISTRATION APPROVAL */
-‎async function loadAdminRegistrations(){
-‎  const target=$("adminRegistrations");
-‎  if(!isAdmin){target.textContent="Admin access required.";return;}
-‎  const {data,error}=await supabaseClient.from("registrations")
-‎    .select("id,player_name,game,team_name,player_contact,status,created_at,tournaments(name)")
-‎    .order("created_at",{ascending:false});
-‎  if(error){target.textContent="Request load error: "+error.message;return;}
-‎  if(!data?.length){target.textContent="No registration requests yet.";return;}
-‎  target.innerHTML=data.map(r=>`
-‎    <div class="item"><strong>${escapeHtml(r.player_name)}</strong> · ${escapeHtml(r.game)}
-‎    <p>Tournament: ${escapeHtml(r.tournaments?.name||"Unknown")}<br>
-‎    Team: ${escapeHtml(r.team_name||"—")}<br>UID: ${escapeHtml(r.player_contact||"—")}<br>
-‎    Status: <span class="status ${statusClass(r.status)}">${escapeHtml(r.status||"pending")}</span></p>
-‎    <div class="row"><button class="success" data-status="accepted" data-id="${escapeHtml(r.id)}">Approve</button>
-‎    <button class="danger" data-status="rejected" data-id="${escapeHtml(r.id)}">Reject</button></div></div>`).join("");
-‎  target.querySelectorAll("button[data-id]").forEach(b=>b.addEventListener("click",async()=>{
-‎    b.disabled=true;
-‎    const {error}=await supabaseClient.from("registrations")
-‎      .update({status:b.dataset.status}).eq("id",b.dataset.id);
-‎    if(error)alert("Update failed: "+error.message);
-‎    await loadAdminRegistrations();
-‎  }));
-‎}
-‎$("reloadAdminBtn").addEventListener("click",loadAdminRegistrations);
-‎
-‎/* SESSION AND APP START */
-‎async function updateSession() {
-‎  if (!supabaseClient) {
-‎    $("userInfo").textContent = "Supabase connection failed.";
-‎    r
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b14">
+<title>NEPAL X ESPORTS</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #080b14;
+  color: #ffffff;
+}
+
+header {
+  padding: 20px;
+  text-align: center;
+  background: #12182a;
+  border-bottom: 2px solid #00e5ff;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: bold;
+  color: #00e5ff;
+}
+
+header p {
+  margin-top: 8px;
+  color: #b8c3df;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 15px;
+  background: #0d1220;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.hero {
+  text-align: center;
+  padding: 75px 18px;
+  background: linear-gradient(145deg, #101a35, #080b14);
+}
+
+.hero h1 {
+  font-size: 34px;
+  margin-bottom: 15px;
+}
+
+.hero h1 span {
+  color: #00e5ff;
+}
+
+.hero p {
+  color: #c3cbe0;
+  line-height: 1.7;
+  max-width: 550px;
+  margin: auto;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 25px;
+  padding: 13px 22px;
+  background: #00e5ff;
+  color: #080b14;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+section {
+  padding: 35px 18px;
+  max-width: 900px;
+  margin: auto;
+}
+
+h2 {
+  text-align: center;
+  color: #00e5ff;
+  margin-bottom: 22px;
+}
+
+.card {
+  background: #12182a;
+  border: 1px solid #293653;
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.card h3 {
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #c3cbe0;
+  line-height: 1.7;
+}
+
+footer {
+  text-align: center;
+  padding: 25px 15px;
+  color: #aab5d0;
+  background: #12182a;
+  margin-top: 25px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">NEPAL X ESPORTS</div>
+  <p>PLAY WITH PRIDE • REPRESENT NEPAL 🇳🇵</p>
+</header>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#teams">Teams</a>
+  <a href="#tournament">Tournament</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<main>
+  <div class="hero" id="home">
+    <h1>WELCOME TO <span>NXE</span></h1>
+    <p>
+      Welcome to NEPAL X ESPORTS!
+      Our mission is to grow together through teamwork,
+      discipline and competitive gaming.
+    </p>
+    <a class="btn" href="#teams">EXPLORE OUR TEAMS</a>
+  </div>
+
+  <section id="teams">
+    <h2>OUR TEAMS</h2>
+
+    <div class="card">
+      <h3>TEAM ONE</h3>
+      <p>
+        NFC CLUTCH<br>
+        OMAR UCHIHA<br>
+        SNB GAMMING<br>
+        XETTRI DON
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>TEAM TWO</h3>
+      <p>
+        PRANAV DADA<br>
+        SUNIL BHANDARI<br>
+        NIPUN SHAKYA<br>
+        KAIZO
+      </p>
+    </div>
+  </section>
+
+  <section id="tournament">
+    <h2>TOURNAMENT</h2>
+    <div class="card">
+      <h3>NEPAL X ESPORTS TOURNAMENTS</h3>
+      <p>
+        Get ready to compete!
+        Tournament announcements and registration
+        details will be published here.
+      </p>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>CONTACT US</h2>
+    <div class="card">
+      <h3>Join Our Community</h3>
+      <p>
+        Follow NEPAL X ESPORTS for team updates,
+        tournaments and gaming announcements.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © 2026 NEPAL X ESPORTS. All rights reserved.
+  <p style="margin-top:8px">Made for gamers 🇳🇵</p>
+</footer>
+
+</body>
+</html>
