@@ -1,608 +1,717 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080b14">
-<title>NEPAL X ESPORTS</title>
-<style>
-:root{--bg:#080b14;--panel:#12182a;--line:#29314b;--text:#f5f7ff;--muted:#aeb6d0;--cyan:#22d3ee;--purple:#8b5cf6}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-header{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 5%;background:#0c1020;border-bottom:1px solid #252b42}
-.logo{font-size:19px;font-weight:900}
-.logo span,h1 span{color:var(--cyan)}
-nav{display:flex;gap:15px;flex-wrap:wrap}
-nav a{color:#d1d5e8;text-decoration:none;font-size:13px}
-nav a:hover{color:var(--cyan)}
-button,.btn{display:inline-block;padding:12px 16px;background:linear-gradient(100deg,var(--purple),#4f46e5);border:0;border-radius:9px;color:white;font-weight:bold;text-decoration:none;cursor:pointer}
-button:disabled{opacity:.55;cursor:not-allowed}
-.secondary{background:#202943;border:1px solid #394563}
-.danger{background:#9f1239}
-.success{background:#047857}
-.hero{padding:70px 6%;text-align:center;background:radial-gradient(ellipse at top,#43228b77,transparent 70%)}
-.tag{display:inline-block;padding:8px 13px;border-radius:25px;border:1px solid var(--cyan);color:var(--cyan);font-size:12px}
-h1{font-size:clamp(38px,8vw,66px);line-height:1.08}
-h2{font-size:28px;margin-bottom:8px}
-p{line-height:1.7;color:var(--muted)}
-section{padding:40px 6%}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}
-.card{padding:20px;background:var(--panel);border:1px solid var(--line);border-radius:15px;min-width:0}
-.emoji{font-size:36px}
-.card h3{margin:12px 0 6px}
-.small{display:inline-block;padding:6px 10px;border-radius:20px;background:#34255d;color:#d8c9ff;font-size:12px}
-form{display:grid;gap:14px}
-.field{display:grid;gap:7px}
-label{color:#bdc5dd;font-size:14px}
-input,select,textarea{width:100%;padding:13px;border-radius:9px;border:1px solid #343d59;background:#090e1d;color:white;font-size:15px}
-textarea{min-height:90px;resize:vertical}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.muted{color:var(--muted);font-size:13px}
-.message{padding:10px 12px;border-radius:8px;background:#101b2e;color:#67e8f9;overflow-wrap:anywhere}
-.hidden{display:none!important}
-.status{display:inline-block;padding:5px 8px;border-radius:15px;background:#26324c;font-size:12px}
-.status.pending{color:#fde68a}
-.status.accepted{color:#6ee7b7}
-.status.rejected{color:#fda4af}
-.item{border-top:1px solid var(--line);padding:14px 0}
-.item:first-child{border-top:0}
-.room-value{font-size:18px;color:#67e8f9;overflow-wrap:anywhere}
-footer{padding:25px;text-align:center;border-top:1px solid #252b42;color:#9ca3bf}
-@media(max-width:700px){
-header{padding:14px 4%}
-nav{width:100%;justify-content:space-between;gap:8px}
-nav a{font-size:12px}
-.grid{grid-template-columns:1fr}
-.hero{padding:50px 5%}
-section{padding:30px 5%}
-}
-</style>
-</head>
-<body>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b14">
+  <title>NEPAL X ESPORTS</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg: #080b14;
+      --panel: #111827;
+      --border: #26334a;
+      --text: #f4f7ff;
+      --muted: #aab5ca;
+      --blue: #4385ff;
+      --green: #16a36a;
+      --red: #dc3545;
+      --yellow: #f6c453;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    header {
+      padding: 24px 16px;
+      text-align: center;
+      background: linear-gradient(135deg, #111d38, #080b14);
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(25px, 6vw, 38px);
+      color: #72a5ff;
+      letter-spacing: 1px;
+    }
+
+    header p { color: var(--muted); margin-bottom: 0; }
+
+    main {
+      width: min(100% - 24px, 900px);
+      margin: 20px auto 45px;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 17px;
+      margin-bottom: 17px;
+      overflow-wrap: anywhere;
+    }
+
+    h2 { margin-top: 0; font-size: 21px; }
+    h3 { margin: 0 0 8px; }
+    p { color: var(--muted); }
+    .small { font-size: 13px; color: var(--muted); }
+    .hidden { display: none !important; }
+
+    button, input, select, textarea {
+      font: inherit;
+      border-radius: 9px;
+    }
+
+    button {
+      border: 0;
+      background: var(--blue);
+      color: white;
+      padding: 11px 14px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:disabled { opacity: .55; cursor: wait; }
+
+    button.secondary { background: #344158; }
+    button.success { background: var(--green); }
+    button.danger { background: var(--red); }
+    button.warning { background: #8b6410; }
+
+    input, select, textarea {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0 13px;
+      background: #080d19;
+      border: 1px solid #344158;
+      color: white;
+    }
+
+    label { font-size: 14px; font-weight: bold; }
+
+    .row {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .row > * { flex: 1 1 130px; }
+
+    .item {
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-top: 11px;
+      background: #0b1120;
+    }
+
+    .item p { margin: 7px 0; }
+    .status {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: #344158;
+      font-size: 12px;
+      text-transform: capitalize;
+    }
+
+    .status.pending { color: #ffda79; }
+    .status.accepted { color: #72efb2; }
+    .status.rejected { color: #ff929a; }
+
+    .notice {
+      padding: 11px;
+      background: #101d35;
+      border-radius: 9px;
+      color: #c7d9ff;
+      font-size: 13px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
 <header>
- <a class="logo" href="#home" style="color:white;text-decoration:none">
-  NEPAL <span>X</span> ESPORTS
- </a>
- <nav>
-  <a href="#home">Home</a>
-  <a href="#games">Games</a>
-  <a href="#tournaments">Tournaments</a>
-  <a href="#join">Register</a>
-  <a href="#rooms">Room Details</a>
-  <a href="#admin">Admin</a>
-  <a href="https://discord.gg/X7pddpRj" target="_blank" rel="noopener noreferrer">Discord</a>
- </nav>
- <div class="row">
-  <button id="loginBtn">Sign in with Google</button>
-  <button id="logoutBtn" class="secondary hidden">Sign out</button>
- </div>
+  <h1>NEPAL X ESPORTS</h1>
+  <p>Play Together. Compete Together. Win Together.</p>
 </header>
 
 <main>
-<section class="hero" id="home">
- <div class="tag">🇳🇵 NEPAL GAMING COMMUNITY</div>
- <h1>PLAY TOGETHER<br><span>RISE TOGETHER</span></h1>
- <p>Welcome to NEPAL X ESPORTS. Join the community, register for tournaments, and compete with players across Nepal.</p>
- <a class="btn" href="#tournaments">Explore Tournaments</a>
-</section>
+  <section>
+    <h2>👤 Account</h2>
 
-<section id="games">
- <h2>🎮 Our Games</h2>
- <p>Choose your game and join the community.</p>
- <div class="grid">
-  <article class="card">
-   <div class="emoji">🔥</div><h3>Free Fire</h3>
-   <p>Squad up, practice and compete.</p>
-   <span class="small">Battle Royale</span>
-  </article>
-  <article class="card">
-   <div class="emoji">🎯</div><h3>PUBG Mobile</h3>
-   <p>Teamwork, tactics and competitive matches.</p>
-   <span class="small">Battle Royale</span>
-  </article>
-  <article class="card">
-   <div class="emoji">⚔️</div><h3>Mobile Legends</h3>
-   <p>Build your team and play together.</p>
-   <span class="small">MOBA</span>
-  </article>
- </div>
-</section>
-
-<section id="tournaments">
- <h2>🏆 Tournaments</h2>
- <p>Available tournaments appear here. Sign in and register below.</p>
- <div id="tournamentList" class="grid">
-  <div class="card">Loading tournaments…</div>
- </div>
-</section>
-
-<section id="join">
- <h2>📝 Tournament Registration</h2>
- <p>Sign in with Google first. Your registration will be saved in the database.</p>
- <div id="userPanel" class="card">
-  <div id="userInfo">You are not signed in.</div>
-  <form id="registrationForm" class="hidden" style="margin-top:18px">
-   <div class="field">
-    <label for="playerName">In-game name</label>
-    <input id="playerName" maxlength="40" required placeholder="Your Free Fire name">
-   </div>
-   <div class="field">
-    <label for="game">Game</label>
-    <select id="game" required>
-     <option value="Free Fire">Free Fire</option>
-     <option value="PUBG Mobile">PUBG Mobile</option>
-     <option value="Mobile Legends">Mobile Legends</option>
-    </select>
-   </div>
-   <div class="field">
-    <label for="tournament">Tournament</label>
-    <select id="tournament" required>
-     <option value="">Loading tournaments…</option>
-    </select>
-   </div>
-   <div class="field">
-    <label for="teamName">Team name (optional)</label>
-    <input id="teamName" maxlength="60" placeholder="Your team name">
-   </div>
-   <div class="field">
-    <label for="playerContact">Game UID (optional)</label>
-    <input id="playerContact" maxlength="80" placeholder="Enter your game UID">
-   </div>
-   <button id="submitRegistration" type="submit">Submit Registration</button>
-  </form>
-  <div id="regMessage" class="message hidden" style="margin-top:12px"></div>
- </div>
-
- <div class="card" style="margin-top:18px">
-  <h3>My registrations</h3>
-  <div id="myRegistrations" class="muted">Sign in to view your registrations.</div>
- </div>
-</section>
-
-<!-- PLAYER ROOM NOTIFICATION BOX -->
-<section id="rooms">
- <h2>📢 Room ID & Password</h2>
- <p>Tournament room details and updates will appear here.</p>
- <div class="card">
-  <div id="roomNotice" class="message">
-   Sign in with Google to check room details.
-  </div>
-  <div id="roomDetails" class="hidden" style="margin-top:16px">
-   <h3 id="roomMessage">Room details</h3>
-   <p>🎮 Room ID</p>
-   <div id="roomIdDisplay" class="room-value"></div>
-   <p>🔐 Room Password</p>
-   <div id="roomPasswordDisplay" class="room-value"></div>
-   <p class="muted" id="roomUpdated"></p>
-  </div>
-  <button type="button" id="refreshRoomBtn" class="secondary" style="margin-top:15px">
-   🔄 Refresh Room Details
-  </button>
- </div>
-</section>
-
-<section id="admin">
- <h2>🛡️ Admin Panel</h2>
- <p>Only accounts authorized in Supabase can manage tournaments, registrations and room details.</p>
- <div id="adminNotice" class="message">Sign in with your authorized admin Google account.</div>
-
- <div id="adminPanel" class="hidden">
-
-  <div class="card" style="margin:16px 0">
-   <h3>📢 Publish Room ID & Password</h3>
-   <p>Yaha Room ID ra Password halera players lai notification pathauna sakinchha.</p>
-   <form id="roomForm">
-    <div class="field">
-     <label for="roomIdInput">Room ID</label>
-     <input id="roomIdInput" maxlength="100" required placeholder="Enter Room ID">
+    <div id="signedOut">
+      <p>Google account bata sign in garera tournament join gara.</p>
+      <button id="loginBtn" type="button">Sign in with Google</button>
     </div>
-    <div class="field">
-     <label for="roomPasswordInput">Room Password</label>
-     <input id="roomPasswordInput" maxlength="100" required placeholder="Enter Room Password">
-    </div>
-    <div class="field">
-     <label for="roomMessageInput">Notification message</label>
-     <input id="roomMessageInput" maxlength="200" value="📢 Tournament Room ID ra Password aayo!" required>
-    </div>
-    <button id="publishRoomBtn" type="submit">Publish Room Details</button>
-   </form>
-   <div id="roomAdminMessage" class="message hidden" style="margin-top:12px"></div>
-  </div>
 
-  <div class="card" style="margin:16px 0">
-   <h3>🏆 Create tournament</h3>
-   <form id="tournamentForm">
-    <div class="field">
-     <label for="tName">Tournament name</label>
-     <input id="tName" required maxlength="100" placeholder="e.g. NXE Free Fire Cup">
+    <div id="signedIn" class="hidden">
+      <p>Login: <strong id="userEmail"></strong></p>
+      <div class="row">
+        <button id="logoutBtn" class="secondary" type="button">Sign Out</button>
+        <button id="refreshBtn" class="secondary" type="button">Refresh</button>
+      </div>
     </div>
-    <div class="field">
-     <label for="tGame">Game</label>
-     <select id="tGame">
-      <option>Free Fire</option>
-      <option>PUBG Mobile</option>
-      <option>Mobile Legends</option>
-     </select>
-    </div>
-    <div class="field">
-     <label for="tDate">Date and time</label>
-     <input id="tDate" type="datetime-local" required>
-    </div>
-    <div class="field">
-     <label for="tDetails">Details (optional)</label>
-     <textarea id="tDetails" maxlength="1000" placeholder="Rules, slots, prize details…"></textarea>
-    </div>
-    <button type="submit">Publish Tournament</button>
-   </form>
-   <div id="adminMessage" class="message hidden" style="margin-top:12px"></div>
-  </div>
 
-  <h3>Registration requests</h3>
-  <div id="adminRegistrations" class="card">Loading…</div>
- </div>
-</section>
+    <p id="appMessage" class="small" role="status"></p>
+  </section>
+
+  <section>
+    <h2>🎮 Games</h2>
+    <div class="row">
+      <button class="secondary gameBtn" data-game="Free Fire" type="button">Free Fire</button>
+      <button class="secondary gameBtn" data-game="PUBG Mobile" type="button">PUBG Mobile</button>
+      <button class="secondary gameBtn" data-game="Mobile Legends" type="button">Mobile Legends</button>
+    </div>
+    <p id="selectedGame">Selected game: Free Fire</p>
+  </section>
+
+  <section>
+    <h2>🏆 Available Tournaments</h2>
+    <p>Published tournaments yaha dekhna ra join garna milchha.</p>
+    <div id="tournamentsList">Loading tournaments...</div>
+  </section>
+
+  <section id="registrationSection">
+    <h2>📝 Tournament Registration</h2>
+    <p class="small">Pahila Google sign in gara. Registration admin le approve garepachi status update hunchha.</p>
+
+    <form id="registrationForm">
+      <label for="tournamentSelect">Tournament</label>
+      <select id="tournamentSelect" required>
+        <option value="">Select tournament</option>
+      </select>
+
+      <label for="playerName">Player name</label>
+      <input id="playerName" maxlength="60" required placeholder="In-game name">
+
+      <label for="registrationGame">Game</label>
+      <select id="registrationGame" required>
+        <option>Free Fire</option>
+        <option>PUBG Mobile</option>
+        <option>Mobile Legends</option>
+      </select>
+
+      <label for="teamName">Team name (optional)</label>
+      <input id="teamName" maxlength="60" placeholder="Your team name">
+
+      <label for="playerUid">Game UID / Contact</label>
+      <input id="playerUid" maxlength="100" required placeholder="Game UID">
+
+      <button id="registerBtn" type="submit">Submit Registration</button>
+    </form>
+    <p id="registrationMessage" class="small" role="status"></p>
+  </section>
+
+  <section>
+    <h2>📋 My Registrations</h2>
+    <div id="myRegistrations">Sign in to view your registrations.</div>
+  </section>
+
+  <section>
+    <h2>🔑 Room ID & Password</h2>
+    <p class="small">Room details login gareko players le herna sakchhan, database ko RLS policy anusar.</p>
+    <button id="refreshRoomBtn" class="secondary" type="button">Refresh Room Details</button>
+    <div id="roomDetails">Sign in to check room details.</div>
+  </section>
+
+  <section id="adminPanel" class="hidden">
+    <h2>🛡️ Admin Panel</h2>
+    <p class="notice">Admin access Supabase ko is_admin() function ra database policies bata control hunuparchha.</p>
+
+    <h3>Create Tournament</h3>
+    <form id="tournamentForm">
+      <label for="newTournamentName">Tournament name</label>
+      <input id="newTournamentName" maxlength="100" required placeholder="Example: NXE Weekly Cup">
+
+      <label for="newTournamentGame">Game</label>
+      <select id="newTournamentGame" required>
+        <option>Free Fire</option>
+        <option>PUBG Mobile</option>
+        <option>Mobile Legends</option>
+      </select>
+
+      <label for="tournamentStart">Start date and time</label>
+      <input id="tournamentStart" type="datetime-local" required>
+
+      <label for="tournamentDetails">Details / Entry fee / Prize</label>
+      <textarea id="tournamentDetails" rows="3" maxlength="2000" placeholder="Tournament details"></textarea>
+
+      <button id="createTournamentBtn" type="submit">Create Tournament</button>
+    </form>
+    <p id="tournamentMessage" class="small" role="status"></p>
+
+    <hr style="border-color:#26334a; margin:22px 0">
+
+    <h3>Publish Room ID & Password</h3>
+    <form id="roomForm">
+      <label for="roomTournament">Tournament (optional)</label>
+      <select id="roomTournament">
+        <option value="">General room details</option>
+      </select>
+
+      <label for="roomId">Room ID</label>
+      <input id="roomId" maxlength="100" required placeholder="Enter room ID">
+
+      <label for="roomPassword">Room Password</label>
+      <input id="roomPassword" maxlength="100" required placeholder="Enter room password">
+
+      <label for="roomNote">Note (optional)</label>
+      <input id="roomNote" maxlength="300" placeholder="Room opens at 6:45 PM">
+
+      <button id="publishRoomBtn" type="submit">Publish Room Details</button>
+    </form>
+    <p id="roomMessage" class="small" role="status"></p>
+
+    <hr style="border-color:#26334a; margin:22px 0">
+
+    <h3>Registration Requests</h3>
+    <button id="reloadAdminBtn" class="secondary" type="button">Reload Requests</button>
+    <div id="adminRegistrations">Loading requests...</div>
+  </section>
 </main>
 
 <footer>
- © <span id="year"></span> NEPAL X ESPORTS · Play fair, rise together 🇳🇵
+  NEPAL X ESPORTS © <span id="year"></span>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+"use strict";
+
+/* SUPABASE CONFIG */
 const SUPABASE_URL = "https://rocuvqyunrixaddggrwo.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Apnd7DlitzKEE0okv9KC3A_HLQlOS_V";
-
-const configReady =
- SUPABASE_URL.startsWith("https://") &&
- !SUPABASE_URL.includes("PASTE_") &&
- !SUPABASE_ANON_KEY.includes("PASTE_") &&
- SUPABASE_ANON_KEY.length > 20;
-
-const $ = id => document.getElementById(id);
-$("year").textContent = new Date().getFullYear();
 
 let supabaseClient = null;
 let currentUser = null;
 let isAdmin = false;
 let tournaments = [];
+let selectedGame = "Free Fire";
 
-const showMessage = (id, text) => {
- const el = $(id);
- el.textContent = text;
- el.classList.remove("hidden");
-};
-const hideMessage = id => $(id).classList.add("hidden");
+const $ = id => document.getElementById(id);
 
-function statusClass(s) {
- return ["pending","accepted","rejected"].includes(s) ? s : "pending";
-}
-function dateText(v) {
- if (!v) return "Date to be announced";
- const d = new Date(v);
- return Number.isNaN(d.getTime()) ? "Date to be announced" : d.toLocaleString();
-}
 function escapeHtml(value) {
- return String(value ?? "").replace(/[&<>"']/g, c => ({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- }[c]));
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
 }
 
+function showMessage(id, message) {
+  const element = $(id);
+  if (element) element.textContent = message;
+}
+
+function statusClass(status) {
+  const safe = String(status || "pending").toLowerCase();
+  return ["pending", "accepted", "rejected"].includes(safe)
+    ? safe : "pending";
+}
+
+function formatDate(value) {
+  if (!value) return "Not set";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? "Not set"
+    : date.toLocaleString();
+}
+
+function requireLogin() {
+  if (!currentUser) {
+    alert("Pahila Google Sign in gara.");
+    return false;
+  }
+  return true;
+}
+
+/* GOOGLE SIGN IN */
 async function signIn() {
- if (!supabaseClient) return alert("Check your Supabase URL and publishable key.");
- const {error} = await supabaseClient.auth.signInWithOAuth({
-  provider:"google",
-  options:{redirectTo:window.location.origin + window.location.pathname}
- });
- if (error) alert("Google sign-in failed: " + error.message);
+  if (!supabaseClient) {
+    alert("Supabase initialize bhayeko chaina. Page refresh gara.");
+    return;
+  }
+
+  const button = $("loginBtn");
+  button.disabled = true;
+  button.textContent = "Opening Google...";
+
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.href.split("#")[0].split("?")[0]
+      }
+    });
+
+    if (error) throw error;
+
+    if (data && data.url) {
+      window.location.assign(data.url);
+    }
+  } catch (error) {
+    alert("Google Login Error: " + (error.message || String(error)));
+    button.disabled = false;
+    button.textContent = "Sign in with Google";
+  }
 }
+
+/* SIGN OUT */
 async function signOut() {
- const {error} = await supabaseClient.auth.signOut();
- if (error) alert(error.message);
-}
-$("loginBtn").addEventListener("click", signIn);
-$("logoutBtn").addEventListener("click", signOut);
+  if (!supabaseClient) return;
 
-function renderTournaments() {
- const list = $("tournamentList");
- const select = $("tournament");
+  const { error } = await supabaseClient.auth.signOut();
+  if (error) {
+    alert("Sign out failed: " + error.message);
+    return;
+  }
 
- if (!tournaments.length) {
-  list.innerHTML = '<div class="card">No tournaments published yet. Please check again later.</div>';
-  select.innerHTML = '<option value="">No tournaments available</option>';
-  return;
- }
-
- list.innerHTML = tournaments.map(t => `
-  <article class="card">
-   <div class="emoji">🏆</div>
-   <h3>${escapeHtml(t.name)}</h3>
-   <span class="small">${escapeHtml(t.game)}</span>
-   <p>${escapeHtml(t.details || "Tournament registration is open.")}</p>
-   <p>📅 ${escapeHtml(dateText(t.starts_at))}</p>
-   <a class="btn" href="#join">Register</a>
-  </article>
- `).join("");
-
- select.innerHTML = '<option value="">Choose a tournament</option>' +
-  tournaments.map(t =>
-   `<option value="${escapeHtml(t.id)}">${escapeHtml(t.name)} — ${escapeHtml(t.game)}</option>`
-  ).join("");
+  currentUser = null;
+  isAdmin = false;
+  await updateSession(null);
 }
 
+/* GAME SELECT */
+document.querySelectorAll(".gameBtn").forEach(button => {
+  button.addEventListener("click", () => {
+    selectedGame = button.dataset.game;
+    $("selectedGame").textContent = "Selected game: " + selectedGame;
+    $("registrationGame").value = selectedGame;
+  });
+});
+
+/* LOAD TOURNAMENTS */
 async function loadTournaments() {
- if (!supabaseClient) return;
- const {data,error} = await supabaseClient
-  .from("tournaments")
-  .select("id,name,game,starts_at,details")
-  .eq("is_published",true)
-  .order("starts_at",{ascending:true});
+  const list = $("tournamentsList");
+  const select = $("tournamentSelect");
+  const roomSelect = $("roomTournament");
 
- if (error) {
-  $("tournamentList").innerHTML = '<div class="card">Could not load tournaments. Check Supabase setup.</div>';
-  return;
- }
- tournaments = data || [];
- renderTournaments();
+  const { data, error } = await supabaseClient
+    .from("tournaments")
+    .select("id,name,game,starts_at,details,is_published")
+    .eq("is_published", true)
+    .order("starts_at", { ascending: true });
+
+  if (error) {
+    list.textContent = "Could not load tournaments: " + error.message;
+    return;
+  }
+
+  tournaments = data || [];
+  list.innerHTML = "";
+  select.innerHTML = '<option value="">Select tournament</option>';
+  roomSelect.innerHTML = '<option value="">General room details</option>';
+
+  if (!tournaments.length) {
+    list.textContent = "Ahile tournament available chaina.";
+    return;
+  }
+
+  tournaments.forEach(tournament => {
+    const card = document.createElement("div");
+    card.className = "item";
+
+    const title = document.createElement("h3");
+    title.textContent = tournament.name || "Tournament";
+
+    const game = document.createElement("p");
+    game.textContent = "Game: " + (tournament.game || "Not set");
+
+    const start = document.createElement("p");
+    start.textContent = "Starts: " + formatDate(tournament.starts_at);
+
+    const details = document.createElement("p");
+    details.textContent = tournament.details || "No extra details.";
+
+    const joinButton = document.createElement("button");
+    joinButton.textContent = "Register for this tournament";
+    joinButton.addEventListener("click", () => {
+      $("tournamentSelect").value = tournament.id;
+      $("registrationGame").value = tournament.game || "Free Fire";
+      $("registrationSection").scrollIntoView({ behavior: "smooth" });
+    });
+
+    card.append(title, game, start, details, joinButton);
+    list.appendChild(card);
+
+    const option = document.createElement("option");
+    option.value = tournament.id;
+    option.textContent = tournament.name + " (" + tournament.game + ")";
+    select.appendChild(option);
+
+    const roomOption = document.createElement("option");
+    roomOption.value = tournament.id;
+    roomOption.textContent = tournament.name;
+    roomSelect.appendChild(roomOption);
+  });
 }
 
+/* MY REGISTRATIONS */
 async function loadMyRegistrations() {
- const target = $("myRegistrations");
- if (!currentUser) {
-  target.textContent = "Sign in to view your registrations.";
-  return;
- }
+  const box = $("myRegistrations");
 
- const {data,error} = await supabaseClient
-  .from("registrations")
-  .select("id,player_name,game,team_name,status,created_at,tournaments(name)")
-  .order("created_at",{ascending:false});
+  if (!currentUser) {
+    box.textContent = "Sign in to view your registrations.";
+    return;
+  }
 
- if (error) {
-  target.textContent = "Could not load registrations: " + error.message;
-  return;
- }
- if (!data?.length) {
-  target.textContent = "You have not registered for any tournament yet.";
-  return;
- }
+  const { data, error } = await supabaseClient
+    .from("registrations")
+    .select("id,player_name,game,team_name,status,created_at,tournaments(name)")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false });
 
- target.innerHTML = data.map(r => `
-  <div class="item">
-   <strong>${escapeHtml(r.player_name)}</strong> · ${escapeHtml(r.game)}
-   <p>${escapeHtml(r.tournaments?.name || "Tournament")} ·
-   <span class="status ${statusClass(r.status)}">${escapeHtml(r.status)}</span></p>
-  </div>
- `).join("");
+  if (error) {
+    box.textContent = "Could not load registrations: " + error.message;
+    return;
+  }
+
+  if (!data || !data.length) {
+    box.textContent = "Timile ahile samma registration gareko chainau.";
+    return;
+  }
+
+  box.innerHTML = data.map(registration => `
+    <div class="item">
+      <h3>${escapeHtml(registration.player_name)}</h3>
+      <p>Game: ${escapeHtml(registration.game)}</p>
+      <p>Team: ${escapeHtml(registration.team_name || "No team")}</p>
+      <p>Tournament: ${escapeHtml(registration.tournaments?.name || "Tournament")}</p>
+      <span class="status ${statusClass(registration.status)}">
+        ${escapeHtml(registration.status)}
+      </span>
+    </div>
+  `).join("");
 }
 
-/* LOAD ROOM DETAILS FOR SIGNED-IN PLAYERS */
+/* ROOM DETAILS */
 async function loadRoomDetails() {
- const notice = $("roomNotice");
- const details = $("roomDetails");
+  const box = $("roomDetails");
 
- details.classList.add("hidden");
+  if (!currentUser) {
+    box.textContent = "Room details herna Google sign in gara.";
+    return;
+  }
 
- if (!currentUser) {
-  notice.textContent = "Room ID ra Password herna Google le sign in garnuhos.";
-  return;
- }
+  box.textContent = "Loading room details...";
 
- notice.textContent = "Room details check gardai chha…";
+  const { data, error } = await supabaseClient
+    .from("room_details")
+    .select("id,room_id,room_password,note,created_at,tournament_id")
+    .order("created_at", { ascending: false })
+    .limit(10);
 
- const {data,error} = await supabaseClient
-  .from("room_details")
-  .select("id,room_id,room_password,message,updated_at")
-  .order("updated_at",{ascending:false})
-  .limit(1);
+  if (error) {
+    box.textContent = "Could not load room details: " + error.message;
+    return;
+  }
 
- if (error) {
-  notice.textContent = "Room details load bhayena: " + error.message;
-  return;
- }
+  if (!data || !data.length) {
+    box.textContent = "Admin le room details publish gareko chaina.";
+    return;
+  }
 
- if (!data || data.length === 0) {
-  notice.textContent = "📢 Ahile samma Room ID ra Password publish bhayeko chhaina.";
-  return;
- }
+  box.innerHTML = data.map(room => {
+    const tournament = tournaments.find(t => t.id === room.tournament_id);
 
- const room = data[0];
- $("roomMessage").textContent = room.message || "📢 Room details aayo!";
- $("roomIdDisplay").textContent = room.room_id;
- $("roomPasswordDisplay").textContent = room.room_password;
- $("roomUpdated").textContent = "Last update: " + dateText(room.updated_at);
-
- notice.textContent = "✅ Latest room details available below.";
- details.classList.remove("hidden");
+    return `
+      <div class="item">
+        <h3>${escapeHtml(tournament?.name || "Tournament Room")}</h3>
+        <p>Room ID: <strong>${escapeHtml(room.room_id)}</strong></p>
+        <p>Password: <strong>${escapeHtml(room.room_password)}</strong></p>
+        <p>${escapeHtml(room.note || "")}</p>
+        <p class="small">Updated: ${escapeHtml(formatDate(room.created_at))}</p>
+      </div>
+    `;
+  }).join("");
 }
-
-$("refreshRoomBtn").addEventListener("click", loadRoomDetails);
 
 /* CHECK ADMIN PERMISSION */
 async function checkAdmin() {
- isAdmin = false;
+  isAdmin = false;
 
- if (!currentUser) {
-  $("adminNotice").textContent = "Sign in with your authorized admin Google account.";
-  $("adminPanel").classList.add("hidden");
-  return;
- }
+  if (!currentUser) {
+    $("adminPanel").classList.add("hidden");
+    return;
+  }
 
- const {data,error} = await supabaseClient.rpc("is_admin");
+  const { data, error } = await supabaseClient.rpc("is_admin");
 
- if (!error && data === true) {
-  isAdmin = true;
-  $("adminNotice").textContent = "Admin access verified.";
-  $("adminPanel").classList.remove("hidden");
-  await loadAdminRegistrations();
- } else {
-  $("adminNotice").textContent = "This account is not an authorized admin. Supabase controls admin access.";
-  $("adminPanel").classList.add("hidden");
- }
+  if (error) {
+    console.warn("Admin check:", error.message);
+    $("adminPanel").classList.add("hidden");
+    return;
+  }
+
+  isAdmin = data === true;
+  $("adminPanel").classList.toggle("hidden", !isAdmin);
+
+  if (isAdmin) {
+    await loadAdminRegistrations();
+  }
 }
 
+/* UPDATE LOGIN UI */
 async function updateSession(session) {
- currentUser = session?.user || null;
+  currentUser = session?.user || null;
 
- $("loginBtn").classList.toggle("hidden",!!currentUser);
- $("logoutBtn").classList.toggle("hidden",!currentUser);
+  $("signedOut").classList.toggle("hidden", !!currentUser);
+  $("signedIn").classList.toggle("hidden", !currentUser);
+  $("userEmail").textContent = currentUser?.email || "";
 
- $("userInfo").textContent = currentUser
-  ? "Signed in as " + (currentUser.email || "Google user")
-  : "You are not signed in.";
+  if (!currentUser) {
+    isAdmin = false;
+    $("adminPanel").classList.add("hidden");
+    $("myRegistrations").textContent = "Sign in to view your registrations.";
+    $("roomDetails").textContent = "Room details herna Google sign in gara.";
+    $("adminRegistrations").textContent = "Admin login required.";
+    return;
+  }
 
- $("registrationForm").classList.toggle("hidden",!currentUser);
-
- await checkAdmin();
- await loadMyRegistrations();
- await loadRoomDetails();
+  await checkAdmin();
+  await loadMyRegistrations();
+  await loadRoomDetails();
 }
 
-/* TOURNAMENT REGISTRATION */
-$("registrationForm").addEventListener("submit",async e => {
- e.preventDefault();
+/* SUBMIT REGISTRATION */
+$("registrationForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
- if (!currentUser) {
-  showMessage("regMessage","Please sign in with Google first.");
-  return;
- }
+  if (!requireLogin()) return;
 
- const button = $("submitRegistration");
- button.disabled = true;
- button.textContent = "Submitting…";
- hideMessage("regMessage");
+  const tournamentId = $("tournamentSelect").value;
+  const playerName = $("playerName").value.trim();
+  const game = $("registrationGame").value;
+  const teamName = $("teamName").value.trim();
+  const uid = $("playerUid").value.trim();
+  const button = $("registerBtn");
 
- const payload = {
-  tournament_id:$("tournament").value,
-  user_id:currentUser.id,
-  player_name:$("playerName").value.trim(),
-  game:$("game").value,
-  team_name:$("teamName").value.trim() || null,
-  contact_or_uid:$("playerContact").value.trim() || null,
-  status:"pending"
- };
+  if (!tournamentId || !playerName || !uid) {
+    showMessage("registrationMessage", "Sabai required field bhara.");
+    return;
+  }
 
- if (!payload.tournament_id || !payload.player_name) {
-  showMessage("regMessage","Please choose a tournament and enter your in-game name.");
-  button.disabled = false;
-  button.textContent = "Submit Registration";
-  return;
- }
+  button.disabled = true;
+  showMessage("registrationMessage", "Submitting registration...");
 
- const {error} = await supabaseClient.from("registrations").insert(payload);
+  try {
+    const { error } = await supabaseClient
+      .from("registrations")
+      .insert({
+        tournament_id: tournamentId,
+        user_id: currentUser.id,
+        player_name: playerName,
+        game: game,
+        team_name: teamName || null,
+        contact_or_uid: uid,
+        status: "pending"
+      });
 
- if (error) {
-  showMessage("regMessage","Registration failed: " + error.message);
- } else {
-  showMessage("regMessage","Registration submitted! Status: Pending review.");
-  $("registrationForm").reset();
-  await loadMyRegistrations();
- }
+    if (error) throw error;
 
- button.disabled = false;
- button.textContent = "Submit Registration";
-});
+    showMessage("registrationMessage", "Registration successful! Admin approval ko lagi pending chha.");
+    $("registrationForm").reset();
 
-/* ADMIN PUBLISHES ROOM DETAILS */
-$("roomForm").addEventListener("submit",async e => {
- e.preventDefault();
-
- if (!currentUser || !isAdmin) {
-  showMessage("roomAdminMessage","Admin permission required.");
-  return;
- }
-
- const button = $("publishRoomBtn");
- button.disabled = true;
- button.textContent = "Publishing…";
- hideMessage("roomAdminMessage");
-
- const payload = {
-  room_id:$("roomIdInput").value.trim(),
-  room_password:$("roomPasswordInput").value.trim(),
-  message:$("roomMessageInput").value.trim() || "📢 Room ID ra Password aayo!",
-  updated_at:new Date().toISOString()
- };
-
- if (!payload.room_id || !payload.room_password) {
-  showMessage("roomAdminMessage","Room ID ra Password dubai halnuhos.");
-  button.disabled = false;
-  button.textContent = "Publish Room Details";
-  return;
- }
-
- const {error} = await supabaseClient
-  .from("room_details")
-  .insert(payload);
-
- if (error) {
-  showMessage("roomAdminMessage","Publish failed: " + error.message);
- } else {
-  showMessage("roomAdminMessage","✅ Room details published! Players can refresh the Room Details box.");
-  $("roomForm").reset();
-  $("roomMessageInput").value = "📢 Tournament Room ID ra Password aayo!";
-  await loadRoomDetails();
- }
-
- button.disabled = false;
- button.textContent = "Publish Room Details";
+    await loadMyRegistrations();
+    if (isAdmin) await loadAdminRegistrations();
+  } catch (error) {
+    showMessage("registrationMessage", "Registration failed: " + error.message);
+  } finally {
+    button.disabled = false;
+  }
 });
 
 /* CREATE TOURNAMENT */
-$("tournamentForm").addEventListener("submit",async e => {
- e.preventDefault();
- if (!isAdmin) return;
+$("tournamentForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
- const btn = e.submitter;
- if (btn) btn.disabled = true;
- hideMessage("adminMessage");
+  if (!isAdmin) {
+    alert("Admin permission required.");
+    return;
+  }
 
- const dateValue = $("tDate").value;
- const parsedDate = new Date(dateValue);
+  const button = $("createTournamentBtn");
+  button.disabled = true;
 
- if (!dateValue || Number.isNaN(parsedDate.getTime())) {
-  showMessage("adminMessage","Please choose a valid tournament date and time.");
-  if (btn) btn.disabled = false;
-  return;
- }
+  try {
+    const name = $("newTournamentName").value.trim();
+    const game = $("newTournamentGame").value;
+    const dateValue = $("tournamentStart").value;
+    const details = $("tournamentDetails").value.trim();
 
- const payload = {
-  name:$("tName").value.trim(),
-  game:$("tGame").value,
-  starts_at:parsedDate.toISOString(),
-  details:$("tDetails").value.trim() || null,
-  is_published:true
- };
+    if (!name || !dateValue) throw new Error("Tournament name ra date bhara.");
 
- const {error} = await supabaseClient.from("tournaments").insert(payload);
+    const { error } = await supabaseClient
+      .from("tournaments")
+      .insert({
+        name,
+        game,
+        starts_at: new Date(dateValue).toISOString(),
+        details: details || null,
+        is_published: true
+      });
 
- if (error) {
-  showMessage("adminMessage","Could not publish: " + error.message);
- } else {
-  showMessage("adminMessage","Tournament published.");
-  $("tournamentForm").reset();
-  await loadTournaments();
- }
+    if (error) throw error;
 
- if (btn) btn.disabled = false;
+    showMessage("tournamentMessage", "Tournament created successfully!");
+    $("tournamentForm").reset();
+    await loadTournaments();
+  } catch (error) {
+    showMessage("tournamentMessage", "Tournament create failed: " + error.message);
+  } finally {
+    button.disabled = false;
+  }
 });
 
-/* ADMIN REGISTRATION LIST */
-async function loadAdminRegistrations() {
- if (!isAdmin) return;
+/* PUBLISH ROOM DETAILS */
+$("roomForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
- const {data,error} = await supabaseClient
-  .from("registrations")
-  .select("id,player_name,game,team_name,contact_or_uid,status,created_at,user_id,tournaments(name)")
-  .order("created_at",{ascending:false});
+  if (!isAdmin) {
+    alert("Admin permission required.");
+    return;
+  }
 
- const box = $("adminRegistrations");
+  const button = $("publishRoomBtn");
+  button.disabled = true;
 
- if (error) {
-  box.textContent = "Could not load requests: " + error.message;
-  return;
- }
- if (!data?.length) {
- 
+  try {
+    const roomId = $("roomId").value.trim();
+    const password = $("roomPassword").value.trim();
+    const note = $("roomNote").value.trim();
+    const tournamentId = $("roomTournament").value || null;
+
+    const { error } = await supabaseClient
+      .from("room_details")
+      .insert({
+        room_id: roomId,
+        room_password: password,
+        note: note || null,
+        tournament_id: tournamentId
+      });
+
+    if (error) throw error;
+
+    showMessage("roomMessage", "Room details published!");
+    $("roomForm").reset();
+    aw
