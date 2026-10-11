@@ -7,7 +7,6 @@
 <meta name="theme-color" content="#080D1D">
 <title>NEPAL X ESPORTS | Admin Panel</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 :root {
   --bg:#080D1D;
@@ -18,7 +17,7 @@
   --text:#F4F7FF;
   --muted:#AAB6D0;
 }
-* { box-sizing:border-box; }
+* {box-sizing:border-box}
 body {
   margin:0;
   background:var(--bg);
@@ -30,10 +29,10 @@ header {
   background:#0D1427;
   border-bottom:1px solid var(--line);
 }
-.logo {font-size:22px;font-weight:900;}
-.logo span {color:var(--cyan);}
-header p {font-size:12px;color:var(--muted);}
-main {max-width:900px;margin:auto;padding:16px;}
+.logo {font-size:22px;font-weight:900}
+.logo span {color:var(--cyan)}
+header p,.small {font-size:13px;color:var(--muted)}
+main {max-width:900px;margin:auto;padding:16px}
 .card {
   padding:17px;
   margin-bottom:14px;
@@ -41,9 +40,7 @@ main {max-width:900px;margin:auto;padding:16px;}
   border:1px solid var(--line);
   border-radius:14px;
 }
-h2 {font-size:18px;margin-top:0;}
-p {line-height:1.5;}
-.small {font-size:13px;color:var(--muted);}
+h2 {font-size:18px;margin-top:0}
 button,a {
   display:inline-block;
   padding:12px 15px;
@@ -56,31 +53,21 @@ button,a {
   text-decoration:none;
   cursor:pointer;
 }
-.primary {background:var(--cyan);color:#06111B;}
+.primary {background:var(--cyan);color:#06111B}
 .grid {
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
   gap:12px;
 }
-input,select,textarea {
-  display:block;
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:#080D1D;
-  color:white;
-}
-#dashboard {display:none;}
-#message {overflow-wrap:anywhere;}
+#dashboard {display:none}
+#message {overflow-wrap:anywhere}
 @media(max-width:450px) {
-  .grid {grid-template-columns:1fr;}
+  .grid {grid-template-columns:1fr}
 }
 </style>
 </head>
-
 <body>
+
 <header>
   <div class="logo">NEPAL X <span>ESPORTS</span></div>
   <p>ADMIN CONTROL CENTER</p>
@@ -90,9 +77,15 @@ input,select,textarea {
 <main>
   <section class="card" id="loginBox">
     <h2>🛡️ Admin Login</h2>
-    <p class="small">Google bata login gara. Admin access Supabase bata verify huncha.</p>
-    <button class="primary" id="loginBtn">Continue with Google</button>
-    <p id="message" class="small">Supabase configuration check hudai chha...</p>
+    <p class="small">
+      Google bata login gara. Admin access Supabase bata verify huncha.
+    </p>
+    <button class="primary" id="loginBtn" disabled>
+      Continue with Google
+    </button>
+    <p id="message" class="small" role="status" aria-live="polite">
+      Supabase configuration check hudai chha...
+    </p>
   </section>
 
   <section id="dashboard">
@@ -106,32 +99,32 @@ input,select,textarea {
       <div class="card">
         <h2>🏆 Tournaments</h2>
         <p class="small">Tournament management</p>
-        <button onclick="openModule('tournaments')">Open</button>
+        <button data-module="tournaments">Open</button>
       </div>
       <div class="card">
         <h2>👥 Registrations</h2>
         <p class="small">Players and teams</p>
-        <button onclick="openModule('registrations')">Open</button>
+        <button data-module="registrations">Open</button>
       </div>
       <div class="card">
         <h2>💳 Payments</h2>
         <p class="small">Payment review</p>
-        <button onclick="openModule('payments')">Open</button>
+        <button data-module="payments">Open</button>
       </div>
       <div class="card">
         <h2>🎮 Match Results</h2>
         <p class="small">Kills and placements</p>
-        <button onclick="openModule('results')">Open</button>
+        <button data-module="results">Open</button>
       </div>
       <div class="card">
         <h2>💰 Income</h2>
         <p class="small">Entry fees and records</p>
-        <button onclick="openModule('income')">Open</button>
+        <button data-module="income">Open</button>
       </div>
       <div class="card">
         <h2>⚙️ Settings</h2>
         <p class="small">Admin configuration</p>
-        <button onclick="openModule('settings')">Open</button>
+        <button data-module="settings">Open</button>
       </div>
     </div>
 
@@ -139,59 +132,80 @@ input,select,textarea {
       <h2>📋 Management Area</h2>
       <p id="moduleTitle">Module select gara.</p>
       <p id="moduleDescription" class="small">
-        Actual database controls next step ma connect garnechhau.
+        Actual database controls connect garna baki chha.
       </p>
     </div>
   </section>
 </main>
 
 <script>
-/*
-  IMPORTANT:
-  index.html ma bhayeko existing Supabase URL ra
-  publishable/anon key yaha copy gara.
-  Service-role key yaha narakha.
-*/
-const SUPABASE_URL = "https://begmcjduklximwyluwea.supabase.co/rest/v1/";
-const SUPABASE_ANON_KEY = "sb_publishable_x6eiRv5a4d-2wXLC8x_hEg_o1ocmfzj";
+"use strict";
+
+/* Existing Supabase project */
+const SUPABASE_URL =
+  "https://begmcjduklximwyluwea.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "sb_publishable_x6eiRv5a4d-2wXLC8x_hEg_o1ocmfzj";
 
 const message = document.getElementById("message");
 const loginBox = document.getElementById("loginBox");
+const loginBtn = document.getElementById("loginBtn");
 const dashboard = document.getElementById("dashboard");
+
 let client = null;
 
 function showMessage(text) {
   message.textContent = text;
 }
 
-function openModule(module) {
-  const titles = {
-    tournaments: "🏆 Tournament Management",
-    registrations: "👥 Registration Management",
-    payments: "💳 Payment Verification",
-    results: "🎮 Match Results",
-    income: "💰 Income Records",
-    settings: "⚙️ Admin Settings"
-  };
+const modules = {
+  tournaments: [
+    "🏆 Tournament Management",
+    "Tournament database controls connect garna baki chha."
+  ],
+  registrations: [
+    "👥 Registration Management",
+    "Player ra team ko database controls connect garna baki chha."
+  ],
+  payments: [
+    "💳 Payment Verification",
+    "Payment verification controls connect garna baki chha."
+  ],
+  results: [
+    "🎮 Match Results",
+    "Kills ra placement controls connect garna baki chha."
+  ],
+  income: [
+    "💰 Income Records",
+    "Income records connect garna baki chha."
+  ],
+  settings: [
+    "⚙️ Admin Settings",
+    "Admin settings controls connect garna baki chha."
+  ]
+};
 
-  document.getElementById("moduleTitle").textContent =
-    titles[module] || "Management";
-
-  document.getElementById("moduleDescription").textContent =
-    "Yo section ko actual database controls jodna baki chha. Ahile data change hudaina.";
-}
+document.querySelectorAll("[data-module]").forEach(button => {
+  button.addEventListener("click", () => {
+    const item = modules[button.dataset.module];
+    document.getElementById("moduleTitle").textContent = item[0];
+    document.getElementById("moduleDescription").textContent = item[1];
+  });
+});
 
 async function verifyAdmin() {
+  if (!client) return;
+
   dashboard.style.display = "none";
   loginBox.style.display = "block";
+  showMessage("Admin permission check hudai chha...");
 
   try {
-    const { data: result, error: sessionError } =
-      await client.auth.getSession();
+    const { data, error } = await client.auth.getSession();
+    if (error) throw error;
 
-    if (sessionError) throw sessionError;
-
-    if (!result.session) {
+    if (!data.session) {
       showMessage("Continue with Google thichera login gara.");
       return;
     }
@@ -202,13 +216,13 @@ async function verifyAdmin() {
     if (adminError) throw adminError;
 
     if (allowed !== true) {
-      showMessage("Yo account lai admin permission diyeko chaina.");
       await client.auth.signOut();
+      showMessage("Yo Google account lai admin permission chaina.");
       return;
     }
 
     document.getElementById("adminEmail").textContent =
-      "Signed in: " + (result.session.user.email || "Admin");
+      "Signed in: " + (data.session.user.email || "Admin");
 
     loginBox.style.display = "none";
     dashboard.style.display = "block";
@@ -217,43 +231,69 @@ async function verifyAdmin() {
   }
 }
 
-document.getElementById("loginBtn").onclick = async function() {
+loginBtn.addEventListener("click", async () => {
   if (!client) {
-    showMessage("Supabase URL ra anon key pahila set gara.");
+    showMessage("Supabase configuration check gara.");
     return;
   }
 
-  const { error } = await client.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: window.location.href
-    }
-  });
+  loginBtn.disabled = true;
+  showMessage("Google login khuldai chha...");
 
-  if (error) showMessage("Login error: " + error.message);
-};
+  try {
+    const { error } = await client.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.href }
+    });
 
-document.getElementById("logoutBtn").onclick = async function() {
-  if (client) await client.auth.signOut();
-  window.location.reload();
-};
+    if (error) throw error;
+  } catch (error) {
+    showMessage("Login error: " + error.message);
+    loginBtn.disabled = false;
+  }
+});
 
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  if (!client) return;
 
-if (
-  SUPABASE_URL === "https://begmcjduklximwyluwea.supabase.co" &&
-  SUPABASE_ANON_KEY.startsWith("sb_publishable_x6eiRv5a4d-2wXLC8x_hEg_o1ocmfzj")
-) {
-  client = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+  try {
+    const { error } = await client.auth.signOut();
+    if (error) throw error;
+    window.location.reload();
+  } catch (error) {
+    showMessage("Sign out error: " + error.message);
+  }
+});
+
+async function initSupabase() {
+  if (!window.supabase || !window.supabase.createClient) {
+    showMessage("Supabase library load bhayena. Internet check gara.");
+    return;
+  }
+
+  if (
+    !SUPABASE_URL.startsWith("https://") ||
+    !SUPABASE_URL.endsWith(".supabase.co") ||
+    !SUPABASE_ANON_KEY.startsWith("sb_publishable_")
+  ) {
+    showMessage("Supabase URL wa publishable key check gara.");
+    return;
+  }
+
+  try {
+    client = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+    loginBtn.disabled = false;
+    await verifyAdmin();
+  } catch (error) {
+    showMessage("Supabase setup error: " + error.message);
+  }
 }
-  
-  verifyAdmin();
-} else {
-  showMessage("index.html bata Supabase URL ra anon key copy garna baki chha.");
-}
+
+initSupabase();
 </script>
 </body>
 </html>
-
