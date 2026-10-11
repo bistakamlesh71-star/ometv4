@@ -233,47 +233,68 @@ async function loadAdminRegistrations(){
  }));
 }
  async function loadLeaderboard() {
-  const list = document.getElementById("leaderboardList");
-  if (!list) return;
+const list = document.getElementById("leaderboardList");
 
-  list.textContent = "Loading...";
+if (!list) {
+console.error("Leaderboard element not found.");
+return;
+}
 
-  const { data, error } = await supabaseClient
-    .from("leaderboard")
-    .select("player_name,team_name,matches_played,total_kills,best_placement")
-    .order("total_kills", { ascending: false })
-    .limit(50);
+list.textContent = "Loading leaderboard...";
 
-  if (error) {
-    list.textContent = "Error: " + error.message;
-    return;
-  }
+try {
+const { data, error } = await supabaseClient
+.from("leaderboard")
+.select(
+"player_name,team_name,matches_played,total_kills,best_placement"
+)
+.order("total_kills", { ascending: false })
+.limit(50);
 
-  list.replaceChildren();
+if (error) {
+  throw error;
+}
 
-  if (!data || data.length === 0) {
-    list.textContent = "Ahile leaderboard ma result chaina.";
-    return;
-  }
+list.replaceChildren();
 
-  data.forEach((p, i) => {
-    const card = document.createElement("div");
-    card.className = "card";
+if (!data || data.length === 0) {
+  list.textContent = "No leaderboard results available yet.";
+  return;
+}
 
-    const title = document.createElement("h3");
-    title.textContent =
-      (i === 0 ? "👑 MVP - " : "#" + (i + 1) + " ") +
-      p.player_name;
+data.forEach((player, index) => {
+  const card = document.createElement("div");
+  card.className = "card";
 
-    const kills = document.createElement("p");
-    kills.textContent = "🔥 Total Kills: " + p.total_kills;
+  const title = document.createElement("h3");
+  title.textContent =
+    (index === 0 ? "👑 MVP - " : "#" + (index + 1) + " ") +
+    (player.player_name || "Player");
 
-    const team = document.createElement("p");
-    team.textContent = "🛡️ Team: " + (p.team_name || "No Team");
+  const kills = document.createElement("p");
+  kills.textContent =
+    "🔥 Total Kills: " + (player.total_kills ?? 0);
 
-    card.append(title, kills, team);
-    list.appendChild(card);
-  });
+  const team = document.createElement("p");
+  team.textContent =
+    "🛡️ Team: " + (player.team_name || "No Team");
+
+  const matches = document.createElement("p");
+  matches.textContent =
+    "🎮 Matches Played: " + (player.matches_played ?? 0);
+
+  const placement = document.createElement("p");
+  placement.textContent =
+    "🏅 Best Placement: " + (player.best_placement ?? "N/A");
+
+  card.append(title, kills, team, matches, placement);
+  list.appendChild(card);
+});
+
+} catch (error) {
+console.error("Leaderboard error:", error);
+list.textContent = "Leaderboard Error: " + error.message;
+}
  }
 async function init(){
  if(!configReady){
