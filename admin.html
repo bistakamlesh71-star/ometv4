@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#080D1D">
 <title>NEPAL X ESPORTS | Admin Panel</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 :root {
   --bg:#080D1D;
@@ -16,6 +17,8 @@
   --purple:#7B61FF;
   --text:#F4F7FF;
   --muted:#AAB6D0;
+  --green:#20D69B;
+  --red:#FF5470;
 }
 * {box-sizing:border-box}
 body {
@@ -31,7 +34,10 @@ header {
 }
 .logo {font-size:22px;font-weight:900}
 .logo span {color:var(--cyan)}
-header p,.small {font-size:13px;color:var(--muted)}
+header p,.small {
+  font-size:13px;
+  color:var(--muted);
+}
 main {max-width:900px;margin:auto;padding:16px}
 .card {
   padding:17px;
@@ -39,8 +45,10 @@ main {max-width:900px;margin:auto;padding:16px}
   background:var(--panel);
   border:1px solid var(--line);
   border-radius:14px;
+  overflow-wrap:anywhere;
 }
 h2 {font-size:18px;margin-top:0}
+h3 {font-size:16px}
 button,a {
   display:inline-block;
   padding:12px 15px;
@@ -53,7 +61,19 @@ button,a {
   text-decoration:none;
   cursor:pointer;
 }
+button:disabled {
+  opacity:.5;
+  cursor:not-allowed;
+}
 .primary {background:var(--cyan);color:#06111B}
+.approve {
+  border-color:var(--green);
+  background:#10382F;
+}
+.reject {
+  border-color:var(--red);
+  background:#401C2A;
+}
 .grid {
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
@@ -61,13 +81,28 @@ button,a {
 }
 #dashboard {display:none}
 #message {overflow-wrap:anywhere}
+#paymentList {margin-top:14px}
+.payment-card {
+  padding:14px;
+  margin:12px 0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#0D1427;
+}
+.payment-card p {overflow-wrap:anywhere}
+.status {
+  color:var(--cyan);
+  font-weight:bold;
+}
 @media(max-width:450px) {
   .grid {grid-template-columns:1fr}
+  main {padding:10px}
+  .card {padding:14px}
 }
 </style>
 </head>
-<body>
 
+<body>
 <header>
   <div class="logo">NEPAL X <span>ESPORTS</span></div>
   <p>ADMIN CONTROL CENTER</p>
@@ -101,26 +136,31 @@ button,a {
         <p class="small">Tournament management</p>
         <button data-module="tournaments">Open</button>
       </div>
+
       <div class="card">
         <h2>👥 Registrations</h2>
         <p class="small">Players and teams</p>
         <button data-module="registrations">Open</button>
       </div>
+
       <div class="card">
         <h2>💳 Payments</h2>
         <p class="small">Payment review</p>
         <button data-module="payments">Open</button>
       </div>
+
       <div class="card">
         <h2>🎮 Match Results</h2>
         <p class="small">Kills and placements</p>
         <button data-module="results">Open</button>
       </div>
+
       <div class="card">
         <h2>💰 Income</h2>
         <p class="small">Entry fees and records</p>
         <button data-module="income">Open</button>
       </div>
+
       <div class="card">
         <h2>⚙️ Settings</h2>
         <p class="small">Admin configuration</p>
@@ -132,8 +172,10 @@ button,a {
       <h2>📋 Management Area</h2>
       <p id="moduleTitle">Module select gara.</p>
       <p id="moduleDescription" class="small">
-        Actual database controls connect garna baki chha.
+        Select a module to manage.
       </p>
+
+      <div id="paymentList"></div>
     </div>
   </section>
 </main>
@@ -152,6 +194,7 @@ const message = document.getElementById("message");
 const loginBox = document.getElementById("loginBox");
 const loginBtn = document.getElementById("loginBtn");
 const dashboard = document.getElementById("dashboard");
+const paymentList = document.getElementById("paymentList");
 
 let client = null;
 
@@ -162,16 +205,16 @@ function showMessage(text) {
 const modules = {
   tournaments: [
     "🏆 Tournament Management",
-    "Tournament database controls connect garna baki chha."
+    "Tournament controls connect garna baki chha."
   ],
   registrations: [
     "👥 Registration Management",
-    "Player ra team ko database controls connect garna baki chha."
+    "Player ra team controls connect garna baki chha."
   ],
   payments: [
-  "💳 Payment Verification",
-  "Pending payments, approve/reject ra coin balance management."
-],
+    "💳 Payment Verification",
+    "Pending payments, approve/reject ra coin balance management."
+  ],
   results: [
     "🎮 Match Results",
     "Kills ra placement controls connect garna baki chha."
@@ -186,14 +229,166 @@ const modules = {
   ]
 };
 
+/* Module navigation */
 document.querySelectorAll("[data-module]").forEach(button => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
     const item = modules[button.dataset.module];
+
     document.getElementById("moduleTitle").textContent = item[0];
     document.getElementById("moduleDescription").textContent = item[1];
+
+    paymentList.replaceChildren();
+
+    if (button.dataset.module === "payments") {
+      await loadPendingPayments();
+    }
   });
 });
 
+/* Safe text helper */
+function addText(parent, text, tag = "p") {
+  const element = document.createElement(tag);
+  element.textContent = String(text ?? "-");
+  parent.appendChild(element);
+  return element;
+}
+
+/* Load pending payments */
+async function loadPendingPayments() {
+  paymentList.replaceChildren();
+
+  const loading = addText(
+    paymentList,
+    "Pending payments load hudai chha..."
+  );
+
+  try {
+    if (!client) throw new Error("Supabase connect bhayeko chhaina.");
+
+    const { data, error } = await client
+      .from("payments")
+      .select("*")
+      .eq("status", "pending")
+      .order("id", { ascending: false });
+
+    if (error) throw error;
+
+    paymentList.replaceChildren();
+
+    if (!data || data.length === 0) {
+      addText(paymentList, "Ahile pending payment chhaina.");
+      return;
+    }
+
+    addText(
+      paymentList,
+      `📋 Pending Payments: ${data.length}`,
+      "h3"
+    );
+
+    const refreshButton = document.createElement("button");
+    refreshButton.textContent = "🔄 Refresh";
+    refreshButton.className = "primary";
+    refreshButton.addEventListener("click", loadPendingPayments);
+    paymentList.appendChild(refreshButton);
+
+    data.forEach(payment => {
+      const card = document.createElement("div");
+      card.className = "payment-card";
+
+      addText(card, `Payment #${payment.id}`, "h3");
+      addText(card, `User ID: ${payment.user_id}`);
+      addText(card, `Coins: ${payment.coins}`);
+      addText(card, `Status: ${payment.status}`);
+
+      if (payment.amount != null) {
+        addText(card, `Amount: Rs. ${payment.amount}`);
+      }
+
+      if (payment.created_at) {
+        addText(
+          card,
+          "Submitted: " +
+          new Date(payment.created_at).toLocaleString()
+        );
+      }
+
+      /*
+       * Add other payment fields here only if their actual
+       * column names are confirmed in your database.
+       */
+
+      const approve = document.createElement("button");
+      approve.textContent = "✅ Approve";
+      approve.className = "approve";
+
+      const reject = document.createElement("button");
+      reject.textContent = "❌ Reject";
+      reject.className = "reject";
+
+      approve.addEventListener("click", () => {
+        reviewPayment(payment.id, "approved", approve, reject);
+      });
+
+      reject.addEventListener("click", () => {
+        reviewPayment(payment.id, "rejected", approve, reject);
+      });
+
+      card.append(approve, reject);
+      paymentList.appendChild(card);
+    });
+
+  } catch (error) {
+    paymentList.replaceChildren();
+
+    addText(
+      paymentList,
+      "Payment load error: " + error.message
+    );
+
+    const retry = document.createElement("button");
+    retry.textContent = "Try Again";
+    retry.addEventListener("click", loadPendingPayments);
+    paymentList.appendChild(retry);
+  }
+}
+
+/* Approve or reject using the existing secure database function */
+async function reviewPayment(id, decision, approve, reject) {
+  const action = decision === "approved" ? "approve" : "reject";
+
+  if (!confirm(`Payment #${id} ${action} garne?`)) return;
+
+  approve.disabled = true;
+  reject.disabled = true;
+
+  try {
+    const { data, error } = await client.rpc(
+      "admin_review_payment",
+      {
+        p_payment_id: id,
+        p_decision: decision
+      }
+    );
+
+    if (error) throw error;
+
+    if (!data || data.success !== true) {
+      throw new Error("Payment review successful bhayena.");
+    }
+
+    alert(`Payment #${id} ${decision} bhayo.`);
+
+    await loadPendingPayments();
+
+  } catch (error) {
+    alert("Review error: " + error.message);
+    approve.disabled = false;
+    reject.disabled = false;
+  }
+}
+
+/* Verify admin permission */
 async function verifyAdmin() {
   if (!client) return;
 
@@ -226,11 +421,13 @@ async function verifyAdmin() {
 
     loginBox.style.display = "none";
     dashboard.style.display = "block";
+
   } catch (error) {
     showMessage("Verification error: " + error.message);
   }
 }
 
+/* Google login */
 loginBtn.addEventListener("click", async () => {
   if (!client) {
     showMessage("Supabase configuration check gara.");
@@ -243,28 +440,37 @@ loginBtn.addEventListener("click", async () => {
   try {
     const { error } = await client.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: window.location.href }
+      options: {
+        redirectTo: window.location.href
+      }
     });
 
     if (error) throw error;
+
   } catch (error) {
     showMessage("Login error: " + error.message);
     loginBtn.disabled = false;
   }
 });
 
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-  if (!client) return;
+/* Sign out */
+document.getElementById("logoutBtn").addEventListener(
+  "click",
+  async () => {
+    if (!client) return;
 
-  try {
-    const { error } = await client.auth.signOut();
-    if (error) throw error;
-    window.location.reload();
-  } catch (error) {
-    showMessage("Sign out error: " + error.message);
+    try {
+      const { error } = await client.auth.signOut();
+      if (error) throw error;
+      window.location.reload();
+
+    } catch (error) {
+      alert("Sign out error: " + error.message);
+    }
   }
-});
+);
 
+/* Initialize Supabase */
 async function initSupabase() {
   if (!window.supabase || !window.supabase.createClient) {
     showMessage("Supabase library load bhayena. Internet check gara.");
@@ -288,6 +494,14 @@ async function initSupabase() {
 
     loginBtn.disabled = false;
     await verifyAdmin();
+
+    /* Re-check admin access when auth state changes */
+    client.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+        setTimeout(() => verifyAdmin(), 0);
+      }
+    });
+
   } catch (error) {
     showMessage("Supabase setup error: " + error.message);
   }
