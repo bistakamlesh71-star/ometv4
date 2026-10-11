@@ -238,14 +238,17 @@ document.getElementById("logoutBtn").onclick = async function() {
   window.location.reload();
 };
 
+
 if (
-  SUPABASE_URL.startsWith("https://begmcjduklximwyluwea.supabase.co/rest/v1/) &&
-  SUPABASE_ANON_KEY !== "sb_publishable_x6eiRv5a4d-2wXLC8x_hEg_o1ocmfzj"
+  SUPABASE_URL === "https://begmcjduklximwyluwea.supabase.co" &&
+  SUPABASE_ANON_KEY.startsWith("sb_publishable_x6eiRv5a4d-2wXLC8x_hEg_o1ocmfzj")
 ) {
   client = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
   );
+}
+  
   verifyAdmin();
 } else {
   showMessage("index.html bata Supabase URL ra anon key copy garna baki chha.");
