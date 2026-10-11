@@ -59,6 +59,49 @@ form{display:grid;gap:14px}.field{display:grid;gap:7px}label{color:#bdc5dd;font-
  </div>
  <div class="card" style="margin-top:18px"><h3>My registrations</h3><div id="myRegistrations" class="muted">Sign in to view your registrations.</div></div>
 </section>
+ 
+<section id="profile">
+  <h2>👤 My Player Profile</h2>
+  <p>Aafno Free Fire details save gara.</p>
+
+  <div class="card">
+    <div id="profileNotice" class="message">
+      Google bata sign in gara.
+    </div>
+
+    <form id="profileForm" class="hidden" style="margin-top:18px">
+      <div class="field">
+        <label for="profileFFName">Free Fire Name</label>
+        <input id="profileFFName" maxlength="40" required
+          placeholder="Your FF name">
+      </div>
+
+      <div class="field">
+        <label for="profileFFUID">Free Fire UID</label>
+        <input id="profileFFUID" maxlength="30" required
+          inputmode="numeric" placeholder="Your FF UID">
+      </div>
+
+      <div class="field">
+        <label for="profileTeam">Team Name</label>
+        <input id="profileTeam" maxlength="60"
+          placeholder="NEPAL X ESPORTS">
+      </div>
+
+      <button id="saveProfileBtn" type="submit">
+        💾 Save Profile
+      </button>
+    </form>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>🏆 My Match History</h3>
+    <div id="matchHistory" class="muted">
+      Sign in to view your match history.
+    </div>
+  </div>
+</section>
+ 
 <section id="admin">
  <h2>🛡️ Admin Panel</h2><p>Only accounts explicitly added to the secure admin list in Supabase can review registrations or manage tournaments.</p>
  <div id="adminNotice" class="message">Sign in with your authorized admin Google account.</div>
@@ -181,6 +224,10 @@ async function updateSession(session){
  $("userInfo").textContent=currentUser ? "Signed in as "+(currentUser.email||"Google user") : "You are not signed in.";
  $("registrationForm").classList.toggle("hidden",!currentUser);
  await checkAdmin(); await loadMyRegistrations();
+ await checkAdmin();
+await loadMyRegistrations();
+await loadPlayerProfile();
+await loadMatchHistory();
 }
 $("registrationForm").addEventListener("submit",async e=>{
  e.preventDefault(); if(!currentUser)return;
@@ -234,6 +281,107 @@ async function init(){
  await loadTournaments();
 }
 init();
+ 
+async function loadPlayerProfile() {
+  const notice = $("profileNotice");
+  const form = $("profileForm");
+
+  if (!currentUser) {
+    form.classList.add("hidden");
+    notice.textContent = "Google bata sign in gara.";
+    $("matchHistory").textContent =
+      "Sign in to view your match history.";
+    return;
+  }
+
+  form.classList.remove("hidden");
+  notice.textContent = "Profile load hudai chha...";
+
+  const { data, error } = await supabaseClient
+    .from("player_profiles")
+    .select("free_fire_name,free_fire_uid,team_name")
+    .eq("user_id", currentUser.id)
+    .maybeSingle();
+
+  if (error) {
+    notice.textContent = "Profile load error: " + error.message;
+    return;
+  }
+
+  $("profileFFName").value = data?.free_fire_name || "";
+  $("profileFFUID").value = data?.free_fire_uid || "";
+  $("profileTeam").value = data?.team_name || "";
+  notice.textContent = "Profile ready! Aafno details save gara.";
+}
+
+$("profileForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!currentUser) return;
+
+  const btn = $("saveProfileBtn");
+  btn.disabled = true;
+  btn.textContent = "Saving...";
+
+  const payload = {
+    user_id: currentUser.id,
+    free_fire_name: $("profileFFName").value.trim(),
+    free_fire_uid: $("profileFFUID").value.trim(),
+    team_name: $("profileTeam").value.trim() || null,
+    updated_at: new Date().toISOString()
+  };
+
+  const { error } = await supabaseClient
+    .from("player_profiles")
+    .upsert(payload, { onConflict: "user_id" });
+
+  if (error) {
+    $("profileNotice").textContent =
+      "Save failed: " + error.message;
+  } else {
+    $("profileNotice").textContent =
+      "✅ Player Profile successfully saved!";
+  }
+
+  btn.disabled = false;
+  btn.textContent = "💾 Save Profile";
+});
+
+async function loadMatchHistory() {
+  const box = $("matchHistory");
+
+  if (!currentUser || !supabaseClient) {
+    box.textContent = "Sign in to view your match history.";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("match_history")
+    .select("id,tournament_name,kills,placement,result,created_at")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    box.textContent = "Match history error: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    box.textContent =
+      "Ahile match history chhaina. Admin le result publish garepachi yaha dekhinechha.";
+    return;
+  }
+
+  box.innerHTML = data.map(m => `
+    <div class="item">
+      <strong>${escapeHtml(m.tournament_name)}</strong>
+      <p>🎯 Kills: ${m.kills}
+      · 🏅 Position: ${m.placement ?? "—"}</p>
+      <p>Result: ${escapeHtml(m.result || "Completed")}</p>
+      <span class="muted">${escapeHtml(dateText(m.created_at))}</span>
+    </div>
+  `).join("");
+}
+ 
 </script>
 </body>
 </html>
