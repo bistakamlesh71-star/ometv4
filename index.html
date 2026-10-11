@@ -134,12 +134,31 @@ function renderTournaments(){
 function escapeHtml(value){
  return String(value ?? "").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
+
 async function loadTournaments(){
- if(!supabaseClient){$("tournamentList").innerHTML='<div class="card">Website setup is not finished yet: add Supabase credentials.</div>';return;}
- const {data,error}=await supabaseClient.from("tournaments").select("id,name,game,starts_at,details").eq("is_published",true).order("starts_at",{ascending:true});
- if(error){$("tournamentList").innerHTML='<div class="card">Could not load tournaments. Check the Supabase SQL setup.</div>';return;}
- tournaments=data||[]; renderTournaments();
+  if(!supabaseClient){
+    $("tournamentList").innerHTML =
+      '<div class="card">Supabase setup is incomplete.</div>';
+    return;
+  }
+
+  const {data,error}=await supabaseClient
+    .from("tournaments")
+    .select("id,name,game,entry_fee,prize_pool,tournament_date,status")
+    .order("tournament_date",{ascending:true});
+
+  if(error){
+    console.error("Tournament load error:",error);
+    $("tournamentList").innerHTML =
+      '<div class="card">Could not load tournaments: ' +
+      escapeHtml(error.message) + '</div>';
+    return;
+  }
+
+  tournaments=data||[];
+  renderTournaments();
 }
+ 
 async function loadMyRegistrations(){
  const target=$("myRegistrations");
  if(!currentUser){target.textContent="Sign in to view your registrations.";return;}
