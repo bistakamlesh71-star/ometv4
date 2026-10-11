@@ -81,6 +81,15 @@ form{display:grid;gap:14px}.field{display:grid;gap:7px}label{color:#bdc5dd;font-
   <h3>Registration requests</h3><div id="adminRegistrations" class="card">Loading…</div>
  </div>
 </section>
+ 
+<section id="leaderboard">
+  <h2>🏆 NEPAL X ESPORTS LEADERBOARD</h2>
+  <p>Top players ranked by total kills</p>
+  <div id="leaderboardList">
+    Leaderboard load hudai chha...
+  </div>
+</section>
+ 
 </main>
 <footer>© <span id="year"></span> NEPAL X ESPORTS · Play fair, rise together 🇳🇵</footer>
 
@@ -223,6 +232,49 @@ async function loadAdminRegistrations(){
   btn.disabled=false; await loadMyRegistrations();
  }));
 }
+ async function loadLeaderboard() {
+  const list = document.getElementById("leaderboardList");
+  if (!list) return;
+
+  list.textContent = "Loading...";
+
+  const { data, error } = await supabaseClient
+    .from("leaderboard")
+    .select("player_name,team_name,matches_played,total_kills,best_placement")
+    .order("total_kills", { ascending: false })
+    .limit(50);
+
+  if (error) {
+    list.textContent = "Error: " + error.message;
+    return;
+  }
+
+  list.replaceChildren();
+
+  if (!data || data.length === 0) {
+    list.textContent = "Ahile leaderboard ma result chaina.";
+    return;
+  }
+
+  data.forEach((p, i) => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const title = document.createElement("h3");
+    title.textContent =
+      (i === 0 ? "👑 MVP - " : "#" + (i + 1) + " ") +
+      p.player_name;
+
+    const kills = document.createElement("p");
+    kills.textContent = "🔥 Total Kills: " + p.total_kills;
+
+    const team = document.createElement("p");
+    team.textContent = "🛡️ Team: " + (p.team_name || "No Team");
+
+    card.append(title, kills, team);
+    list.appendChild(card);
+  });
+ }
 async function init(){
  if(!configReady){
   $("userInfo").textContent="Setup needed: paste your new Supabase project URL and publishable/anon key in this file.";
