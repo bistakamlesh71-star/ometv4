@@ -1,1 +1,256 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080D1D">
+<title>NEPAL X ESPORTS | Admin Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  --bg:#080D1D;
+  --panel:#121A30;
+  --line:#293653;
+  --cyan:#00D9FF;
+  --purple:#7B61FF;
+  --text:#F4F7FF;
+  --muted:#AAB6D0;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+header {
+  padding:18px;
+  background:#0D1427;
+  border-bottom:1px solid var(--line);
+}
+.logo {font-size:22px;font-weight:900;}
+.logo span {color:var(--cyan);}
+header p {font-size:12px;color:var(--muted);}
+main {max-width:900px;margin:auto;padding:16px;}
+.card {
+  padding:17px;
+  margin-bottom:14px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+}
+h2 {font-size:18px;margin-top:0;}
+p {line-height:1.5;}
+.small {font-size:13px;color:var(--muted);}
+button,a {
+  display:inline-block;
+  padding:12px 15px;
+  margin:4px 2px;
+  border:1px solid var(--cyan);
+  border-radius:9px;
+  background:#10273B;
+  color:white;
+  font-weight:bold;
+  text-decoration:none;
+  cursor:pointer;
+}
+.primary {background:var(--cyan);color:#06111B;}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+input,select,textarea {
+  display:block;
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#080D1D;
+  color:white;
+}
+#dashboard {display:none;}
+#message {overflow-wrap:anywhere;}
+@media(max-width:450px) {
+  .grid {grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">NEPAL X <span>ESPORTS</span></div>
+  <p>ADMIN CONTROL CENTER</p>
+  <a href="index.html">← Main Website</a>
+</header>
+
+<main>
+  <section class="card" id="loginBox">
+    <h2>🛡️ Admin Login</h2>
+    <p class="small">Google bata login gara. Admin access Supabase bata verify huncha.</p>
+    <button class="primary" id="loginBtn">Continue with Google</button>
+    <p id="message" class="small">Supabase configuration check hudai chha...</p>
+  </section>
+
+  <section id="dashboard">
+    <div class="card">
+      <h2>🔥 Admin Dashboard</h2>
+      <p id="adminEmail" class="small"></p>
+      <button id="logoutBtn">Sign Out</button>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>🏆 Tournaments</h2>
+        <p class="small">Tournament management</p>
+        <button onclick="openModule('tournaments')">Open</button>
+      </div>
+      <div class="card">
+        <h2>👥 Registrations</h2>
+        <p class="small">Players and teams</p>
+        <button onclick="openModule('registrations')">Open</button>
+      </div>
+      <div class="card">
+        <h2>💳 Payments</h2>
+        <p class="small">Payment review</p>
+        <button onclick="openModule('payments')">Open</button>
+      </div>
+      <div class="card">
+        <h2>🎮 Match Results</h2>
+        <p class="small">Kills and placements</p>
+        <button onclick="openModule('results')">Open</button>
+      </div>
+      <div class="card">
+        <h2>💰 Income</h2>
+        <p class="small">Entry fees and records</p>
+        <button onclick="openModule('income')">Open</button>
+      </div>
+      <div class="card">
+        <h2>⚙️ Settings</h2>
+        <p class="small">Admin configuration</p>
+        <button onclick="openModule('settings')">Open</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📋 Management Area</h2>
+      <p id="moduleTitle">Module select gara.</p>
+      <p id="moduleDescription" class="small">
+        Actual database controls next step ma connect garnechhau.
+      </p>
+    </div>
+  </section>
+</main>
+
+<script>
+/*
+  IMPORTANT:
+  index.html ma bhayeko existing Supabase URL ra
+  publishable/anon key yaha copy gara.
+  Service-role key yaha narakha.
+*/
+const SUPABASE_URL = "PASTE_EXISTING_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "PASTE_EXISTING_SUPABASE_ANON_KEY";
+
+const message = document.getElementById("message");
+const loginBox = document.getElementById("loginBox");
+const dashboard = document.getElementById("dashboard");
+let client = null;
+
+function showMessage(text) {
+  message.textContent = text;
+}
+
+function openModule(module) {
+  const titles = {
+    tournaments: "🏆 Tournament Management",
+    registrations: "👥 Registration Management",
+    payments: "💳 Payment Verification",
+    results: "🎮 Match Results",
+    income: "💰 Income Records",
+    settings: "⚙️ Admin Settings"
+  };
+
+  document.getElementById("moduleTitle").textContent =
+    titles[module] || "Management";
+
+  document.getElementById("moduleDescription").textContent =
+    "Yo section ko actual database controls jodna baki chha. Ahile data change hudaina.";
+}
+
+async function verifyAdmin() {
+  dashboard.style.display = "none";
+  loginBox.style.display = "block";
+
+  try {
+    const { data: result, error: sessionError } =
+      await client.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    if (!result.session) {
+      showMessage("Continue with Google thichera login gara.");
+      return;
+    }
+
+    const { data: allowed, error: adminError } =
+      await client.rpc("is_admin");
+
+    if (adminError) throw adminError;
+
+    if (allowed !== true) {
+      showMessage("Yo account lai admin permission diyeko chaina.");
+      await client.auth.signOut();
+      return;
+    }
+
+    document.getElementById("adminEmail").textContent =
+      "Signed in: " + (result.session.user.email || "Admin");
+
+    loginBox.style.display = "none";
+    dashboard.style.display = "block";
+  } catch (error) {
+    showMessage("Verification error: " + error.message);
+  }
+}
+
+document.getElementById("loginBtn").onclick = async function() {
+  if (!client) {
+    showMessage("Supabase URL ra anon key pahila set gara.");
+    return;
+  }
+
+  const { error } = await client.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: window.location.href
+    }
+  });
+
+  if (error) showMessage("Login error: " + error.message);
+};
+
+document.getElementById("logoutBtn").onclick = async function() {
+  if (client) await client.auth.signOut();
+  window.location.reload();
+};
+
+if (
+  SUPABASE_URL.startsWith("https://") &&
+  SUPABASE_ANON_KEY !== "PASTE_EXISTING_SUPABASE_ANON_KEY"
+) {
+  client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+  verifyAdmin();
+} else {
+  showMessage("index.html bata Supabase URL ra anon key copy garna baki chha.");
+}
+</script>
+</body>
+</html>
+
