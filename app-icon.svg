@@ -1,1 +1,12 @@
 
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="100" fill="#080D1D"/>
+  <path d="M80 130 L256 65 L432 130 L400 350 L256 450 L112 350 Z"
+        fill="none" stroke="#00D9FF" stroke-width="14"/>
+  <path d="M150 170 L215 170 L280 275 L280 170 L345 170 L345 345 L280 345 L215 240 L215 345 L150 345 Z"
+        fill="#7B61FF"/>
+  <text x="256" y="405" text-anchor="middle"
+        font-family="Arial,sans-serif" font-size="35"
+        font-weight="bold" fill="#00D9FF">ESPORTS</text>
+</svg>
+
