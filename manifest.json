@@ -1,1 +1,23 @@
 
+{
+  "id": "/ometv4/",
+  "name": "NEPAL X ESPORTS",
+  "short_name": "NEPAL X",
+  "description": "Nepal Free Fire esports tournaments",
+  "lang": "en",
+  "start_url": "/ometv4/",
+  "scope": "/ometv4/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080D1D",
+  "theme_color": "#080D1D",
+  "icons": [
+    {
+      "src": "app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
+
