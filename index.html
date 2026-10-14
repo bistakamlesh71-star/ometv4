@@ -251,12 +251,54 @@ init();
 <meta name="theme-color" content="#080D1D">
  
 </body>
- <a href="https://github.com/user-attachments/files/33344366/apk-debug.zip"
-   style="position:fixed;right:10px;bottom:18px;
-   z-index:9999;padding:13px 18px;border-radius:12px;
-   background:#00D9FF;color:#080D1D;
-   font-weight:800;text-decoration:none;">
-   📥 NEPAL X ESPORTS DOWNLOAD
+<button id="installAppBtn" hidden
+  style="position:fixed;right:16px;bottom:18px;z-index:9999;
+  padding:13px 18px;border:0;border-radius:12px;
+  background:#00D9FF;color:#080D1D;font-weight:800;
+  box-shadow:0 4px 20px #00D9FF55">
+  📲 INSTALL NEPAL X
+</button>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/ometv4/sw.js")
+      .catch((error) => console.error("SW error:", error));
+  });
+}
+
+let installPrompt = null;
+const installBtn = document.getElementById("installAppBtn");
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  installPrompt = event;
+  installBtn.hidden = false;
+});
+
+installBtn.addEventListener("click", async () => {
+  if (!installPrompt) {
+    alert("Chrome menu bata Add to Home screen wa Install app chhannu.");
+    return;
+  }
+
+  installPrompt.prompt();
+  await installPrompt.userChoice;
+  installPrompt = null;
+  installBtn.hidden = true;
+});
+
+window.addEventListener("appinstalled", () => {
+  installBtn.hidden = true;
+});
+</script>
+
+<img src="/ometv4/logo.png"
+     alt="NEPAL X ESPORTS Logo"
+     style="width:120px;height:120px;object-fit:contain;display:block;margin:10px auto;">
+</body>
+</html>
  </a>
 </button>
 
